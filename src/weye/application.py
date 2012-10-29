@@ -1,6 +1,9 @@
 import os
 import bottle
 import logging
+from bottle import json_dumps as dumps
+from bottle import json_loads as loads
+
 from .configuration import config
 from . import root_objects
 log = logging.getLogger('application')
@@ -21,12 +24,34 @@ def cb(path):
 def cb(path):
     return bottle.static_file(os.path.join('Kickstrap', path), config.static_root)
 
+@bottle.route('/o/')
+def cb():
+    log.debug('~ Accessing Root')
+    # TODO: session + permission mgmt
+    obj = root_objects.get_object_from_path('')
+    if bottle.request.is_xhr:
+        return obj
+    bottle.redirect('/')
+
+@bottle.route('/c/<path:path>')
+def cb(path):
+    log.debug('~ Listing %r', path)
+    # TODO: session + permission mgmt
+    bottle.response.set_header('Content-Type', 'application/json')
+    obj = root_objects.list_children(path)
+    if bottle.request.is_xhr:
+        log.warning(obj)
+        return dumps(obj)
+    bottle.redirect('/')
+
+
 @bottle.route('/o/<path:path>')
 def cb(path):
-    log.debug('~ Accessing %r'%path)
+    log.debug('~ Accessing %r', path)
     # TODO: session + permission mgmt
     obj = root_objects.get_object_from_path(path)
     if bottle.request.is_xhr:
+        print("RETURNING", obj)
         return obj # dumps object
     bottle.redirect('/?view='+path)
 #    return 'Viewing %r'%path

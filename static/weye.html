@@ -6,7 +6,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Kickstrap</title>
+  <title>File manager</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
   <!-- You can also compile style.less to use regular css. Your apps will still work. -->
@@ -40,7 +40,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">Kickstrap</a>
+          <a class="brand" href="#">Web eye</a>
           <div class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="#">Home</a></li>
@@ -60,8 +60,8 @@
     	  
 					<header class="hero-unit">
 						<hgroup>
-							<h1>Kickstrap</h1>
-							<h2>Twitter's Bootstrap with Themes, Apps, and Enhancements</h2>
+							<h1>Weye</h1>
+							<h2>Share, view, enjoy.</h2>
 						</hgroup>
 					</header>
 
@@ -146,15 +146,92 @@
   <!-- Kickstrap CDN thanks to our friends at netDNA.com -->
   <script id="appList" src="http://netdna.getkickstrap.com/Kickstrap/js/kickstrap.min.js"></script>
   <script>window.consoleLog || document.write('<script id="appList" src="/static/Kickstrap/js/kickstrap.min.js"><\/script>')</script>
+  <script src="/static/js/jquery.isotope.min.js"></script>
+  <script src="/static/js/ICanHaz.min.js"></script>
   <script>
-   kickstrap.ready(function() {
+   $(function() {
       // JavaScript placed here will run only once Kickstrap has loaded successfully.
+      /*
+
+
       $.pnotify({
          title: 'Hello World',
          text: 'To edit this message, find me at the bottom of this HTML file.'
       });
+      */
+      // init the application
+
+      view_path(document.location.href.split(/\?view=/)[1] || '/');
+      setTimeout( function() {
+          $('header').slideUp('slow');
+      }, 3000);
    });
   </script>
+  <!-- TEMPLATES -->
+  <script id="view_file" type="text/html">
+      <h3>View or download file...</h3>
+      <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
+  </script>
+  <script id="children_list" type="text/html">
+       {{#have_child}}
+        <ul>
+            {{#child}}
+            <li class="folder" onclick="view_path(doc_ref+'/{{.}}')">{{.}}</li>
+            {{/child}}
+        </ul>
+        {{/have_child}}
+        {{^have_child}}
+        No item.
+        {{/have_child}}
+        {{#backlink}}
+        <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
+        {{/backlink}}
+
+  </script>
+  <script type="text/javascript">
+      function view_path(path) {
+          console.log('getting '+path);
+          if (path !== '/') {
+              doc_ref = path;
+          } else {
+              doc_ref = '';
+          }
+          $.get('/o/'+path)
+              .success(function(d) {
+                  if (d.error) {
+                      $.pnotify({
+                          title: 'Error displaying "'+d.link+'" content',
+                          text: d.message
+                      });
+                  } else {
+                      var o = $('.row-fluid div:first');
+                      o.html(
+                              $('<h1>Viewing '+d.type+' '+path+'</h1>')
+                      );
+                      var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
+                      if (!!bref) {
+                          bref = bref[1] || '/';
+                      } else {
+                          bref = false;
+                      }
+                      if (d.type === "folder") {
+                          $.get('/c/'+path)
+                            .success(function(d) {
+                                ich.children_list({
+                                    have_child: d.length>0,
+                                    backlink: bref,
+                                    child: d
+                                    }).appendTo(o);
+                            });
+                      } else {
+                          ich.view_file({item: d, backlink: bref}).appendTo(o);
+                      }
+                  }
+              }
+          );
+      };
+  </script>
+
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
        mathiasbynens.be/notes/async-analytics-snippet -->
   <!--script>
