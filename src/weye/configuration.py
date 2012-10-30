@@ -4,7 +4,7 @@ import mimetypes
 
 # mimetypes
 
-mimetypes.add_type('woff', 'application-x-font-woff')
+mimetypes.add_type('application-x-font-woff', 'woff')
 
 # logging
 
