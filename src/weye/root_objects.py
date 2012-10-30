@@ -6,6 +6,11 @@ import mimetypes
 import logging
 
 log = logging.getLogger('root_objects')
+try: # backward compat for python2.x
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = None
+    PermissionError = None
 
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
