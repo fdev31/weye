@@ -12,6 +12,8 @@ except NameError:
     FileNotFoundError = None
     PermissionError = None
 
+mimetypes.init()
+
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
@@ -49,4 +51,5 @@ def list_children(path):
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     def test(p):
         return os.access(os.path.join(fpath, p), os.R_OK)
-    return tuple(f for f in os.listdir(fpath) if f[0] != '.' and not f.endswith(config.special_extension) and test(f))
+    return tuple({'m': mimetypes.types_map.get('.'+f.rsplit('.')[-1], ''), 'f': f} for f in os.listdir(fpath) if f[0] != '.' and not f.endswith(config.special_extension) and test(f))
+

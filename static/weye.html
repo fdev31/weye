@@ -176,7 +176,10 @@
        {{#have_child}}
         <ul>
             {{#child}}
-            <li class="folder" onclick="view_path(doc_ref+'/{{.}}')">{{.}}</li>
+            <li class="folder" onclick="view_path(doc_ref+'/{{f}}')">
+	      <img src="http://www.stdicon.com/g-flat/{{m}}" width="16px" height="16px"/>
+	      {{f}}
+	    </li>
             {{/child}}
         </ul>
         {{/have_child}}
