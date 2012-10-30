@@ -12,7 +12,6 @@ except NameError:
     FileNotFoundError = None
     PermissionError = None
 
-mimetypes.init()
 
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
