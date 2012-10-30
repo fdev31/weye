@@ -44,14 +44,12 @@ def cb(path):
         return dumps(obj)
     bottle.redirect('/')
 
-
 @bottle.route('/o/<path:path>')
 def cb(path):
     log.debug('~ Accessing %r', path)
     # TODO: session + permission mgmt
     obj = root_objects.get_object_from_path(path)
     if bottle.request.is_xhr:
-        print("RETURNING", obj)
         return obj # dumps object
     bottle.redirect('/?view='+path)
 #    return 'Viewing %r'%path

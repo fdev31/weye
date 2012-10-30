@@ -1,13 +1,13 @@
+import os
+import logging
+import mimetypes
+
 # mimetypes
 
-import os
-
-import mimetypes
 mimetypes.add_type('woff', 'application-x-font-woff')
 
 # logging
 
-import logging
 
 logging.basicConfig()
 log = logging.getLogger()
