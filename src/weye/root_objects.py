@@ -58,7 +58,7 @@ def list_children(path):
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     def test(p):
         return os.access(os.path.join(fpath, p), os.R_OK)
-    return tuple(
+    l = list(
             {'m': guess_type(f), 'f': f}
 
             for f in os.listdir(fpath)
@@ -66,4 +66,12 @@ def list_children(path):
             if f[0] != '.'
             and not f.endswith(config.special_extension)
             and test(f))
+
+    def s(o):
+        if o['m'] == 'folder':
+            return '!!!folder'
+        else:
+            return o['f']+o['m']
+    l.sort(key=s)
+    return l
 
