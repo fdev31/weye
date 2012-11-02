@@ -45,7 +45,7 @@ def cb(path):
     bottle.response.set_header('Content-Type', 'application/json')
     obj = root_objects.list_children(path)
     if bottle.request.is_xhr:
-        log.warning(obj)
+        log.debug(obj)
         return dumps(obj)
     bottle.redirect('/')
 
