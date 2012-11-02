@@ -14,6 +14,8 @@ except NameError:
 
 
 def guess_type(fname):
+    if os.path.isdir(fname):
+        return 'folder'
     return mimetypes.types_map.get('.'+fname.rsplit('.', 1)[-1], '') or "application/octet-stream"
 
 def get_object_from_path(path):
@@ -30,7 +32,7 @@ def get_object_from_path(path):
         if not os.path.exists(fpath):
             return {'error': True, 'message': 'File not found', 'link': path} # or "choices" + "default", instead of link
         else:
-            file_type = 'folder' if os.path.isdir(fpath) else guess_type(fpath)
+            file_type = guess_type(fpath)
 
     # read infos (TODO later: in the database)
     st = os.stat(fpath)
@@ -39,7 +41,7 @@ def get_object_from_path(path):
                 'name': os.path.basename(fpath),
                 'path': path,
                 'description': u'',
-                'type': file_type}
+                'mime': file_type.replace('/', '-')}
     if not up_to_date:
         try:
             open(meta_fpath, 'wb').write(dumps(infos).encode())
@@ -53,5 +55,12 @@ def list_children(path):
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     def test(p):
         return os.access(os.path.join(fpath, p), os.R_OK)
-    return tuple({'m': guess_type(f), 'f': f} for f in os.listdir(fpath) if f[0] != '.' and not f.endswith(config.special_extension) and test(f))
+    return tuple(
+            {'m': guess_type(f).replace('/', '-'), 'f': f}
+
+            for f in os.listdir(fpath)
+
+            if f[0] != '.'
+            and not f.endswith(config.special_extension)
+            and test(f))
 
