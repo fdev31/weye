@@ -210,11 +210,6 @@
 
       function view_path(path) {
           console.log('getting '+path);
-          if (path !== '/') {
-              doc_ref = path;
-          } else {
-              doc_ref = '';
-          }
           $.get('/o/'+path)
               .success(function(d) {
                   console.log('object: /o/'+path, d);
@@ -224,6 +219,11 @@
                           text: d.message
                       });
                   } else {
+                      if (path !== '/') {
+                          doc_ref = path;
+                      } else {
+                          doc_ref = '';
+                      }
                       var o = $('.row-fluid div:first');
                       var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
                       window.scrollBy(0, -10000);
@@ -251,7 +251,10 @@
                       }
                   }
               }
-          );
+          )
+          .error(function() {
+                  $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
+          });
       };
   </script>
 
