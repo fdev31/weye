@@ -180,7 +180,7 @@
 	      
   </script>
   <script id="children_list" type="text/html">
-       <h1>Browsing {{path}}</h1>
+      <h1><img src="/static/mime/{{mime}}.svg" width="64px" height="64px"/> Browsing {{path}}</h1>
        {{#have_child}}
         <ul>
             {{#child}}
@@ -232,12 +232,14 @@
                       }
                       if (d.mime === "folder") {
                           $.get('/c/'+path)
-                            .success(function(d) {
+                            .success(function(c) {
                                 console.log('children: /c/'+path);
                                 ich.children_list({
-                                    have_child: d.length>0,
+                                    have_child: c.length>0,
                                     backlink: bref,
-                                    child: d
+                                    mime: d.mime,
+                                    path: d.path,
+                                    child: c
                                     }).appendTo(o);
                             });
                       } else {
