@@ -44,7 +44,7 @@ def get_object_from_path(path):
                 'name': os.path.basename(fpath),
                 'path': path,
                 'description': u'',
-                'mime': file_type.replace('/', '-')}
+                'mime': file_type}
     if not up_to_date:
         try:
             open(meta_fpath, 'wb').write(dumps(infos).encode())
@@ -59,7 +59,7 @@ def list_children(path):
     def test(p):
         return os.access(os.path.join(fpath, p), os.R_OK)
     return tuple(
-            {'m': guess_type(f).replace('/', '-'), 'f': f}
+            {'m': guess_type(f), 'f': f}
 
             for f in os.listdir(fpath)
 
