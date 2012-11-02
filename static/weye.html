@@ -222,6 +222,7 @@
                   } else {
                       var o = $('.row-fluid div:first');
                       var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
+                      window.scrollBy(0, -10000);
                       /* TODO: use a factory with mustache's lambdas on ich */
                       o.html('<div class="content"></div>');
                       if (!!bref) {
