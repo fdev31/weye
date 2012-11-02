@@ -12,7 +12,6 @@ except NameError:
     FileNotFoundError = None
     PermissionError = None
 
-mimetypes.init()
 
 def guess_type(fname):
     return mimetypes.types_map.get('.'+fname.rsplit('.', 1)[-1], '') or "application/octet-stream"

@@ -169,7 +169,7 @@
   </script>
   <!-- TEMPLATES -->
   <script id="view_file" type="text/html">
-      <h3>View or download file...</h3>
+      <h3>View or <a href="{{href}}">download</a> file...</h3>
       <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
   </script>
   <script id="children_list" type="text/html">
@@ -208,10 +208,11 @@
                       });
                   } else {
                       var o = $('.row-fluid div:first');
+                      var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
+                      /* TODO: use a factory with mustache's lambdas on ich */
                       o.html(
                               $('<h1>Viewing '+d.type+' '+path+'</h1>')
                       );
-                      var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
                       if (!!bref) {
                           bref = bref[1] || '/';
                       } else {
@@ -227,7 +228,7 @@
                                     }).appendTo(o);
                             });
                       } else {
-                          ich.view_file({item: d, backlink: bref}).appendTo(o);
+                          ich.view_file({href: '/d/'+path, item: d, backlink: bref}).appendTo(o);
                       }
                   }
               }

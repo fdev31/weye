@@ -33,6 +33,11 @@ def cb():
         return obj
     bottle.redirect('/')
 
+@bottle.route('/d/<path:path>')
+def cb(path):
+    log.debug('~ Serving raw %r', path)
+    return bottle.static_file(path, config.shared_root)
+
 @bottle.route('/c/<path:path>')
 def cb(path):
     log.debug('~ Listing %r', path)
