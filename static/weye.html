@@ -176,27 +176,31 @@
       <h1>Viewing {{item.mime}}</h1>
       <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
       
-      <h3><a href="/d/{{href}}"><img src="/static/mime/{{item.mime}}.svg" width="64px" height="64px"/> {{path}}</a></h3>
+      <h3><a href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
 	      
   </script>
   <script id="children_list" type="text/html">
-      <h1><img src="/static/mime/{{mime}}.svg" width="64px" height="64px"/> Browsing {{path}}</h1>
+      <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> Browsing {{path}}</h1>
+
+        {{#backlink}}
+        <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
+        {{/backlink}}
+
        {{#have_child}}
         <ul>
             {{#child}}
             <li class="item" onclick="view_path(doc_ref+'/{{f}}')">
-	      <img src="/static/mime/{{m}}.svg" width="16px" height="16px"/>
+	      <img src="/static/mime/{{m}}.svg" class="small_icon"/>
 	      {{f}}
 	    </li>
             {{/child}}
         </ul>
         {{/have_child}}
         {{^have_child}}
+        <div>
         No item.
+    </div>
         {{/have_child}}
-        {{#backlink}}
-        <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
-        {{/backlink}}
 
   </script>
 
