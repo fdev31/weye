@@ -15,8 +15,11 @@ except NameError:
 
 def guess_type(fname):
     if os.path.isdir(fname):
-        return 'folder'
-    return mimetypes.types_map.get('.'+fname.rsplit('.', 1)[-1], '') or "application/octet-stream"
+        t = 'folder'
+    else:
+        t = (mimetypes.guess_type(fname)[0] or "application/octet-stream").replace('/', '-')
+    log.debug('Type for %r is %r', fname, t)
+    return t
 
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
