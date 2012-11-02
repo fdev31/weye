@@ -170,6 +170,7 @@
       }, 3000);
    });
   </script>
+
   <!-- TEMPLATES -->
   <script id="view_file" type="text/html">
       <h1>Viewing {{item.type}}</h1>
@@ -178,12 +179,12 @@
       <a class="Button" href="/d/{{href}}">Download</a>
   </script>
   <script id="children_list" type="text/html">
-       <h3>Browsing {{path}}</h3>
+       <h1>Browsing {{path}}</h1>
        {{#have_child}}
         <ul>
             {{#child}}
-            <li class="folder" onclick="view_path(doc_ref+'/{{f}}')">
-	      <img src="http://www.stdicon.com/g-flat/{{m}}" width="16px" height="16px"/>
+            <li class="item" onclick="view_path(doc_ref+'/{{f}}')">
+	      <img src="/static/mime/{{m}}.svg" width="16px" height="16px"/>
 	      {{f}}
 	    </li>
             {{/child}}
@@ -197,6 +198,9 @@
         {{/backlink}}
 
   </script>
+
+  <!-- END templates -->
+
   <script type="text/javascript">
       function view_path(path) {
           console.log('getting '+path);
@@ -207,6 +211,7 @@
           }
           $.get('/o/'+path)
               .success(function(d) {
+                  console.log('object: /o/'+path, d);
                   if (d.error) {
                       $.pnotify({
                           title: 'Error displaying "'+d.link+'" content',
@@ -222,9 +227,10 @@
                       } else {
                           bref = false;
                       }
-                      if (d.type === "folder") {
+                      if (d.mime === "folder") {
                           $.get('/c/'+path)
                             .success(function(d) {
+                                console.log('children: /c/'+path);
                                 ich.children_list({
                                     have_child: d.length>0,
                                     backlink: bref,
