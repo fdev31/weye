@@ -3,7 +3,7 @@
 
 @import "Kickstrap/themes/spacelab/variables.less";		
 @import "Kickstrap/themes/spacelab/bootswatch.less";		
-// Replace the path with any .less file in the 'themes' folder.
+
 li.folder {
     background: #ccf;
     .border-radius(4px);
@@ -17,6 +17,36 @@ li.folder {
 }
 .other {
     background: #ffa;
+}
+
+.Button {
+	-moz-box-shadow:inset 0px 1px 7px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 7px 0px #ffffff;
+	box-shadow:inset 0px 1px 7px 0px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c5ccba), color-stop(1, #a8c251) );
+	background:-moz-linear-gradient( center top, #c5ccba 5%, #a8c251 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c5ccba', endColorstr='#a8c251');
+	background-color:#c5ccba;
+	-moz-border-radius:15px;
+	-webkit-border-radius:15px;
+	border-radius:15px;
+	border:1px solid #888;
+	display:inline-block;
+	color:#ad4b00;
+	font-family:arial;
+	font-size:22px;
+	font-weight:bold;
+	padding:10px 24px;
+	text-decoration:none;
+	text-shadow:1px 2px 1px #8a8a8a;
+}.Button:hover {
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #a8c251), color-stop(1, #c5ccba) );
+	background:-moz-linear-gradient( center top, #a8c251 5%, #c5ccba 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#a8c251', endColorstr='#c5ccba');
+	background-color:#a8c251;
+}.Button:active {
+	position:relative;
+	top:1px;
 }
 
 // Tweak your current theme here, or comment-out the predefined theme from settings

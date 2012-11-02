@@ -43,9 +43,9 @@
           <a class="brand" href="#">Web eye</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#">About</a></li>
-              <li><a href="#">Contact</a></li>
+              <li class="active"><a href="/">Home</a></li>
+<!--              <li><a href="#">About</a></li>-->
+<!--              <li><a href="#">Contact</a></li>-->
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -104,13 +104,15 @@
 
 						<aside class="span4 well">
 							<ul class="nav nav-list">
-								<li class="nav-header">More Articles</li>
-								<li class="active"><a href="#">Change your Theme</a></li>
-								<li><a href="#">Run Apps</a></li>
+								<li class="nav-header">Actions</li>
+								<li class="active" title="Should be able to download a folder as zip"><a href="#">Download (tbd)</a></li>
+                                <li><a href="#">Remove (tbd)</a></li>
+                                <li><a href="#">Preferences (tbd)</a></li>
 							</ul>
 						</aside>
 					</section>
 
+                    <!--
 					<div class="pagination">
 					  <ul>
 					    <li class="disabled"><a href="#">Prev</a></li>
@@ -121,6 +123,7 @@
 					    <li><a href="#">Next</a></li>
 					  </ul>
 					</div>
+                    -->
 
     	  </div>
     	</div>
@@ -169,10 +172,13 @@
   </script>
   <!-- TEMPLATES -->
   <script id="view_file" type="text/html">
-      <h3>View or <a href="{{href}}">download</a> file...</h3>
+      <h1>Viewing {{item.type}}</h1>
       <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
+      <h3>{{path}}</h3>
+      <a class="Button" href="/d/{{href}}">Download</a>
   </script>
   <script id="children_list" type="text/html">
+       <h3>Browsing {{path}}</h3>
        {{#have_child}}
         <ul>
             {{#child}}
@@ -210,9 +216,7 @@
                       var o = $('.row-fluid div:first');
                       var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
                       /* TODO: use a factory with mustache's lambdas on ich */
-                      o.html(
-                              $('<h1>Viewing '+d.type+' '+path+'</h1>')
-                      );
+                      o.html('<div class="content"></div>');
                       if (!!bref) {
                           bref = bref[1] || '/';
                       } else {
@@ -228,7 +232,7 @@
                                     }).appendTo(o);
                             });
                       } else {
-                          ich.view_file({href: '/d/'+path, item: d, backlink: bref}).appendTo(o);
+                          ich.view_file({path: path, item: d, backlink: bref}).appendTo(o);
                       }
                   }
               }
