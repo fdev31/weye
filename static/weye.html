@@ -175,8 +175,9 @@
   <script id="view_file" type="text/html">
       <h1>Viewing {{item.mime}}</h1>
       <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
-      <h3>{{path}}</h3>
-      <a class="Button" href="/d/{{href}}">Download</a>
+      
+      <h3><a href="/d/{{href}}"><img src="/static/mime/{{item.mime}}.svg" width="64px" height="64px"/> {{path}}</a></h3>
+	      
   </script>
   <script id="children_list" type="text/html">
        <h1>Browsing {{path}}</h1>
@@ -202,6 +203,7 @@
   <!-- END templates -->
 
   <script type="text/javascript">
+
       function view_path(path) {
           console.log('getting '+path);
           if (path !== '/') {
