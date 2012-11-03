@@ -46,9 +46,16 @@ def get_object_from_path(path):
 
 
 def list_children(path):
+    from operator import itemgetter
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
-    def test(p):
+    def access(p):
         return os.access(os.path.join(fpath, p), os.R_OK)
-    return tuple({'m': mimetypes.types_map.get('.'+f.rsplit('.')[-1], ''), 'f': f} for f in os.listdir(fpath) if f[0] != '.' and not f.endswith(config.special_extension) and test(f))
+    def valid(f):
+        return not f.endswith(config.special_extension) and access(f)
+    def mimetype_or_none(f):
+        if not os.path.isdir("%s/%s"%(fpath,f)):
+            return mimetypes.types_map.get('.'+f.rsplit('.')[-1], '') or ''
+    return sorted(tuple({'m': mimetype_or_none(f), 'f': f} for f in os.listdir(fpath) if valid(f)),
+                 key=itemgetter('m'))
 
