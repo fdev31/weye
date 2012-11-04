@@ -17,9 +17,14 @@ def guess_type(fname):
     if os.path.isdir(fname):
         t = 'folder'
     else:
-        t = (mimetypes.guess_type(fname)[0] or "application/octet-stream").replace('/', '-')
+        t = (mimetypes.guess_type(fname)[0] or "application-octet-stream").replace('/', '-')
+        if t.startswith('video'): # We are poor in video icons, later: thumbnails ?
+            t = 'video'
     log.debug('Type for %r is %r', fname, t)
     return t
+
+def save_object_to_path(path, read_func):
+    open(os.path.join(config.shared_root, path.lstrip(os.path.sep)), 'wb').write( read_func() )
 
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
