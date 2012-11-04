@@ -235,18 +235,22 @@
   <!-- TEMPLATES -->
 
   <script id="view_file" type="text/html">
-      <h1>Viewing {{item.mime}}</h1>
       <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
+      <a title="Share item with RightClick>Copy location" href="{{permalink}}">Permalink</a>
+
+      <h1>Viewing {{item.mime}}</h1>
       
-      <h3><a href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
+      <h3><a title="Click to download" href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
 	      
   </script>
-  <script id="children_list" type="text/html">
-      <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> Browsing {{path}}</h1>
 
+  <script id="view_folder" type="text/html">
         {{#backlink}}
         <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
+        <a title="Share item with RightClick>Copy location" href="{{permalink}}">Permalink</a>
         {{/backlink}}
+
+      <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> Browsing {{path}}</h1>
 
        {{#have_child}}
         <ul>
@@ -261,8 +265,9 @@
         {{^have_child}}
         <div>
         No item.
-    </div>
+        </div>
         {{/have_child}}
+  </script>
 
   </script>
 
@@ -281,16 +286,19 @@
                           text: d.message
                       });
                   } else {
+                      /* update current document reference */
                       if (path !== '/') {
                           doc_ref = path;
                       } else {
                           doc_ref = '';
                       }
-                      var o = $('.row-fluid div:first');
+                      /* compute back ref & permalink */
                       var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
+                      var plink = window.location.origin + '/?view=' + path;
+                      /* "reset" scroll factor (XXX) */
                       window.scrollBy(0, -10000);
                       /* TODO: use a factory with mustache's lambdas on ich */
-                      o.html('<div class="content"></div>');
+                      var o = $('.row-fluid div:first'); /* get main content DOM element */
                       if (!!bref) {
                           bref = bref[1] || '/';
                       } else {
@@ -300,16 +308,32 @@
                           $.get('/c/'+path)
                             .success(function(c) {
                                 console.log('children: /c/'+path);
-                                ich.children_list({
-                                    have_child: c.length>0,
-                                    backlink: bref,
-                                    mime: d.mime,
-                                    path: d.path,
-                                    child: c
-                                    }).appendTo(o);
+                                o.html( 
+                                    ich.view_folder({
+                                        mime: d.mime,
+                                        path: d.path,
+                                        have_child: c.length>0,
+                                        child: c,
+                                        backlink: bref,
+                                        permalink: plink
+                                    })
+                                );
                             });
                       } else {
-                          ich.view_file({path: path, item: d, backlink: bref}).appendTo(o);
+                          o.html( ich.view_file({
+                            item: d,
+                            path: path,
+                            backlink: bref,
+                            permalink: plink
+                            })
+                          );
+                          if (d.mime == 'video') {
+                              $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);
+                          } else if (d.mime.match(RegExp('^image'))) {
+                              $('<img src="/d'+path+'" />').appendTo(o);
+                          } else if (d.mime.match(RegExp('^text'))) {
+                              $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
+                          }
                       }
                   }
               }
