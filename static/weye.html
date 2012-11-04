@@ -269,6 +269,25 @@
         {{/have_child}}
   </script>
 
+  <script id="question" type="text/html">
+      <div class="modal hide fade">
+          <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h3>{{header}}</h3>
+          </div>
+          <div class="modal-body">
+              <p>{{{body}}}</p>
+          </div>
+          <div class="modal-footer">
+              <a href="#" data-dismiss="modal" class="btn">Close</a>
+              {{^buttons}}
+              <a href="#" class="btn btn-primary"> Ok</a>
+              {{/buttons}}
+              {{#buttons}}
+                  <a href="{{href}}" class="btn btn-primary"> {{name}}</a>
+              {{/buttons}}
+          </div>
+      </div>
   </script>
 
   <!-- END templates -->
