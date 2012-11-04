@@ -15,7 +15,7 @@ or
     python run.py
 
 
-## Sprint 0 : architecture
+## Sprint 0 : architecture / prototype
 
 ### Current choices
 
@@ -37,7 +37,7 @@ or
 
     To handles all the HTML5 boilerplate
 
-### Not chosed yet
+### Not chosen yet
 
 - Database
 
@@ -57,9 +57,11 @@ or
 
 ## Sprint 3 : nice mimetype-based factories
 
-## Sprint 4 : lightweight ACL
+## Sprint 4 : Zip download & archive direct browsing
 
-## Sprint 5 : custom handlers for custom extensions
+## Sprint 5 : lightweight ACL
+
+## Sprint 6 : custom handlers for custom extensions
 
 
 # Interesting projects
