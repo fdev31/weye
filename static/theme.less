@@ -3,6 +3,7 @@
 
 @import "Kickstrap/themes/spacelab/variables.less";		
 @import "Kickstrap/themes/spacelab/bootswatch.less";		
+@import "/static/elements.less";
 
 li.item {
     list-style-type: none;
@@ -11,6 +12,7 @@ li.item {
     margin: .3ex;
     padding-left: 1ex;
     cursor: pointer;
+    .transition(background .5s linear);
     &:hover {
         background: white;
         .transition(background .5s linear);
