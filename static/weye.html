@@ -24,214 +24,6 @@
 
 
 
-
-
-
-
-
-
-
-
-   <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">Web eye</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li class="active"><a href="/">Home</a></li>
-<!--              <li><a href="#">About</a></li>-->
-<!--              <li><a href="#">Contact</a></li>-->
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-    
-    	<div id="qunit"></div>
-    
-    <div class="container">
-    	<div class="row">
-    	  <div class="span12">
-    	  
-					<header class="hero-unit">
-						<hgroup>
-							<h1>Weye</h1>
-							<h2>Share, view, enjoy.</h2>
-						</hgroup>
-					</header>
-
-					<section class="row-fluid">
-						<div class="span8">
-							<article>
-								<header>
-									<hgroup>
-										<h1><i class="icon-picture"></i> Change your Theme</h1>
-									</hgroup>
-								</header>
-
-								<p class="lead">Pick a look for your Kickstrap site.</p>
-								<p>Try changing your theme. Go to Kickstrap/themes/ and choose one of the included themes. Now open theme.less and change the paths to point to the less file or files for that theme.</p>
-								<footer>
-									<p class="muted">Posted <a href="#">Today</a> by <a href="">Adam Kochanowicz</a></p>	
-								</footer>
-							</article>
-
-
-							<article>
-								<header>
-									<hgroup>
-										<h1 data-bind="text: welcomeMessage"><i class="icon-bolt"></i> Run Apps</h1>
-									</hgroup>
-								</header>
-
-								<p class="lead">Start up apps in just a few keystrokes.</p>
-								<p>Let's try activating an app. Open your kickstrap.less file and uncomment (remove the //s) the app "knockout". This will allow knockout.js to run. If successful, you should see the title of this section read "Knockout JS is Running!" <a href="http://knockoutjs.com">Read the Knockout.js docs</a> to learn more.</p>
-                        <p>Now let's try installing a completely new app. In your Kickstrap folder, you should see a zip file called "qunit.zip." This is what you would get when downloading an app from our <a href="http://getkickstrap.com/apps">App Store</a>. Now extract that file and place the qunit folder in Kickstrap/apps.</p>
-                        <p>QUnit is now installed, but not activated. To do that, open kickstrap.less and add "qunit" to the comma-separated list of @apps. Save this file and refresh this page. You should see some Javascript tests run at the top of this page.</p>
-								<footer>
-									<p class="muted">Posted <a href="#">Today</a> by <a href="">Adam Kochanowicz</a></p>	
-								</footer>
-							</article>
-
-                     <p class="alert alert-success">Check out <a href="http://getkickstrap.com/docs/1.1/"><i class="icon-book"></i> The docs</a> to work in and extend Kickstrap.</p>
-
-						</div>
-
-						<aside class="span4 well">
-							<ul class="nav nav-list">
-								<li class="nav-header">Actions</li>
-								<li class="active" title="Should be able to download a folder as zip"><a href="#">Download (tbd)</a></li>
-                                <li><a href="#">Remove (tbd)</a></li>
-                                <li><a href="#">Preferences (tbd)</a></li>
-							</ul>
-						</aside>
-						<aside class="span4 well autodim" id="uploadZone">
-                            Upload zone
-						</aside>
-					</section>
-
-                    <!--
-					<div class="pagination">
-					  <ul>
-					    <li class="disabled"><a href="#">Prev</a></li>
-					    <li class="active"><a href="#">1</a></li>
-					    <li><a href="#">2</a></li>
-					    <li><a href="#">3</a></li>
-					    <li><a href="#">4</a></li>
-					    <li><a href="#">Next</a></li>
-					  </ul>
-					</div>
-                    -->
-
-    	  </div>
-    	</div>
-    </div>  	
-
-
-
-
-
-
-
-
-
-
-
-  <!--! KICKSTRAP FOOTER -->
-  <div id="push"></div></div> <!-- sf-wrapper -->
-  <footer class="container" id="footer">
-	  <p>Built with <a href="http://getkickstrap.com">Kickstrap</a></p>
-  </footer>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="/static/Kickstrap/js/jquery-1.7.1.min.js"><\/script>');</script>
-  <!-- Kickstrap CDN thanks to our friends at netDNA.com -->
-  <script id="appList" src="http://netdna.getkickstrap.com/Kickstrap/js/kickstrap.min.js"></script>
-  <script>window.consoleLog || document.write('<script id="appList" src="/static/Kickstrap/js/kickstrap.min.js"><\/script>')</script>
-  <script src="/static/js/jquery.isotope.min.js"></script>
-  <script src="/static/js/ICanHaz.min.js"></script>
-  <script src="/static/js/jquery.filedrop.js"></script>
-  <script>
-   $(function() {
-      // JavaScript placed here will run only once Kickstrap has loaded successfully.
-      /*
-
-
-      $.pnotify({
-         title: 'Hello World',
-         text: 'To edit this message, find me at the bottom of this HTML file.'
-      });
-      */
-      // init the application
-
-      view_path(document.location.href.split(/\?view=/)[1] || '/');
-      $('#uploadZone').filedrop({
-          url: '/upload',
-          paramname: 'userfile',
-          withCredentials: true,
-          data: {
-              path: function() { return doc_ref; }
-          },
-          error: function(err, file) {
-            switch(err) {
-                case 'BrowserNotSupported':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "You don't have an HTML5 compatible browser."
-                      });
-                    break;
-                case 'TooManyFiles':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "You are uploading too many files."
-                      });
-                    // user uploaded more than 'maxfiles'
-                    break;
-                case 'FileTooLarge':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "The file is too large."
-                      });
-                    // program encountered a file whose size is greater than 'maxfilesize'
-                    // FileTooLarge also has access to the file which was too large
-                    // use file.name to reference the filename of the culprit file
-                    break;
-                case 'FileTypeNotAllowed':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "This file type is not allowed."
-                      });
-                    // The file type is not in the specified list 'allowedfiletypes'
-                default:
-                    break;
-            }
-        },
-        queuefiles: 2,
-        dragOver: function() {
-            // user dragging files over #dropzone
-            $('#uploadZone').addClass('dragged');
-        },
-        dragLeave: function() {
-            // user dragging files out of #dropzone
-            $('#uploadZone').removeClass('dragged');
-        },
-        docOver: function() {
-            $('#uploadZone').addClass('hot');
-        },
-        docLeave: function() {
-            $('#uploadZone').removeClass('hot');
-        },
-      });
-      setTimeout( function() {
-          $('header').slideUp('slow');
-      }, 3000);
-   });
-  </script>
-
   <!-- TEMPLATES -->
 
   <script id="view_file" type="text/html">
@@ -292,82 +84,106 @@
 
   <!-- END templates -->
 
-  <script type="text/javascript">
 
-      function view_path(path) {
-          $('.row-fluid').fadeOut('fast');
-          console.log('getting '+path);
-          setTimeout( function() {
-              $.get('/o/'+path)
-                  .success(function(d) {
-                      console.log('object: /o/'+path, d);
-                      if (d.error) {
-                          $.pnotify({
-                              title: 'Error displaying "'+d.link+'" content',
-                              text: d.message
-                          });
-                      } else {
-                          /* update current document reference */
-                          if (path !== '/') {
-                              doc_ref = path;
-                          } else {
-                              doc_ref = '';
-                          }
-                          /* compute back ref & permalink */
-                          var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
-                          var plink = window.location.origin + '/?view=' + path;
-                          /* "reset" scroll factor (XXX) */
-                          window.scrollBy(0, -10000);
-                          /* TODO: use a factory with mustache's lambdas on ich */
-                          var o = $('.row-fluid div:first'); /* get main content DOM element */
-                          if (!!bref) {
-                              bref = bref[1] || '/';
-                          } else {
-                              bref = false;
-                          }
-                          if (d.mime === "folder") {
-                              $.get('/c/'+path)
-                                .success(function(c) {
-                                    console.log('children: /c/'+path);
-                                    o.html( 
-                                        ich.view_folder({
-                                            mime: d.mime,
-                                            path: d.path,
-                                            have_child: c.length>0,
-                                            child: c,
-                                            backlink: bref,
-                                            permalink: plink
-                                        })
-                                    );
-                                });
-                          } else {
-                              o.html( ich.view_file({
-                                item: d,
-                                path: path,
-                                backlink: bref,
-                                permalink: plink
-                                })
-                              );
-                              if (d.mime == 'video') {
-                                  $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);
-                              } else if (d.mime.match(RegExp('^image'))) {
-                                  $('<img src="/d'+path+'" />').appendTo(o);
-                              } else if (d.mime.match(RegExp('^text')) || d.mime == 'application-json' || d.mime == 'application-x-javascript') {
-                                  $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
-                              }
-                          }
 
-                          $('.row-fluid').fadeIn('slow');
-                      }
-                  }
-              )
-              .error(function() {
-                      $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
-              });
-          }, 300);
-      };
-  </script>
 
+
+
+
+
+
+
+   <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Web eye</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="/">Home</a></li>
+<!--              <li><a href="#">About</a></li>-->
+<!--              <li><a href="#">Contact</a></li>-->
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    
+    	<div id="qunit"></div>
+    
+    <div class="container">
+    	<div class="row">
+    	  <div class="span12">
+    	  
+					<header class="hero-unit">
+						<hgroup>
+							<h1>Weye</h1>
+							<h2>Share, view, enjoy.</h2>
+						</hgroup>
+					</header>
+
+					<section class="row-fluid">
+						<div class="span8">
+						</div>
+
+						<aside class="span4 well">
+							<ul class="nav nav-list">
+								<li class="nav-header">Actions</li>
+								<li class="active" title="Should be able to download a folder as zip"><a href="#">Download (tbd)</a></li>
+                                <li><a href="#">Remove (tbd)</a></li>
+                                <li><a href="#">Preferences (tbd)</a></li>
+							</ul>
+						</aside>
+						<aside class="span4 well autodim" id="uploadZone">
+                            Upload zone
+						</aside>
+					</section>
+
+                    <!--
+					<div class="pagination">
+					  <ul>
+					    <li class="disabled"><a href="#">Prev</a></li>
+					    <li class="active"><a href="#">1</a></li>
+					    <li><a href="#">2</a></li>
+					    <li><a href="#">3</a></li>
+					    <li><a href="#">4</a></li>
+					    <li><a href="#">Next</a></li>
+					  </ul>
+					</div>
+                    -->
+
+    	  </div>
+    	</div>
+    </div>  	
+
+
+
+
+
+
+
+
+
+
+
+  <!--! KICKSTRAP FOOTER -->
+  <div id="push"></div></div> <!-- sf-wrapper -->
+  <footer class="container" id="footer">
+	  <p>Built with <a href="http://getkickstrap.com">Kickstrap</a></p>
+  </footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="/static/Kickstrap/js/jquery-1.7.1.min.js"><\/script>');</script>
+  <!-- Kickstrap CDN thanks to our friends at netDNA.com -->
+  <script id="appList" src="http://netdna.getkickstrap.com/Kickstrap/js/kickstrap.min.js"></script>
+  <script>window.consoleLog || document.write('<script id="appList" src="/static/Kickstrap/js/kickstrap.min.js"><\/script>')</script>
+  <script src="/static/js/jquery.isotope.min.js"></script>
+  <script src="/static/js/ICanHaz.min.js"></script>
+  <script src="/static/js/jquery.filedrop.js"></script>
+  <script src="/static/application.js"></script>
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
        mathiasbynens.be/notes/async-analytics-snippet -->
   <!--script>
