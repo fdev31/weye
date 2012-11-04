@@ -110,6 +110,9 @@
                                 <li><a href="#">Preferences (tbd)</a></li>
 							</ul>
 						</aside>
+						<aside class="span4 well autodim" id="uploadZone">
+                            Upload zone
+						</aside>
 					</section>
 
                     <!--
@@ -151,6 +154,7 @@
   <script>window.consoleLog || document.write('<script id="appList" src="/static/Kickstrap/js/kickstrap.min.js"><\/script>')</script>
   <script src="/static/js/jquery.isotope.min.js"></script>
   <script src="/static/js/ICanHaz.min.js"></script>
+  <script src="/static/js/jquery.filedrop.js"></script>
   <script>
    $(function() {
       // JavaScript placed here will run only once Kickstrap has loaded successfully.
@@ -165,6 +169,63 @@
       // init the application
 
       view_path(document.location.href.split(/\?view=/)[1] || '/');
+      $('#uploadZone').filedrop({
+          url: '/upload',
+          paramname: 'userfile',
+          withCredentials: true,
+          data: {
+              path: function() { return doc_ref; }
+          },
+          error: function(err, file) {
+            switch(err) {
+                case 'BrowserNotSupported':
+                      $.pnotify({
+                          title: 'Error uploading "'+file+'" content',
+                          text: "You don't have an HTML5 compatible browser."
+                      });
+                    break;
+                case 'TooManyFiles':
+                      $.pnotify({
+                          title: 'Error uploading "'+file+'" content',
+                          text: "You are uploading too many files."
+                      });
+                    // user uploaded more than 'maxfiles'
+                    break;
+                case 'FileTooLarge':
+                      $.pnotify({
+                          title: 'Error uploading "'+file+'" content',
+                          text: "The file is too large."
+                      });
+                    // program encountered a file whose size is greater than 'maxfilesize'
+                    // FileTooLarge also has access to the file which was too large
+                    // use file.name to reference the filename of the culprit file
+                    break;
+                case 'FileTypeNotAllowed':
+                      $.pnotify({
+                          title: 'Error uploading "'+file+'" content',
+                          text: "This file type is not allowed."
+                      });
+                    // The file type is not in the specified list 'allowedfiletypes'
+                default:
+                    break;
+            }
+        },
+        queuefiles: 2,
+        dragOver: function() {
+            // user dragging files over #dropzone
+            $('#uploadZone').addClass('dragged');
+        },
+        dragLeave: function() {
+            // user dragging files out of #dropzone
+            $('#uploadZone').removeClass('dragged');
+        },
+        docOver: function() {
+            $('#uploadZone').addClass('hot');
+        },
+        docLeave: function() {
+            $('#uploadZone').removeClass('hot');
+        },
+      });
       setTimeout( function() {
           $('header').slideUp('slow');
       }, 3000);
@@ -172,6 +233,7 @@
   </script>
 
   <!-- TEMPLATES -->
+
   <script id="view_file" type="text/html">
       <h1>Viewing {{item.mime}}</h1>
       <button class="btn" onclick="view_path('{{backlink}}')">Back</button>
