@@ -28,3 +28,4 @@ config.debug = int(os.environ.get('DEBUG', 0)) != 0
 config.shared_root = config.shared_root.rstrip(os.path.sep)
 config.static_root = config.static_root.rstrip(os.path.sep)
 config.special_extension = '.weye'
+config.exclude_dot_files = True

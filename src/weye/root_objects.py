@@ -61,22 +61,19 @@ def get_object_from_path(path):
 def list_children(path):
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
-    def test(p):
-        return os.access(os.path.join(fpath, p), os.R_OK)
-    l = list(
-            {'m': guess_type(f), 'f': f}
-
-            for f in os.listdir(fpath)
-
-            if f[0] != '.'
-            and not f.endswith(config.special_extension)
-            and test(f))
+    def is_listable(f):
+        if f[0] == '.' and config.exclude_dot_files:
+            return False
+        if f.endswith(config.special_extension):
+            return False
+        if not os.access(os.path.join(fpath, f), os.R_OK):
+            return False
+        return True
+    l = list({'m': guess_type(os.path.join(fpath, f)), 'f': f}
+            for f in os.listdir(fpath) if is_listable(f))
 
     def s(o):
-        if o['m'] == 'folder':
-            return '!!!folder'
-        else:
-            return o['f']+o['m']
+        return '!!!'+o['f']+o['m'] if o['m'] == 'folder' else o['f']+o['m']
     l.sort(key=s)
     return l
 
