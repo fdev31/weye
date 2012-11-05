@@ -8,5 +8,5 @@ log.info('starting application in debug mode, run using "uwsgi --ini uwsgi_conf.
 weye.configuration.log.setLevel(logging.NOTSET)
 
 application.catchall = False
-bottle.run(application, reloader=False, debug=True)
+bottle.run(application, host='0.0.0.0', reloader=False, debug=True)
 
