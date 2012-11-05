@@ -96,7 +96,7 @@
                           }
                           /* compute back ref & permalink */
                           var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
-                          var plink = window.location.origin + '/?view=' + path;
+                          var plink = window.location + '?view=' + path;
                           /* "reset" scroll factor (XXX) */
                           window.scrollBy(0, -10000);
                           /* TODO: use a factory with mustache's lambdas on ich */
