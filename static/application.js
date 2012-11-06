@@ -74,76 +74,75 @@
       }, 3000);
    });
 
-
-      function view_path(path) {
-          $('.row-fluid').fadeOut('fast');
-          console.log('getting '+path);
-          setTimeout( function() {
-              $.get('/o/'+path)
-                  .success(function(d) {
-                      console.log('object: /o/'+path, d);
-                      if (d.error) {
-                          $.pnotify({
-                              title: 'Error displaying "'+d.link+'" content',
-                              text: d.message
-                          });
-                      } else {
-                          /* update current document reference */
-                          if (path !== '/') {
-                              doc_ref = path;
-                          } else {
-                              doc_ref = '';
-                          }
-                          /* compute back ref & permalink */
-                          var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
-                          var plink = window.location + '?view=' + path;
-                          /* "reset" scroll factor (XXX) */
-                          window.scrollBy(0, -10000);
-                          /* TODO: use a factory with mustache's lambdas on ich */
-                          var o = $('.row-fluid div:first'); /* get main content DOM element */
-                          if (!!bref) {
-                              bref = bref[1] || '/';
-                          } else {
-                              bref = false;
-                          }
-                          if (d.mime === "folder") {
-                              $.get('/c/'+path)
-                                .success(function(c) {
-                                    console.log('children: /c/'+path);
-                                    o.html( 
-                                        ich.view_folder({
-                                            mime: d.mime,
-                                            path: d.path,
-                                            have_child: c.length>0,
-                                            child: c,
-                                            backlink: bref,
-                                            permalink: plink
-                                        })
-                                    );
-                                });
-                          } else {
-                              o.html( ich.view_file({
-                                item: d,
-                                path: path,
-                                backlink: bref,
-                                permalink: plink
+function view_path(path) {
+    $('.row-fluid').fadeOut('fast');
+    console.log('getting '+path);
+    setTimeout( function() {
+        $.get('/o/'+path)
+        .success(function(d) {
+            console.log('object: /o/'+path, d);
+            if (d.error) {
+                $.pnotify({
+                    title: 'Error displaying "'+d.link+'" content',
+                    text: d.message
+                });
+            } else {
+                /* update current document reference */
+                if (path !== '/') {
+                    doc_ref = path;
+                } else {
+                    doc_ref = '';
+                }
+                /* compute back ref & permalink */
+                var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
+                var plink = window.location + '?view=' + path;
+                /* "reset" scroll factor (XXX) */
+                window.scrollBy(0, -10000);
+                /* TODO: use a factory with mustache's lambdas on ich */
+                var o = $('.row-fluid div:first'); /* get main content DOM element */
+                if (!!bref) {
+                    bref = bref[1] || '/';
+                } else {
+                    bref = false;
+                }
+                if (d.mime === "folder") {
+                    $.get('/c/'+path)
+                        .success(function(c) {
+                            console.log('children: /c/'+path);
+                            o.html( 
+                                ich.view_folder({
+                                    mime: d.mime,
+                                    path: d.path,
+                                    have_child: c.length>0,
+                                    child: c,
+                                    backlink: bref,
+                                    permalink: plink
                                 })
-                              );
-                              if (d.mime == 'video') {
-                                  $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);
-                              } else if (d.mime.match(RegExp('^image'))) {
-                                  $('<img src="/d'+path+'" />').appendTo(o);
-                              } else if (d.mime.match(RegExp('^text')) || d.mime == 'application-json' || d.mime == 'application-x-javascript') {
-                                  $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
-                              }
-                          }
+                                );
+                        });
+                } else {
+                    o.html( ich.view_file({
+                        item: d,
+                        path: path,
+                        backlink: bref,
+                        permalink: plink
+                    })
+                          );
+                    if (d.mime == 'video') {
+                        $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);
+                    } else if (d.mime.match(RegExp('^image'))) {
+                        $('<img src="/d'+path+'" />').appendTo(o);
+                    } else if (d.mime.match(RegExp('^text')) || d.mime == 'application-json' || d.mime == 'application-x-javascript') {
+                        $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
+                    }
+                }
 
-                          $('.row-fluid').fadeIn('slow');
-                      }
-                  }
-              )
-              .error(function() {
-                      $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
-              });
-          }, 300);
-      };
+                $('.row-fluid').fadeIn('slow');
+            }
+        }
+    )
+        .error(function() {
+            $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
+        });
+    }, 300);
+};
