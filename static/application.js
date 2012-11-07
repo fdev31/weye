@@ -81,6 +81,10 @@ scroll_values = {
       }, 3000);
    });
 
+function popup_menu(elt) {
+    console.log('INFOS/DOWLOAD/PREFERENCES/DELETE?');
+};
+
 function view_path(path) {
     console.log('view_path', path);
     scroll_values[doc_ref] = window.scrollY;
@@ -132,7 +136,18 @@ function view_path(path) {
                                     backlink: bref,
                                     permalink: plink
                                 })
-                                );
+                            );
+                            o.find('.item').each( function(i, x) { 
+                                $(x).hammer()
+                                    .bind({
+                                        tap: function(e) { 
+                                            var elt = $(e.target);
+                                            view_path(doc_ref+'/'+elt.data('link'));
+                                        },
+                                        hold: function(e) { popup_menu($(e.target)) },
+                                        swipe: function(e) { popup_menu($(e.target)) }
+                                    })
+                            } );
                         });
                 } else {
                     o.html( ich.view_file({
