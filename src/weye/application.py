@@ -27,28 +27,21 @@ def cb(path):
     return bottle.static_file(os.path.join('Kickstrap', path), config.static_root)
 
 # OBJECTS
-@bottle.route('/o/')
-def cb():
-    log.debug('~ Accessing Root')
-    # TODO: session + permission mgmt
-    obj = root_objects.get_object_from_path('')
-    if bottle.request.is_xhr:
-        return obj
-    bottle.redirect('/')
 
+@bottle.route('/o/')
 @bottle.route('/o/<path:path>')
-def cb(path):
+def cb(path='/'):
     log.debug('~ Accessing %r', path)
     # TODO: session + permission mgmt
     obj = root_objects.get_object_from_path(path)
     if bottle.request.is_xhr:
         return obj # dumps object
     bottle.redirect('/?view='+path)
-#    return 'Viewing %r'%path
 
 # CHILDREN
+@bottle.route('/c/')
 @bottle.route('/c/<path:path>')
-def cb(path):
+def cb(path='/'):
     log.debug('~ Listing %r', path)
     # TODO: session + permission mgmt
     bottle.response.set_header('Content-Type', 'application/json')
@@ -68,10 +61,7 @@ def cb(path):
 @bottle.route('/upload', method='POST')
 def cb():
     log.debug('~ Uploading!')
-#    print(dict(bottle.request.params))
-#    print(bottle.request.body)
     f = bottle.request.files['userfile']
-#    print(f.filename, f.file.read)
     root_objects.save_object_to_path( os.path.join(bottle.request.params['path'], f.filename), f.file.read )
 
 
