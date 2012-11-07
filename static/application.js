@@ -8,7 +8,7 @@ var scroll_values = {
     '/': 0
 };
 
-$(function() {
+kickstrap.ready(function() {
     // JavaScript placed here will run only once Kickstrap has loaded successfully.
     /*
   
