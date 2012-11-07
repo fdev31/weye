@@ -1,3 +1,10 @@
+/* globals */
+
+doc_ref = '/';
+
+scroll_values = {
+    '/': 0
+};
 
    $(function() {
       // JavaScript placed here will run only once Kickstrap has loaded successfully.
@@ -75,8 +82,11 @@
    });
 
 function view_path(path) {
+    console.log('view_path', path);
+    scroll_values[doc_ref] = window.scrollY;
+    console.log("saving ", window.scrollY);
     $('.row-fluid').fadeOut('fast');
-    console.log('getting '+path);
+//    console.log('getting '+path);
     setTimeout( function() {
         $.get('/o/'+path)
         .success(function(d) {
@@ -97,7 +107,11 @@ function view_path(path) {
                 var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
                 var plink = window.location + '?view=' + path;
                 /* "reset" scroll factor (XXX) */
-                window.scrollBy(0, -10000);
+                window.scrollBy(0, -window.scrollY);
+                setTimeout( function() {
+                    console.log('scroll by', scroll_values[doc_ref] || 0);
+                    window.scroll(0, scroll_values[doc_ref] || 0);
+                }, 100);
                 /* TODO: use a factory with mustache's lambdas on ich */
                 var o = $('.row-fluid div:first'); /* get main content DOM element */
                 if (!!bref) {
