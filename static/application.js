@@ -6,80 +6,80 @@ scroll_values = {
     '/': 0
 };
 
-   $(function() {
-      // JavaScript placed here will run only once Kickstrap has loaded successfully.
-      /*
-
-
-      $.pnotify({
-         title: 'Hello World',
-         text: 'To edit this message, find me at the bottom of this HTML file.'
-      });
-      */
-      // init the application
-
-      view_path(document.location.href.split(/\?view=/)[1] || '/');
-      $('#uploadZone').filedrop({
-          url: '/upload',
-          paramname: 'userfile',
-          withCredentials: true,
-          data: {
-              path: function() { return doc_ref; }
-          },
-          error: function(err, file) {
-            switch(err) {
-                case 'BrowserNotSupported':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "You don't have an HTML5 compatible browser."
-                      });
-                    break;
-                case 'TooManyFiles':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "You are uploading too many files."
-                      });
-                    // user uploaded more than 'maxfiles'
-                    break;
-                case 'FileTooLarge':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "The file is too large."
-                      });
-                    // program encountered a file whose size is greater than 'maxfilesize'
-                    // FileTooLarge also has access to the file which was too large
-                    // use file.name to reference the filename of the culprit file
-                    break;
-                case 'FileTypeNotAllowed':
-                      $.pnotify({
-                          title: 'Error uploading "'+file+'" content',
-                          text: "This file type is not allowed."
-                      });
-                    // The file type is not in the specified list 'allowedfiletypes'
-                default:
-                    break;
-            }
+$(function() {
+    // JavaScript placed here will run only once Kickstrap has loaded successfully.
+    /*
+  
+  
+    $.pnotify({
+       title: 'Hello World',
+       text: 'To edit this message, find me at the bottom of this HTML file.'
+    });
+    */
+    // init the application
+  
+    view_path(document.location.href.split(/\?view=/)[1] || '/');
+    $('#uploadZone').filedrop({
+        url: '/upload',
+        paramname: 'userfile',
+        withCredentials: true,
+        data: {
+            path: function() { return doc_ref; }
         },
-        queuefiles: 2,
-        dragOver: function() {
-            // user dragging files over #dropzone
-            $('#uploadZone').addClass('dragged');
-        },
-        dragLeave: function() {
-            // user dragging files out of #dropzone
-            $('#uploadZone').removeClass('dragged');
-        },
-        docOver: function() {
-            $('#uploadZone').addClass('hot');
-        },
-        docLeave: function() {
-            $('#uploadZone').removeClass('hot');
-        },
-      });
-      setTimeout( function() {
-          $('header').slideUp('slow');
-      }, 3000);
-   });
+        error: function(err, file) {
+          switch(err) {
+              case 'BrowserNotSupported':
+                    $.pnotify({
+                        title: 'Error uploading "'+file+'" content',
+                        text: "You don't have an HTML5 compatible browser."
+                    });
+                  break;
+              case 'TooManyFiles':
+                    $.pnotify({
+                        title: 'Error uploading "'+file+'" content',
+                        text: "You are uploading too many files."
+                    });
+                  // user uploaded more than 'maxfiles'
+                  break;
+              case 'FileTooLarge':
+                    $.pnotify({
+                        title: 'Error uploading "'+file+'" content',
+                        text: "The file is too large."
+                    });
+                  // program encountered a file whose size is greater than 'maxfilesize'
+                  // FileTooLarge also has access to the file which was too large
+                  // use file.name to reference the filename of the culprit file
+                  break;
+              case 'FileTypeNotAllowed':
+                    $.pnotify({
+                        title: 'Error uploading "'+file+'" content',
+                        text: "This file type is not allowed."
+                    });
+                  // The file type is not in the specified list 'allowedfiletypes'
+              default:
+                  break;
+          }
+      },
+      queuefiles: 2,
+      dragOver: function() {
+          // user dragging files over #dropzone
+          $('#uploadZone').addClass('dragged');
+      },
+      dragLeave: function() {
+          // user dragging files out of #dropzone
+          $('#uploadZone').removeClass('dragged');
+      },
+      docOver: function() {
+          $('#uploadZone').addClass('hot');
+      },
+      docLeave: function() {
+          $('#uploadZone').removeClass('hot');
+      },
+    });
+    setTimeout( function() {
+        $('header').slideUp('slow');
+    }, 3000);
+});
 
 function popup_menu(elt) {
     console.log('INFOS/DOWLOAD/PREFERENCES/DELETE?');
