@@ -27,7 +27,7 @@
   <!-- TEMPLATES -->
 
   <script id="view_file" type="text/html">
-      <button id="backlink" class="btn" onclick="view_path('{{backlink}}')"><i class="icon-arrow-left" /> Back</button>
+      <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
       <a title="Share item with RightClick>Copy location" href="{{permalink}}" class="icon-bookmark" > Permalink</a>
 
       <h1>Viewing {{item.mime}}</h1>
@@ -38,7 +38,7 @@
 
   <script id="view_folder" type="text/html">
         {{#backlink}}
-        <button id="backlink" class="btn" onclick="view_path('{{backlink}}')"><i class="icon-arrow-left"/> Back</button>
+        <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
         <a title="Share item with RightClick>Copy location" href="{{permalink}}" class="icon-bookmark" > Permalink</a>
         {{/backlink}}
         <header>

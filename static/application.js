@@ -163,6 +163,14 @@ function popup_menu(elt) {
     }).modal();
 };
 
+function go_back() {
+    var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
+    if (!!bref) {
+        bref = bref[1] || '/';
+        view_path(bref);
+    }
+}
+
   
 // TODO:
 // handle "template_prefix" global variable using "bacon.isMobile()"
@@ -193,7 +201,6 @@ function view_path(path) {
                     doc_ref = '/';
                 }
                 /* compute back ref & permalink */
-                var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
                 var plink = window.location + '?view=' + path;
                 /* "reset" scroll factor (XXX) */
                 window.scrollBy(0, -window.scrollY);
@@ -203,11 +210,7 @@ function view_path(path) {
                 }, 100);
                 /* TODO: use a factory with mustache's lambdas on ich */
                 var o = $('.row-fluid div:first'); /* get main content DOM element */
-                if (!!bref) {
-                    bref = bref[1] || '/';
-                } else {
-                    bref = false;
-                }
+                var bref = doc_ref != '/';
                 if (d.mime === "folder") {
                     $('li.folder-item').show();
                     $.get('/c'+path)
