@@ -91,9 +91,9 @@ function popup_menu(elt) {
 // to add a "mobile_" prefix to view_page's templates & co
 
 function view_path(path) {
-    console.log('view_path', path);
+//    console.log('view_path', path);
     scroll_values[doc_ref] = window.scrollY;
-    console.log("saving ", window.scrollY);
+//    console.log("saving ", window.scrollY);
     $('.row-fluid').fadeOut('fast');
 //    console.log('getting '+path);
     setTimeout( function() {
@@ -118,7 +118,7 @@ function view_path(path) {
                 /* "reset" scroll factor (XXX) */
                 window.scrollBy(0, -window.scrollY);
                 setTimeout( function() {
-                    console.log('scroll by', scroll_values[doc_ref] || 0);
+//                    console.log('scroll by', scroll_values[doc_ref] || 0);
                     window.scroll(0, scroll_values[doc_ref] || 0);
                 }, 100);
                 /* TODO: use a factory with mustache's lambdas on ich */
