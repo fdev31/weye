@@ -93,7 +93,9 @@ kickstrap.ready(function() {
         if (selected_item + 1 < items.length) {
             $(items[selected_item]).removeClass('highlighted');
             selected_item += 1;
-            $(items[selected_item]).addClass('highlighted');
+            var n = $(items[selected_item]);
+            n.addClass('highlighted');
+            refocus(n);
             return false;
         }
     });
@@ -102,13 +104,19 @@ kickstrap.ready(function() {
         if (selected_item > 0) {
             $(items[selected_item]).removeClass('highlighted');
             selected_item -= 1;
-            $(items[selected_item]).addClass('highlighted');
+            var n = $(items[selected_item]);
+            n.addClass('highlighted');
+            refocus(n);
             return false;
         }
     });
     Mousetrap.bind('enter', function(e) {
-        var items=$('ul.items > li.item');
-        $(items[selected_item]).trigger('tap');
+        if ($('#download_link').length) {
+            popup_menu();
+        } else {
+            var items=$('ul.items > li.item');
+            $(items[selected_item]).trigger('tap');
+        }
         return false;
     });
     Mousetrap.bind('backspace', function(e) {
@@ -116,10 +124,43 @@ kickstrap.ready(function() {
         $('#backlink').click();
         return false;
     });
+    Mousetrap.bind('ins', function(e) {
+        $.pnotify({text: 'Could show an upload popup... ?'});
+        return false;
+    });
+    Mousetrap.bind('del', function(e) {
+        $.pnotify({text: 'Could show a delete popup... ?'});
+        return false;
+    });
+    Mousetrap.bind('esc', function(e) {
+        var items=$('ul.items > li.item');
+        $(items[selected_item]).removeClass('highlighted');
+        selected_item = -1;
+        return false;
+    });
+    $.pnotify({
+        title: "Keyboard shortcuts!",
+        text: "Use TAB, UP/DOWN & ENTER to navigate...<br/>Close popups using ESCAPE.",
+    });
 });
 
+function refocus(elt) {
+    var elem_top = elt.offset()['top'];
+    var viewport_height = $(window).height();
+
+    // Scroll to the middle of the viewport
+    var my_scroll = elem_top - (viewport_height / 2);
+    $(window).scrollTop(my_scroll);
+};
+
+
 function popup_menu(elt) {
-    console.log('INFOS/DOWLOAD/PREFERENCES/DELETE?');
+    if($('#question_popup').length != 0) return;
+    var actions = ['infos', 'download', 'preferences', 'delete'];
+    ich.question({
+        header: "Hey!",
+        body: ("Here you'll be able to see: <ul><li>" + actions.join('</li><li>') + '</li></ul>')
+    }).modal();
 };
 
   
@@ -143,6 +184,7 @@ function view_path(path) {
                     text: d.message
                 });
             } else {
+                // normal continuation
                 selected_item = -1;
                 /* update current document reference */
                 if (path !== '/') {
@@ -167,6 +209,7 @@ function view_path(path) {
                     bref = false;
                 }
                 if (d.mime === "folder") {
+                    $('li.folder-item').show();
                     $.get('/c'+path)
                         .success(function(c) {
 //                            console.log('children: /c/'+path);
@@ -193,6 +236,7 @@ function view_path(path) {
                             } );
                         });
                 } else {
+                    $('li.folder-item').hide();
                     o.html( ich.view_file({
                         item: d,
                         path: path,

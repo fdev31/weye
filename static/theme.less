@@ -2,71 +2,58 @@
 // BEGIN THEME
 // -----------
 
-@import "Kickstrap/themes/spacelab/variables.less";		
-@import "Kickstrap/themes/spacelab/bootswatch.less";		
+@import "Kickstrap/themes/cyborg/variables.less";		
+@import "Kickstrap/themes/cyborg/bootswatch.less";		
 @import "/static/elements.less";
 
-li.highlighted {
+body {
+    background-attachment:fixed;
+}
+
+li.item.highlighted {
     background: #F8B744 !important;
-    .transition(background .1s linear);
+    color: black;
+    .transition(background .1s linear) !important;
+    .transition(color .1s linear) !important;
+    &:hover {
+        background: #FFE7A4 !important;
+        .transition(background .5s linear) !important;
+    }
 }
 
 li.item {
     list-style-type: none;
-    background: #ccf;
-    .border-radius(4px);
+//    background: #ccf;
+    .border-radius(3px, 3px, 3px, 3px);
     margin: .3ex;
     padding-left: 1ex;
     cursor: pointer;
     .transition(background .5s linear);
     &:hover {
         background: white !important;
-        .transition(background .5s linear);
+        color: black;
+        .transition(background .5s linear) !important;
+        .transition(black .5s linear) !important;
+    }
+}
+
+aside.well > .nav-list > li {
+    &:hover {
     }
 }
 .other {
     background: #ffa;
 }
 
-.Button {
-	-moz-box-shadow:inset 0px 1px 7px 0px #ffffff;
-	-webkit-box-shadow:inset 0px 1px 7px 0px #ffffff;
-	box-shadow:inset 0px 1px 7px 0px #ffffff;
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #c5ccba), color-stop(1, #a8c251) );
-	background:-moz-linear-gradient( center top, #c5ccba 5%, #a8c251 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#c5ccba', endColorstr='#a8c251');
-	background-color:#c5ccba;
-	-moz-border-radius:15px;
-	-webkit-border-radius:15px;
-	border-radius:15px;
-	border:1px solid #888;
-	display:inline-block;
-	color:#ad4b00;
-	font-family:arial;
-	font-size:22px;
-	font-weight:bold;
-	padding:10px 24px;
-	text-decoration:none;
-	text-shadow:1px 2px 1px #8a8a8a;
-}
-.Button:hover {
-	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #a8c251), color-stop(1, #c5ccba) );
-	background:-moz-linear-gradient( center top, #a8c251 5%, #c5ccba 100% );
-	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#a8c251', endColorstr='#c5ccba');
-	background-color:#a8c251;
-}.Button:active {
-	position:relative;
-	top:1px;
-}
 .autodim {
-    color: #ccc;
+    color: #666;
     cursor: pointer;
     text-align: center;
     .transition-duration(1s);
     font-weight: bold;
     font-size: 130%;
     &:hover {
-        color: #000;
+        color: white;
     }
 }
 .dragged {
