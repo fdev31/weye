@@ -1,8 +1,10 @@
-/* globals */
+"use strict";
 
-doc_ref = '/';
+var doc_ref = '/';
 
-scroll_values = {
+var selected_item = -1;
+
+var scroll_values = {
     '/': 0
 };
 
@@ -79,6 +81,44 @@ $(function() {
     setTimeout( function() {
         $('header').slideUp('slow');
     }, 3000);
+    // start navigation
+    Mousetrap.bind('tab', function(e) {
+        if(selected_item === -1) {
+            selected_item = 0;
+            console.log($('ul.items > li:first'));
+            $('ul.items > li.item:first').addClass('highlighted');
+            return false;
+        }
+    });
+    // navigation commands
+    Mousetrap.bind('down', function(e) {
+        var items=$('ul.items > li.item');
+        if (selected_item + 1 < items.length) {
+            $(items[selected_item]).removeClass('highlighted');
+            selected_item += 1;
+            $(items[selected_item]).addClass('highlighted');
+            return false;
+        }
+    });
+    Mousetrap.bind('up', function(e) {
+        var items=$('ul.items > li.item');
+        if (selected_item > 0) {
+            $(items[selected_item]).removeClass('highlighted');
+            selected_item -= 1;
+            $(items[selected_item]).addClass('highlighted');
+            return false;
+        }
+    });
+    Mousetrap.bind('enter', function(e) {
+        var items=$('ul.items > li.item');
+        $(items[selected_item]).trigger('tap');
+        return false;
+    });
+    Mousetrap.bind('backspace', function(e) {
+        var items=$('ul.items > li.item');
+        $('#backlink').click();
+        return false;
+    });
 });
 
 function popup_menu(elt) {
@@ -106,6 +146,7 @@ function view_path(path) {
                     text: d.message
                 });
             } else {
+                selected_item = -1;
                 /* update current document reference */
                 if (path !== '/') {
                     doc_ref = path;
