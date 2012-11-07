@@ -85,6 +85,11 @@ function popup_menu(elt) {
     console.log('INFOS/DOWLOAD/PREFERENCES/DELETE?');
 };
 
+  
+// TODO:
+// handle "template_prefix" global variable using "bacon.isMobile()"
+// to add a "mobile_" prefix to view_page's templates & co
+
 function view_path(path) {
     console.log('view_path', path);
     scroll_values[doc_ref] = window.scrollY;
