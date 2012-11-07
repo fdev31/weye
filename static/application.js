@@ -78,9 +78,6 @@ kickstrap.ready(function() {
           $('#uploadZone').removeClass('hot');
       },
     });
-    setTimeout( function() {
-        $('header').slideUp('slow');
-    }, 3000);
     // start navigation
     Mousetrap.bind('tab', function(e) {
         if(selected_item === -1) {

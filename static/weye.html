@@ -41,8 +41,13 @@
         <button id="backlink" class="btn" onclick="view_path('{{backlink}}')"><i class="icon-arrow-left"/> Back</button>
         <a title="Share item with RightClick>Copy location" href="{{permalink}}" class="icon-bookmark" > Permalink</a>
         {{/backlink}}
+        <header>
+            <hgroup>
+            <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> Browsing {{path}}</h1>
+            </hgroup>
+        </header>
 
-      <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> Browsing {{path}}</h1>
+
 
        {{#have_child}}
         <ul class="items">
@@ -112,13 +117,6 @@
     	<div class="row">
     	  <div class="span12">
     	  
-					<header class="hero-unit">
-						<hgroup>
-							<h1>Weye</h1>
-							<h2>Share, view, enjoy.</h2>
-						</hgroup>
-					</header>
-
 					<section class="row-fluid">
 						<div class="span8">
 						</div>
