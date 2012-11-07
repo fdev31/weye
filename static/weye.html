@@ -47,10 +47,10 @@
        {{#have_child}}
         <ul>
             {{#child}}
-            <li class="item" onclick="view_path(doc_ref+'/{{f}}')">
-	      <img src="/static/mime/{{m}}.svg" class="small_icon"/>
-	      {{f}}
-	    </li>
+            <li class="item" data-link="{{f}}">
+              <img src="/static/mime/{{m}}.svg" class="small_icon"/>
+              {{f}}
+            </li>
             {{/child}}
         </ul>
         {{/have_child}}

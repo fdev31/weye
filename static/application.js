@@ -88,9 +88,9 @@ function view_path(path) {
     $('.row-fluid').fadeOut('fast');
 //    console.log('getting '+path);
     setTimeout( function() {
-        $.get('/o/'+path)
+        $.get('/o'+path)
         .success(function(d) {
-            console.log('object: /o/'+path, d);
+//            console.log('object: /o/'+path, d);
             if (d.error) {
                 $.pnotify({
                     title: 'Error displaying "'+d.link+'" content',
@@ -101,7 +101,7 @@ function view_path(path) {
                 if (path !== '/') {
                     doc_ref = path;
                 } else {
-                    doc_ref = '';
+                    doc_ref = '/';
                 }
                 /* compute back ref & permalink */
                 var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
@@ -120,9 +120,9 @@ function view_path(path) {
                     bref = false;
                 }
                 if (d.mime === "folder") {
-                    $.get('/c/'+path)
+                    $.get('/c'+path)
                         .success(function(c) {
-                            console.log('children: /c/'+path);
+//                            console.log('children: /c/'+path);
                             o.html( 
                                 ich.view_folder({
                                     mime: d.mime,
@@ -150,7 +150,6 @@ function view_path(path) {
                         $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
                     }
                 }
-
                 $('.row-fluid').fadeIn('slow');
             }
         }
