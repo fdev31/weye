@@ -21,7 +21,6 @@ kickstrap.ready(function() {
     // init the application
   
     view_path(document.location.href.split(/\?view=/)[1] || '/');
-    console.log('filedrop');
     $('#uploadZone').filedrop({
         url: '/upload',
         paramname: 'userfile',
@@ -208,6 +207,7 @@ function go_back() {
 
 function view_path(path) {
 //    console.log('view_path', path);
+    $('audio').each( function() {this.pause(); this.src = "";} );
     scroll_values[doc_ref] = window.scrollY;
 //    console.log("saving ", window.scrollY);
     $('.row-fluid').fadeOut('fast');
@@ -275,12 +275,15 @@ function view_path(path) {
                         path: path,
                         backlink: bref,
                         permalink: plink
-                    })
-                          );
+                        })
+                   );
+                    // MIME Handling
                     if (d.mime == 'video') {
                         $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);
                     } else if (d.mime.match(RegExp('^image'))) {
                         $('<img src="/d'+path+'" />').appendTo(o);
+                    } else if (d.mime.match(RegExp('^audio'))) {
+                        $('<audio src="/d'+path+'" controls><span>Audio preview not supported on your browser</span></audio>').appendTo(o);
                     } else if (d.mime.match(RegExp('^text')) || d.mime == 'application-json' || d.mime == 'application-x-javascript') {
                         $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
                     }
