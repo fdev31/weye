@@ -61,8 +61,9 @@ def cb(path):
 @bottle.route('/upload', method='POST')
 def cb():
     log.debug('~ Uploading!')
-    f = bottle.request.files['userfile']
-    root_objects.save_object_to_path( os.path.join(bottle.request.params['path'], f.filename), f.file.read )
+    bottle.response.set_header('Content-Type', 'application/json')
+    read_fn = bottle.request.body.read
+    return root_objects.save_object_to_path( os.path.join(config.shared_root, bottle.request.params['qqfile'].lstrip('/')), read_fn)
 
 
 application = bottle.app()

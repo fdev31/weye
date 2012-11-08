@@ -24,7 +24,17 @@ def guess_type(fname):
     return t
 
 def save_object_to_path(path, read_func):
-    open(os.path.join(config.shared_root, path.lstrip(os.path.sep)), 'wb').write( read_func() )
+    cs = 2**20
+    out = open(path, 'wb').write
+#    open(os.path.join(config.shared_root, path.lstrip(os.path.sep)), 'wb').write( read_func() )
+    while True:
+        d = read_func(cs)
+        if not d:
+            yield '{"success": true}'
+            break
+        out( d )
+        yield
+
 
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')

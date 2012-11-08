@@ -9,104 +9,20 @@ var scroll_values = {
 };
 
 kickstrap.ready(function() {
+
     // JavaScript placed here will run only once Kickstrap has loaded successfully.
-    /*
-  
-  
-    $.pnotify({
-       title: 'Hello World',
-       text: 'To edit this message, find me at the bottom of this HTML file.'
-    });
-    */
     // init the application
   
     view_path(document.location.href.split(/\?view=/)[1] || '/');
-    $('#uploadZone').filedrop({
-        url: '/upload',
-        paramname: 'userfile',
-        withCredentials: true,
-        data: {
-            path: function() { console.log('get_path', doc_ref);return doc_ref; }
-        },
-        error: function(err, file) {
-          switch(err) {
-              case 'BrowserNotSupported':
-                    $.pnotify({
-                        title: 'Error uploading "'+file+'" content',
-                        text: "You don't have an HTML5 compatible browser."
-                    });
-                  break;
-              case 'TooManyFiles':
-                    $.pnotify({
-                        title: 'Error uploading "'+file+'" content',
-                        text: "You are uploading too many files."
-                    });
-                  // user uploaded more than 'maxfiles'
-                  break;
-              case 'FileTooLarge':
-                    $.pnotify({
-                        title: 'Error uploading "'+file+'" content',
-                        text: "The file is too large."
-                    });
-                  // program encountered a file whose size is greater than 'maxfilesize'
-                  // FileTooLarge also has access to the file which was too large
-                  // use file.name to reference the filename of the culprit file
-                  break;
-              case 'FileTypeNotAllowed':
-                    $.pnotify({
-                        title: 'Error uploading "'+file+'" content',
-                        text: "This file type is not allowed."
-                    });
-                  // The file type is not in the specified list 'allowedfiletypes'
-              default:
-                  break;
-          }
-      },
-      queuefiles: 2,
-      dragOver: function() {
-          // user dragging files over #dropzone
-          $('#uploadZone').addClass('dragged');
-      },
-      dragLeave: function() {
-          // user dragging files out of #dropzone
-          $('#uploadZone').removeClass('dragged');
-      },
-      docOver: function() {
-          $('#uploadZone').addClass('hot');
-      },
-      docLeave: function() {
-          $('#uploadZone').removeClass('hot');
-      },
-      uploadStarted: function(i, file, len){
-          var o = $('#uploadZone');
-          if (len===1) {
-              $('<div class="live-infos">One item downloading</div>').appendTo(o);
-          } else {
-              $('<div class="live-infos">'+len+' items downloading</div>').appendTo(o);
-          }
-          $('<div class="live-subinfos"></div>').appendTo(o);
-           // a file began uploading
-           // i = index => 0, 1, 2, 3, 4 etc
-           // file is the actual file of the index
-           // len = total files user dropped
-       },
-       uploadFinished: function(i, file, response, time) {
-          var o = $('#uploadZone div.live-infos').detach();
-          var o = $('#uploadZone div.live-subinfos').detach();
-           // response is the data you got back from server in JSON format.
-       },
-       globalProgressUpdated: function(progress) {
-           // progress for all the files uploaded on the current instance (percentage)
-           var o = $('#uploadZone div.live-subinfos');
-           // ex: $('#progress div').width(progress+"%");
-           o.data('progress', progress);
-       },
-       speedUpdated: function(i, file, speed) {
-           // speed in kb/s
-           var o = $('#uploadZone div.live-subinfos');
-           o.html(o.data('progress')+'% @ '+speed+' kb/s.')
-       },
-    });
+
+    setTimeout(function() {
+        var uploader = new qq.FineUploader({
+            debug: true,
+            element: $('#uploadZone').get(0),
+            request: {endpoint: '/upload'}
+        });
+    }, 500); // this can be delayed
+
     // start navigation
     Mousetrap.bind('tab', function(e) {
         if(selected_item === -1) {
@@ -167,10 +83,12 @@ kickstrap.ready(function() {
         selected_item = -1;
         return false;
     });
-    $.pnotify({
-        title: "Keyboard shortcuts!",
-        text: "Use TAB, UP/DOWN & ENTER to navigate...<br/>Close popups using ESCAPE.",
-    });
+    setTimeout(function() {
+        $.pnotify({
+            title: "Keyboard shortcuts!",
+            text: "Use TAB, UP/DOWN & ENTER to navigate...<br/>Close popups using ESCAPE.",
+        });
+    }, 1000);
 });
 
 function refocus(elt) {
