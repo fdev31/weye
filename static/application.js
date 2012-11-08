@@ -21,12 +21,13 @@ kickstrap.ready(function() {
     // init the application
   
     view_path(document.location.href.split(/\?view=/)[1] || '/');
+    console.log('filedrop');
     $('#uploadZone').filedrop({
         url: '/upload',
         paramname: 'userfile',
         withCredentials: true,
         data: {
-            path: function() { return doc_ref; }
+            path: function() { console.log('get_path', doc_ref);return doc_ref; }
         },
         error: function(err, file) {
           switch(err) {
@@ -77,6 +78,35 @@ kickstrap.ready(function() {
       docLeave: function() {
           $('#uploadZone').removeClass('hot');
       },
+      uploadStarted: function(i, file, len){
+          var o = $('#uploadZone');
+          if (len===1) {
+              $('<div class="live-infos">One item downloading</div>').appendTo(o);
+          } else {
+              $('<div class="live-infos">'+len+' items downloading</div>').appendTo(o);
+          }
+          $('<div class="live-subinfos"></div>').appendTo(o);
+           // a file began uploading
+           // i = index => 0, 1, 2, 3, 4 etc
+           // file is the actual file of the index
+           // len = total files user dropped
+       },
+       uploadFinished: function(i, file, response, time) {
+          var o = $('#uploadZone div.live-infos').detach();
+          var o = $('#uploadZone div.live-subinfos').detach();
+           // response is the data you got back from server in JSON format.
+       },
+       globalProgressUpdated: function(progress) {
+           // progress for all the files uploaded on the current instance (percentage)
+           var o = $('#uploadZone div.live-subinfos');
+           // ex: $('#progress div').width(progress+"%");
+           o.data('progress', progress);
+       },
+       speedUpdated: function(i, file, speed) {
+           // speed in kb/s
+           var o = $('#uploadZone div.live-subinfos');
+           o.html(o.data('progress')+'% @ '+speed+' kb/s.')
+       },
     });
     // start navigation
     Mousetrap.bind('tab', function(e) {
