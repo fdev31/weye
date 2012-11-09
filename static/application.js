@@ -160,7 +160,8 @@ function view_path(path) {
                 var o = $('.row-fluid div:first'); /* get main content DOM element */
                 var bref = doc_ref != '/';
                 if (d.mime === "folder") {
-                    $('li.folder-item').show();
+                    $('.folder-item').show();
+                    $('.pure-item').hide();
                     $.get('/c'+path)
                         .success(function(c) {
 //                            console.log('children: /c/'+path);
@@ -187,7 +188,8 @@ function view_path(path) {
                             } );
                         });
                 } else {
-                    $('li.folder-item').hide();
+                    $('.folder-item').hide();
+                    $('.pure-item').show();
                     o.html( ich.view_file({
                         item: d,
                         path: path,
