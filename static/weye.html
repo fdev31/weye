@@ -132,12 +132,14 @@
                                 <li class="admin-item"><a href="#">Preferences (tbd)</a></li>
 							</ul>
 						</aside>
-                        <aside class="span4 well autodim folder-item">
+                        <aside  onclick="$('#up_panel').removeClass('hidden')"  class="span4 well autodim folder-item">
                             <div id="glou">
-                                <label for="file">Upload something!</label>
-                                <input type="file" name="file" id="file" />
-                                <button id="upload">Upload</button>
-                                <p><span id="progress" class="progress">0%</span></p>
+                                <label  for="file">Upload something!</label>
+                                <div id="up_panel" class="hidden" >
+                                    <input type="file" name="file" id="file" />
+                                    <button id="upload">Upload</button>
+                                    <p><span id="progress" class="progress">0%</span></p>
+                                </div>
                             </div>
 						</aside>
 					</section>
