@@ -51,6 +51,8 @@ or
     
     The page layout isn't decided yet, same for the possible actions
 
+- Code highlight in previews ? [rainbow](https://github.com/ccampbell/rainbow/)
+
 ## Sprint 1 : browseable files
 
 ## Sprint 2 : upload
