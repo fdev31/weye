@@ -1,36 +1,27 @@
 import os
 from bottle import json_dumps as dumps
 from bottle import json_loads as loads
+from .utils import guess_type
 from .configuration import config
-import mimetypes
 import logging
 
 log = logging.getLogger('root_objects')
+
 try: # backward compat for python2.x
     FileNotFoundError
 except NameError:
     FileNotFoundError = None
     PermissionError = None
 
-
-def guess_type(fname):
-    if os.path.isdir(fname):
-        t = 'folder'
-    else:
-        t = (mimetypes.guess_type(fname)[0] or "application-octet-stream").replace('/', '-')
-        if t.startswith('video'): # We are poor in video icons, later: thumbnails ?
-            t = 'video'
-    log.debug('Type for %r is %r', fname, t)
-    return t
-
 def save_object_to_path(path, read_func):
     cs = 2**20
-    out = open(path, 'wb').write
-#    open(os.path.join(config.shared_root, path.lstrip(os.path.sep)), 'wb').write( read_func() )
+    o = open(path, 'wb')
+    out = o.write
     while True:
         d = read_func(cs)
         if not d:
-            yield '{"success": true}'
+            o.close()
+            yield '{"success":true}'
             break
         out( d )
         yield
