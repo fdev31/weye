@@ -14,17 +14,20 @@ except NameError:
     PermissionError = None
 
 def save_object_to_path(path, read_func):
-    cs = 2**20
-    o = open(path, 'wb')
-    out = o.write
-    while True:
-        d = read_func(cs)
-        if not d:
-            o.close()
-            yield '{"success":true}'
-            break
-        out( d )
-        yield
+    if os.path.exists(path):
+        yield 'File exists!'
+    else:
+        cs = 2**20
+        o = open(path, 'wb')
+        out = o.write
+        while True:
+            d = read_func(cs)
+            if not d:
+                o.close()
+                yield True
+                break
+            out( d )
+            yield
 
 
 def get_object_from_path(path):

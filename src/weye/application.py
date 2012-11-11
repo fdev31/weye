@@ -63,8 +63,23 @@ def cb(path):
 def cb():
     log.debug('~ Uploading!')
     bottle.response.set_header('Content-Type', 'application/json')
-    read_fn = bottle.request.body.read
-    return root_objects.save_object_to_path( os.path.join(config.shared_root, bottle.request.params['qqfile'].lstrip('/')), read_fn)
+    prefix = os.path.join(config.shared_root, bottle.request.POST['prefix'].lstrip('/'))
+    if prefix[-1] != '/':
+        prefix += '/'
+    items = []
+    errors = []
+    for f in bottle.request.files.values():
+        fname = prefix+f.filename
+        ok = False
+        for x in root_objects.save_object_to_path(fname, f.file.read):
+            if x and x is not True:
+                errors.append(x)
+            else:
+                ok = True
+            yield
+        if ok:
+            items.append({'f':f.filename, 'm':guess_type(fname)})
+    yield bottle.json_dumps( {'error':errors or False, 'child': items} )
 
 
 application = bottle.app()

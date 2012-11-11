@@ -15,13 +15,33 @@ kickstrap.ready(function() {
   
     view_path(document.location.href.split(/\?view=/)[1] || '/');
 
-    setTimeout(function() {
-        var uploader = new qq.FineUploader({
-            debug: true,
-            element: $('#uploadZone').get(0),
-            request: {endpoint: '/upload'}
-        });
-    }, 500); // this can be delayed
+    var $b = $('#upload'),
+    $f = $('#file'),
+    $p = $('#progress'),
+    up = new uploader($f.get(0), {
+        url:'/upload',
+        extra_data_func: function(data) { console.log('#########', data); return {'prefix': doc_ref} },
+        progress:function(ev){ console.log('progress'); $p.html(((ev.loaded/ev.total)*100)+'%'); $p.css('width',$p.html()); },
+        error:function(ev){ console.log('error', ev); },
+        success:function(data){
+            console.log('success', data);
+            $p.html('100%');
+            $p.css('width',$p.html());
+            var data = JSON.parse(data);
+            if (data.error) {
+                $.pnotify({title: 'Unable to upload some files', text: data.error});
+            }
+            var items = $('.items');
+            for (var i=0; i<data.child.length;i++) {
+                ich.view_item(data.child[i]).appendTo(items);
+            }
+        }
+    });
+
+    $b.click(function(){
+        up.send();
+    });
+
 
     // start navigation
     Mousetrap.bind('tab', function(e) {
