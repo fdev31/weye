@@ -36,6 +36,13 @@
 	      
   </script>
 
+  <script id="view_item" class="partial" type="text/html">
+    <li class="item" data-link="{{f}}">
+      <img src="/static/mime/{{m}}.svg" class="small_icon"/>
+      {{f}}
+    </li>
+  </script>
+
   <script id="view_folder" type="text/html">
         {{#backlink}}
         <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
@@ -52,10 +59,7 @@
        {{#have_child}}
         <ul class="items">
             {{#child}}
-            <li class="item" data-link="{{f}}">
-              <img src="/static/mime/{{m}}.svg" class="small_icon"/>
-              {{f}}
-            </li>
+            {{>view_item}}
             {{/child}}
         </ul>
         {{/have_child}}

@@ -4,6 +4,7 @@ import logging
 from bottle import json_dumps as dumps
 from bottle import json_loads as loads
 
+from .utils import guess_type
 from .configuration import config
 from . import root_objects
 log = logging.getLogger('application')
@@ -67,3 +68,4 @@ def cb():
 
 
 application = bottle.app()
+
