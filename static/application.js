@@ -2,21 +2,17 @@
 
 var doc_ref = '/';
 
-var selected_item = -1;
-
-var nav_hist = {
-    '/': {selected: 0},
-}
-
 var Ui = function() {
-    selected_item = -1;
+
+    this.nav_hist = {};
+    this.selected_item = -1;
+
     this.select_next = function() {
-        return this.select_idx(selected_item, selected_item+1);
-        return true;
+        return this.select_idx(this.selected_item, this.selected_item+1);
     };
     this.select_prev = function() {
-        if (selected_item > 0)
-            return this.select_idx(selected_item, selected_item-1);
+        if (this.selected_item > 0)
+            return this.select_idx(this.selected_item, this.selected_item-1);
         return true;
     };
     this.select_idx = function(old_idx, new_idx) {
@@ -25,105 +21,24 @@ var Ui = function() {
             return true;
         if (old_idx != undefined) 
             $(items[old_idx]).removeClass('highlighted');
+        if (new_idx == -1)
+            new_idx = items.length-1;
         var n = $(items[new_idx]);
         n.addClass('highlighted');
-        selected_item = new_idx;
-        if(!!!nav_hist[doc_ref])
-            nav_hist[doc_ref] = {};
-        nav_hist[doc_ref].selected = new_idx;
+        this.selected_item = new_idx;
+        if(!!!this.nav_hist[doc_ref])
+            this.nav_hist[doc_ref] = {};
+        this.nav_hist[doc_ref].selected = new_idx;
         refocus(n);
         return false;
+    };
+    this.recover_selected = function() {
+        this.select_idx(null, this.nav_hist[doc_ref]?this.nav_hist[doc_ref].selected:0);
     };
     return this;
 }
 
 var ui = new Ui();
-
-
-ks.ready(function() {
-
-    // JavaScript placed here will run only once Kickstrap has loaded successfully.
-    // init the application
-  
-    view_path(document.location.href.split(/\?view=/)[1] || '/');
-
-    var $b = $('#upload'),
-    $f = $('#file'),
-    $p = $('#progress'),
-    up = new uploader($f.get(0), {
-        url:'/upload',
-        extra_data_func: function(data) { console.log('#########', data); return {'prefix': doc_ref} },
-        progress:function(ev){ console.log('progress'); $p.html(((ev.loaded/ev.total)*100)+'%'); $p.css('width',$p.html()); },
-        error:function(ev){ console.log('error', ev); },
-        success:function(data){
-            $p.html('100%');
-            $p.css('width',$p.html());
-            var data = JSON.parse(data);
-            if (data.error) {
-                $.pnotify({title: 'Unable to upload some files', text: data.error});
-            }
-            var items = $('.items');
-            for (var i=0; i<data.child.length;i++) {
-                render_item(data.child[i]).appendTo(items);
-            }
-        }
-    });
-
-    $b.click(function(){
-        up.send();
-    });
-
-
-    // start navigation
-    Mousetrap.bind('tab', function(e) {
-        if(selected_item === -1) {
-            selected_item = 0;
-            $('.items > .item:first').addClass('highlighted');
-            return false;
-        }
-    });
-    // navigation commands
-    Mousetrap.bind('down', function(e) {
-        return ui.select_next();
-    });
-    Mousetrap.bind('up', function(e) {
-        return ui.select_prev();
-    });
-    Mousetrap.bind('enter', function(e) {
-        if ($('#download_link').length) {
-            popup_menu();
-        } else {
-            var items=$('.items > .item');
-            $(items[selected_item]).find('.item_stuff:first').trigger('tap');
-        }
-        return false;
-    });
-    Mousetrap.bind('backspace', function(e) {
-        var items=$('.items > .item');
-        $('#backlink').click();
-        return false;
-    });
-    Mousetrap.bind('ins', function(e) {
-        $.pnotify({text: 'Could show an upload popup... ?'});
-        return false;
-    });
-    Mousetrap.bind('del', function(e) {
-        $.pnotify({text: 'Could show a delete popup... ?'});
-        return false;
-    });
-    Mousetrap.bind('esc', function(e) {
-        var items=$('.items > .item');
-        $(items[selected_item]).removeClass('highlighted');
-        selected_item = -1;
-        return false;
-    });
-    setTimeout(function() {
-        $.pnotify({
-            title: "Keyboard shortcuts!",
-            text: "Use TAB, UP/DOWN & ENTER to navigate...<br/>Close popups using ESCAPE.",
-        });
-    }, 1000);
-});
 
 function refocus(elt) {
 //    console.log('refocus',elt);
@@ -212,7 +127,6 @@ function view_path(path) {
                 });
             } else {
                 // normal continuation
-                selected_item = -1;
                 /* update current document reference */
                 if (path !== '/') {
                     doc_ref = path;
@@ -221,12 +135,9 @@ function view_path(path) {
                 }
                 /* compute back ref & permalink */
                 var plink = window.location + '?view=' + path;
-                if (!!nav_hist[doc_ref]) {
-                    setTimeout( function() {
-//                        console.log(doc_ref, nav_hist);
-                        ui.select_idx(null, nav_hist[doc_ref].selected);
-                    }, 1001);
-                }
+                setTimeout( function() {
+                    ui.recover_selected();
+                }, 1001);
                 /* TODO: use a factory with mustache's lambdas on ich */
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = doc_ref != '/';
@@ -280,3 +191,92 @@ function view_path(path) {
         });
     }, 300);
 };
+
+// ON-Ready
+
+ks.ready(function() {
+
+    // JavaScript placed here will run only once Kickstrap has loaded successfully.
+    // init the application
+  
+    view_path(document.location.href.split(/\?view=/)[1] || '/');
+
+    var $b = $('#upload'),
+    $f = $('#file'),
+    $p = $('#progress'),
+    up = new uploader($f.get(0), {
+        url:'/upload',
+        extra_data_func: function(data) { console.log('#########', data); return {'prefix': doc_ref} },
+        progress:function(ev){ console.log('progress'); $p.html(((ev.loaded/ev.total)*100)+'%'); $p.css('width',$p.html()); },
+        error:function(ev){ console.log('error', ev); },
+        success:function(data){
+            $p.html('100%');
+            $p.css('width',$p.html());
+            var data = JSON.parse(data);
+            if (data.error) {
+                $.pnotify({title: 'Unable to upload some files', text: data.error});
+            }
+            var items = $('.items');
+            for (var i=0; i<data.child.length;i++) {
+                render_item(data.child[i]).appendTo(items);
+            }
+        }
+    });
+
+    $b.click(function(){
+        up.send();
+    });
+
+
+    // start navigation
+    Mousetrap.bind('tab', function(e) {
+        if(ui.selected_item === -1) {
+            return ui.select_idx(null, 0);
+        }
+    });
+    // navigation commands
+    Mousetrap.bind('down', function(e) {
+        return ui.select_next();
+    });
+    Mousetrap.bind('up', function(e) {
+        return ui.select_prev();
+    });
+    Mousetrap.bind('enter', function(e) {
+        if ($('#download_link').length) {
+            popup_menu();
+        } else {
+            var items=$('.items > .item');
+            $(items[ui.selected_item]).find('.item_stuff:first').trigger('tap');
+        }
+        return false;
+    });
+    Mousetrap.bind('backspace', function(e) {
+        var items=$('.items > .item');
+        $('#backlink').click();
+        return false;
+    });
+    Mousetrap.bind('ins', function(e) {
+        $.pnotify({text: 'Could show an upload popup... ?'});
+        return false;
+    });
+    Mousetrap.bind('del', function(e) {
+        $.pnotify({text: 'Could show a delete popup... ?'});
+        return false;
+    });
+    Mousetrap.bind('esc', function(e) {
+        return ui.select_idx(ui.selected_item, null);
+    });
+    Mousetrap.bind('home', function(e) {
+        return ui.select_idx(ui.selected_item, 0);
+    });
+    Mousetrap.bind('end', function(e) {
+        return ui.select_idx(ui.selected_item, -1);
+    });
+    setTimeout(function() {
+        $.pnotify({
+            title: "Keyboard shortcuts!",
+            text: "Use TAB, UP/DOWN & ENTER to navigate...<br/>Close popups using ESCAPE.",
+        });
+    }, 1000);
+});
+
