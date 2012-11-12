@@ -46,7 +46,7 @@ var ui = new function() {
 /* item actions */
 
 var ItemTool = new function() {
-    this.execute = function(e) {
+    this.execute_evt_handler = function(e) {
         console.log('execute');
         var elt = $(e.target).parent();
         ui.save_selected(elt.index());
@@ -80,7 +80,7 @@ var ItemTool = new function() {
         o.find('.item_stuff').each( function(i, x) {
             $(x).hammer()
                 .bind({
-                    tap: ItemTool.execute,
+                    tap: ItemTool.execute_evt_handler,
                     hold: ItemTool.popup_evt_handler,
                     swipe: ItemTool.popup_evt_handler
                 })
@@ -101,6 +101,7 @@ return this;}();
 // to add a "mobile_" prefix to view_page's templates & co
 
 function go_back() {
+    /* returns to parent item */
     var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
     if (!!bref) {
         bref = bref[1] || '/';
@@ -109,6 +110,7 @@ function go_back() {
 }
 
 function refocus(elt) {
+    /* sets focus on given element */
 //    console.log('refocus',elt);
     if (elt.length == 0)
         return;
@@ -121,6 +123,7 @@ function refocus(elt) {
 };
 
 function view_path(path) {
+    /* document viewer, give it a valid path */
 //    console.log('view_path', path);
     $('audio').each( function() {this.pause(); this.src = "";} );
     $('.row-fluid').fadeOut('fast');
@@ -146,7 +149,6 @@ function view_path(path) {
                 setTimeout( function() {
                     ui.recover_selected();
                 }, 1001);
-                /* TODO: use a factory with mustache's lambdas on ich */
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
@@ -204,10 +206,11 @@ function view_path(path) {
 
 ks.ready(function() {
 
-    // JavaScript placed here will run only once Kickstrap has loaded successfully.
-    // init the application
+    // load page
   
     view_path(document.location.href.split(/\?view=/)[1] || '/');
+
+    // handle upload stuff
 
     var $b = $('#upload'),
     $f = $('#file'),
@@ -235,6 +238,7 @@ ks.ready(function() {
         up.send();
     });
 
+    // key binding
 
     // start navigation
     Mousetrap.bind('tab', function(e) {
