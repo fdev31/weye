@@ -7,7 +7,7 @@
 @import "/static/elements.less";
 
 body {
-    background-attachment:fixed;
+    background-color: #252A30;
 }
 
 iframe {
@@ -45,8 +45,13 @@ li.item.highlighted {
     .transition(color .1s linear) !important;
     &:hover {
         background: #FFE7A4 !important;
-        .transition(background .5s linear) !important;
+        .transition(background 5s linear) !important;
     }
+}
+
+.show_on_hover {
+    opacity: 0;
+    .transition(opacity 1s linear);
 }
 
 li.item {
@@ -62,6 +67,11 @@ li.item {
         color: black;
         .transition(background .5s linear) !important;
         .transition(black .5s linear) !important;
+
+        .show_on_hover {
+            opacity: 1;
+        }
+
     }
 }
 

@@ -24,7 +24,6 @@ ks.ready(function() {
         progress:function(ev){ console.log('progress'); $p.html(((ev.loaded/ev.total)*100)+'%'); $p.css('width',$p.html()); },
         error:function(ev){ console.log('error', ev); },
         success:function(data){
-            console.log('success', data);
             $p.html('100%');
             $p.css('width',$p.html());
             var data = JSON.parse(data);
@@ -46,7 +45,6 @@ ks.ready(function() {
     Mousetrap.bind('tab', function(e) {
         if(selected_item === -1) {
             selected_item = 0;
-            console.log($('ul.items > li:first'));
             $('ul.items > li.item:first').addClass('highlighted');
             return false;
         }
@@ -79,7 +77,7 @@ ks.ready(function() {
             popup_menu();
         } else {
             var items=$('ul.items > li.item');
-            $(items[selected_item]).trigger('tap');
+            $(items[selected_item]).find('.item_stuff:first').trigger('tap');
         }
         return false;
     });
@@ -122,8 +120,9 @@ function refocus(elt) {
 /* item actions */
 
 function item_execute(e) {
+//    console.log('execute');
     var elt = $(e.target);
-    view_path(doc_ref+'/'+elt.data('link'));
+    view_path(doc_ref+'/'+elt.parent().data('link'));
 }
 
 function item_action_popup(e) {
@@ -131,7 +130,15 @@ function item_action_popup(e) {
 }
 
 function popup_menu(elt) {
-    if($('#question_popup').length != 0) return;
+//    console.log($('#question_popup'));
+    var qp = $('#question_popup');
+    if(qp.length != 0) {
+        if (qp.css('display') === 'none') {
+            qp.remove();
+        } else {
+            return;
+        }
+    }
     var actions = ['infos', 'download', 'preferences', 'delete'];
     ich.question({
         header: "Hey!",
@@ -141,19 +148,14 @@ function popup_menu(elt) {
 
 /* setup all item templates within a jQuery element */
 function prepare_items(o) {
-    var bind_keys = function(elt) {
-        elt.hammer()
+    o.find('.item_stuff').each( function(i, x) {
+        $(x).hammer()
             .bind({
                 tap: item_execute,
                 hold: item_action_popup,
                 swipe: item_action_popup
             })
-    };
-    if (o.attr('class') === 'item') {
-        bind_keys(o);
-    } else {
-        o.find('.item').each( function(i, x) { bind_keys($(x)); } );
-    }
+    });
     return o;
 }
 
