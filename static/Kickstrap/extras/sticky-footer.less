@@ -11,13 +11,11 @@
       min-height: 100%;
       height: auto !important;
       height: 100%; // For IE.
+	  margin: 0 auto -@footerHeight;
+	  
    }
    #push {height: @footerHeight;}
-   .container.main { // Should have only one of these per page.
-      overflow:auto;
-      padding-bottom: @footerHeight;
-   }
-   footer#footer {
+   #footer {
       position: relative;
       margin-top: -@footerHeight;
       height: @footerHeight;

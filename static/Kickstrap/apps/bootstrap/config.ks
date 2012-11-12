@@ -1,1 +1,1 @@
-http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.0.4/bootstrap.min.js, //bootstrap.js
+http://netdna.getkickstrap.com/Kickstrap/apps/bootstrap/bootstrap.min.js, //bootstrap.min.js

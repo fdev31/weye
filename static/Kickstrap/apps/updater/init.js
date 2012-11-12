@@ -2,7 +2,7 @@ var updateState; // [0 = up to date, 1 = needs update]
 kickstrap.ready(function() {
    getUpdate();
 	function getUpdate() { 
-         thisVersion = "1.1.0 Beta";
+         thisVersion = "1.2.0 Beta";
 			$.ajax({type: 'GET', url: 'http://netdna.getkickstrap.com/update.js', dataType: "script", context: this});
 	}
 	
