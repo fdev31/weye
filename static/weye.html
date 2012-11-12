@@ -117,37 +117,24 @@
     
     <div class="container">
     	<div class="row">
-    	  <div class="span12">
-    	  
-					<section class="row-fluid">
-                        <div class="row" id="contents">
-                        </div>
+            <div class="span12">
+                <aside  onclick="$('#up_panel').removeClass('hidden')"  class="pull-right span3 well autodim folder-item">
+                <div id="glou">
+                    <label for="file">Upload</label>
+                    <div id="up_panel" class="hidden" >
+                        <input type="file" name="file" id="file" />
+                        <button id="upload">Upload</button>
+                        <p><span id="progress" class="progress">0%</span></p>
+                    </div>
+                </div>
+                </aside>
 
-                        <aside  onclick="$('#up_panel').removeClass('hidden')"  class="pull-right span3 well autodim folder-item">
-                            <div id="glou">
-                                <label for="file">Upload</label>
-                                <div id="up_panel" class="hidden" >
-                                    <input type="file" name="file" id="file" />
-                                    <button id="upload">Upload</button>
-                                    <p><span id="progress" class="progress">0%</span></p>
-                                </div>
-                            </div>
-						</aside>
-					</section>
+                <section class="row-fluid">
 
-                    <!--
-					<div class="pagination">
-					  <ul>
-					    <li class="disabled"><a href="#">Prev</a></li>
-					    <li class="active"><a href="#">1</a></li>
-					    <li><a href="#">2</a></li>
-					    <li><a href="#">3</a></li>
-					    <li><a href="#">4</a></li>
-					    <li><a href="#">Next</a></li>
-					  </ul>
-					</div>
-                    -->
+                <div class="row" id="contents">
+                </div>
 
+                </section>
     	  </div>
     	</div>
     </div>  	
