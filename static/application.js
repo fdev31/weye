@@ -209,7 +209,7 @@ function view_path(path) {
                     window.scroll(0, scroll_values[doc_ref] || 0);
                 }, 100);
                 /* TODO: use a factory with mustache's lambdas on ich */
-                var o = $('.row-fluid div:first'); /* get main content DOM element */
+                var o = $('#contents'); /* get main content DOM element */
                 var bref = doc_ref != '/';
                 if (d.mime === "folder") {
                     $('.folder-item').show();
