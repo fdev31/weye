@@ -73,3 +73,8 @@ or
 [Isotope](http://isotope.metafizzy.co/index.html) to display things in a nice way instead of a plain list
 
 [EpicEditor](http://oscargodson.github.com/EpicEditor/) looks very nice to edit text & markdown documents
+
+# Bugs
+
+- Upload not working on mobiles
+- SVG not working on mobiles
