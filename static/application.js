@@ -152,11 +152,14 @@ function view_path(path) {
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
+                    // Current document is a folder
                     $('.folder-item').show();
                     $('.pure-item').hide();
+                    // fetch childrens
                     $.get('/c'+path)
                         .success(function(c) {
 //                            console.log('children: /c/'+path);
+                            // render
                             o.html( 
                                 ich.view_folder({
                                     mime: d.mime,
@@ -167,12 +170,15 @@ function view_path(path) {
                                     permalink: plink
                                 })
                             );
-                            o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
+                            // make those items funky
                             ItemTool.prepare(o);
+                            o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
                         });
                 } else {
+                    // Current document is an item/file
                     $('.folder-item').hide();
                     $('.pure-item').show();
+                    // render item generic template
                     o.html( ich.view_file({
                         item: d,
                         path: path,
@@ -180,14 +186,14 @@ function view_path(path) {
                         permalink: plink
                         })
                    );
-                    // MIME Handling
+                    // mime-type specific handling (appended to generic template)
                     if (d.mime == 'video') {
                         $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);
                     } else if (d.mime.match(RegExp('^image'))) {
                         $('<img src="/d'+path+'" />').appendTo(o);
                     } else if (d.mime.match(RegExp('^audio'))) {
                         $('<audio src="/d'+path+'" controls><span>Audio preview not supported on your browser</span></audio>').appendTo(o);
-                    } else if (d.mime.match(RegExp('^text')) || d.mime == 'application-json' || d.mime == 'application-x-javascript') {
+                    } else if (d.mime.match(RegExp('^text'))) {
                         $('<iframe class="row" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
                     }
                 }
