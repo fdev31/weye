@@ -13,6 +13,10 @@ log = logging.getLogger('application')
 def cb():
     return bottle.static_file('weye.html', config.static_root)
 
+@bottle.route('/favicon.ico')
+def cb():
+    return bottle.static_file('favicon.ico', config.static_root)
+
 """
 @bottle.route('</path:path>/<action:re:[a-z]+>')
 def cb(path, action):
