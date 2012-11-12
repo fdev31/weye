@@ -33,7 +33,7 @@ ks.ready(function() {
             }
             var items = $('.items');
             for (var i=0; i<data.child.length;i++) {
-                ich.view_item(data.child[i]).appendTo(items);
+                render_item(data.child[i]).appendTo(items);
             }
         }
     });
@@ -41,7 +41,6 @@ ks.ready(function() {
     $b.click(function(){
         up.send();
     });
-
 
     // start navigation
     Mousetrap.bind('tab', function(e) {
@@ -120,6 +119,16 @@ function refocus(elt) {
     $(window).scrollTop(my_scroll);
 };
 
+/* item actions */
+
+function item_execute(e) {
+    var elt = $(e.target);
+    view_path(doc_ref+'/'+elt.data('link'));
+}
+
+function item_action_popup(e) {
+    popup_menu($(e.target));
+}
 
 function popup_menu(elt) {
     if($('#question_popup').length != 0) return;
@@ -128,7 +137,31 @@ function popup_menu(elt) {
         header: "Hey!",
         body: ("Here you'll be able to see: <ul><li>" + actions.join('</li><li>') + '</li></ul>')
     }).modal();
-};
+}
+
+/* setup all item templates within a jQuery element */
+function prepare_items(o) {
+    var bind_keys = function(elt) {
+        elt.hammer()
+            .bind({
+                tap: item_execute,
+                hold: item_action_popup,
+                swipe: item_action_popup
+            })
+    };
+    if (o.attr('class') === 'item') {
+        bind_keys(o);
+    } else {
+        o.find('.item').each( function(i, x) { bind_keys($(x)); } );
+    }
+    return o;
+}
+
+function render_item(data) {
+    var o = ich.view_item(data);
+    prepare_items(o);
+    return o;
+}
 
 function go_back() {
     var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
@@ -137,7 +170,6 @@ function go_back() {
         view_path(bref);
     }
 }
-
   
 // TODO:
 // handle "template_prefix" global variable using "bacon.isMobile()"
@@ -195,17 +227,7 @@ function view_path(path) {
                                     permalink: plink
                                 })
                             );
-                            o.find('.item').each( function(i, x) { 
-                                $(x).hammer()
-                                    .bind({
-                                        tap: function(e) { 
-                                            var elt = $(e.target);
-                                            view_path(doc_ref+'/'+elt.data('link'));
-                                        },
-                                        hold: function(e) { popup_menu($(e.target)) },
-                                        swipe: function(e) { popup_menu($(e.target)) }
-                                    })
-                            } );
+                            prepare_items(o);
                         });
                 } else {
                     $('.folder-item').hide();
