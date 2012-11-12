@@ -1,21 +1,22 @@
 "use strict";
 
-var doc_ref = '/';
-
-var Ui = function() {
-
+var ui = new function() {
+    this.doc_ref = '/';
     this.nav_hist = {};
     this.selected_item = -1;
 
     this.select_next = function() {
-        return this.select_idx(this.selected_item, this.selected_item+1);
+        return ui.select_idx(ui.selected_item, ui.selected_item+1);
     };
     this.select_prev = function() {
-        if (this.selected_item > 0)
-            return this.select_idx(this.selected_item, this.selected_item-1);
+        if (ui.selected_item > 0)
+            return ui.select_idx(ui.selected_item, ui.selected_item-1);
         return true;
     };
     this.select_idx = function(old_idx, new_idx) {
+        /* changes selection from old_idx to new_idx
+         if new_idx == -1, then selects the last item
+         */
         var items=$('.items > .item');
         if (new_idx >= items.length)
             return true;
@@ -25,20 +26,84 @@ var Ui = function() {
             new_idx = items.length-1;
         var n = $(items[new_idx]);
         n.addClass('highlighted');
-        this.selected_item = new_idx;
-        if(!!!this.nav_hist[doc_ref])
-            this.nav_hist[doc_ref] = {};
-        this.nav_hist[doc_ref].selected = new_idx;
+        ui.selected_item = new_idx;
+        if(!!!ui.nav_hist[ui.doc_ref])
+            ui.nav_hist[ui.doc_ref] = {};
+        ui.nav_hist[ui.doc_ref].selected = new_idx;
         refocus(n);
         return false;
     };
     this.recover_selected = function() {
-        this.select_idx(null, this.nav_hist[doc_ref]?this.nav_hist[doc_ref].selected:0);
+        /* set current selected item state from saved history information */
+        ui.select_idx(null, ui.nav_hist[ui.doc_ref]?ui.nav_hist[ui.doc_ref].selected:0);
     };
     return this;
-}
+}();
 
-var ui = new Ui();
+/* item actions */
+
+var ItemTool = new function() {
+    this.execute = function(e) {
+        console.log('execute');
+        var elt = $(e.target);
+        view_path(ui.doc_ref+'/'+elt.parent().data('link'));
+    };
+
+    this.popup_evt_handler = function (e) {
+        ItemTool.popup($(e.target));
+    };
+
+    this.popup = function (elt) {
+    //    console.log($('#question_popup'));
+        var qp = $('#question_popup');
+        if(qp.length != 0) {
+            if (qp.css('display') === 'none') {
+                qp.remove();
+            } else {
+                return;
+            }
+        }
+        var actions = ['infos', 'download', 'preferences', 'delete'];
+        ich.question({
+            header: "Hey!",
+            body: ("Here you'll be able to see: <ul><li>" + actions.join('</li><li>') + '</li></ul>')
+        }).modal();
+    };
+
+    /* setup all item templates within a jQuery element */
+    this.prepare = function (o) {
+        console.log('prepare', o);
+        o.find('.item_stuff').each( function(i, x) {
+            console.log('x=',x);
+            $(x).hammer()
+                .bind({
+                    tap: ItemTool.execute,
+                    hold: ItemTool.popup_evt_handler,
+                    swipe: ItemTool.popup_evt_handler
+                })
+        });
+        return o;
+    };
+
+    this.render = function (data) {
+        var o = ich.view_item(data);
+        ItemTool.prepare(o);
+        return o;
+    };
+
+return this;}();
+
+// TODO:
+// handle "template_prefix" global variable using "bacon.isMobile()"
+// to add a "mobile_" prefix to view_page's templates & co
+
+function go_back() {
+    var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
+    if (!!bref) {
+        bref = bref[1] || '/';
+        view_path(bref);
+    }
+}
 
 function refocus(elt) {
 //    console.log('refocus',elt);
@@ -51,66 +116,6 @@ function refocus(elt) {
     var my_scroll = elem_top - (viewport_height / 2);
     $(window).scrollTop(my_scroll);
 };
-
-/* item actions */
-
-function item_execute(e) {
-//    console.log('execute');
-    var elt = $(e.target);
-    view_path(doc_ref+'/'+elt.parent().data('link'));
-}
-
-function item_action_popup(e) {
-    popup_menu($(e.target));
-}
-
-function popup_menu(elt) {
-//    console.log($('#question_popup'));
-    var qp = $('#question_popup');
-    if(qp.length != 0) {
-        if (qp.css('display') === 'none') {
-            qp.remove();
-        } else {
-            return;
-        }
-    }
-    var actions = ['infos', 'download', 'preferences', 'delete'];
-    ich.question({
-        header: "Hey!",
-        body: ("Here you'll be able to see: <ul><li>" + actions.join('</li><li>') + '</li></ul>')
-    }).modal();
-}
-
-/* setup all item templates within a jQuery element */
-function prepare_items(o) {
-    o.find('.item_stuff').each( function(i, x) {
-        $(x).hammer()
-            .bind({
-                tap: item_execute,
-                hold: item_action_popup,
-                swipe: item_action_popup
-            })
-    });
-    return o;
-}
-
-function render_item(data) {
-    var o = ich.view_item(data);
-    prepare_items(o);
-    return o;
-}
-
-function go_back() {
-    var bref = doc_ref.match(RegExp('(.*)/[^/]+$'));
-    if (!!bref) {
-        bref = bref[1] || '/';
-        view_path(bref);
-    }
-}
-  
-// TODO:
-// handle "template_prefix" global variable using "bacon.isMobile()"
-// to add a "mobile_" prefix to view_page's templates & co
 
 function view_path(path) {
 //    console.log('view_path', path);
@@ -129,9 +134,9 @@ function view_path(path) {
                 // normal continuation
                 /* update current document reference */
                 if (path !== '/') {
-                    doc_ref = path;
+                    ui.doc_ref = path;
                 } else {
-                    doc_ref = '/';
+                    ui.doc_ref = '/';
                 }
                 /* compute back ref & permalink */
                 var plink = window.location + '?view=' + path;
@@ -140,7 +145,7 @@ function view_path(path) {
                 }, 1001);
                 /* TODO: use a factory with mustache's lambdas on ich */
                 var o = $('#contents'); /* get main content DOM element */
-                var bref = doc_ref != '/';
+                var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
                     $('.folder-item').show();
                     $('.pure-item').hide();
@@ -158,7 +163,7 @@ function view_path(path) {
                                 })
                             );
                             o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
-                            prepare_items(o);
+                            ItemTool.prepare(o);
                         });
                 } else {
                     $('.folder-item').hide();
@@ -178,7 +183,7 @@ function view_path(path) {
                     } else if (d.mime.match(RegExp('^audio'))) {
                         $('<audio src="/d'+path+'" controls><span>Audio preview not supported on your browser</span></audio>').appendTo(o);
                     } else if (d.mime.match(RegExp('^text')) || d.mime == 'application-json' || d.mime == 'application-x-javascript') {
-                        $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
+                        $('<iframe class="row" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
                     }
                 }
                 // finished successfuly
@@ -206,7 +211,7 @@ ks.ready(function() {
     $p = $('#progress'),
     up = new uploader($f.get(0), {
         url:'/upload',
-        extra_data_func: function(data) { console.log('#########', data); return {'prefix': doc_ref} },
+        extra_data_func: function(data) { console.log('#########', data); return {'prefix': ui.doc_ref} },
         progress:function(ev){ console.log('progress'); $p.html(((ev.loaded/ev.total)*100)+'%'); $p.css('width',$p.html()); },
         error:function(ev){ console.log('error', ev); },
         success:function(data){
@@ -218,7 +223,7 @@ ks.ready(function() {
             }
             var items = $('.items');
             for (var i=0; i<data.child.length;i++) {
-                render_item(data.child[i]).appendTo(items);
+                ItemTool.render(data.child[i]).appendTo(items);
             }
         }
     });
@@ -243,7 +248,7 @@ ks.ready(function() {
     });
     Mousetrap.bind('enter', function(e) {
         if ($('#download_link').length) {
-            popup_menu();
+            ItemTool.popup();
         } else {
             var items=$('.items > .item');
             $(items[ui.selected_item]).find('.item_stuff:first').trigger('tap');
