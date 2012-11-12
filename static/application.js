@@ -149,6 +149,7 @@ function view_path(path) {
                 setTimeout( function() {
                     ui.recover_selected();
                 }, 1001);
+                $('#up_panel').addClass('hidden')
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
