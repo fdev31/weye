@@ -229,6 +229,7 @@ function view_path(path) {
                                     permalink: plink
                                 })
                             );
+                            o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
                             prepare_items(o);
                         });
                 } else {
@@ -252,6 +253,7 @@ function view_path(path) {
                         $('<iframe width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
                     }
                 }
+                // finished successfuly
                 $('.row-fluid').fadeIn('slow');
             }
         }
