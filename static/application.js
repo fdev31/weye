@@ -26,12 +26,15 @@ var ui = new function() {
             new_idx = items.length-1;
         var n = $(items[new_idx]);
         n.addClass('highlighted');
-        ui.selected_item = new_idx;
-        if(!!!ui.nav_hist[ui.doc_ref])
-            ui.nav_hist[ui.doc_ref] = {};
-        ui.nav_hist[ui.doc_ref].selected = new_idx;
+        ui.save_selected(new_idx);
         refocus(n);
         return false;
+    };
+    this.save_selected = function(idx) {
+        ui.selected_item = idx;
+        if(!!!ui.nav_hist[ui.doc_ref])
+            ui.nav_hist[ui.doc_ref] = {};
+        ui.nav_hist[ui.doc_ref].selected = idx;
     };
     this.recover_selected = function() {
         /* set current selected item state from saved history information */
@@ -45,8 +48,9 @@ var ui = new function() {
 var ItemTool = new function() {
     this.execute = function(e) {
         console.log('execute');
-        var elt = $(e.target);
-        view_path(ui.doc_ref+'/'+elt.parent().data('link'));
+        var elt = $(e.target).parent();
+        ui.save_selected(elt.index());
+        view_path(ui.doc_ref+'/'+elt.data('link'));
     };
 
     this.popup_evt_handler = function (e) {
@@ -74,7 +78,6 @@ var ItemTool = new function() {
     this.prepare = function (o) {
         console.log('prepare', o);
         o.find('.item_stuff').each( function(i, x) {
-            console.log('x=',x);
             $(x).hammer()
                 .bind({
                     tap: ItemTool.execute,
