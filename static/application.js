@@ -45,13 +45,13 @@ ks.ready(function() {
     Mousetrap.bind('tab', function(e) {
         if(selected_item === -1) {
             selected_item = 0;
-            $('ul.items > li.item:first').addClass('highlighted');
+            $('.items > .item:first').addClass('highlighted');
             return false;
         }
     });
     // navigation commands
     Mousetrap.bind('down', function(e) {
-        var items=$('ul.items > li.item');
+        var items=$('.items > .item');
         if (selected_item + 1 < items.length) {
             $(items[selected_item]).removeClass('highlighted');
             selected_item += 1;
@@ -62,7 +62,7 @@ ks.ready(function() {
         }
     });
     Mousetrap.bind('up', function(e) {
-        var items=$('ul.items > li.item');
+        var items=$('.items > .item');
         if (selected_item > 0) {
             $(items[selected_item]).removeClass('highlighted');
             selected_item -= 1;
@@ -76,13 +76,13 @@ ks.ready(function() {
         if ($('#download_link').length) {
             popup_menu();
         } else {
-            var items=$('ul.items > li.item');
+            var items=$('.items > .item');
             $(items[selected_item]).find('.item_stuff:first').trigger('tap');
         }
         return false;
     });
     Mousetrap.bind('backspace', function(e) {
-        var items=$('ul.items > li.item');
+        var items=$('.items > .item');
         $('#backlink').click();
         return false;
     });
@@ -95,7 +95,7 @@ ks.ready(function() {
         return false;
     });
     Mousetrap.bind('esc', function(e) {
-        var items=$('ul.items > li.item');
+        var items=$('.items > .item');
         $(items[selected_item]).removeClass('highlighted');
         selected_item = -1;
         return false;

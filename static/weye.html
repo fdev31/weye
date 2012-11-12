@@ -37,11 +37,11 @@
   </script>
 
   <script id="view_item" class="partial" type="text/html">
-    <li class="item" data-link="{{f}}">
+    <div class="item" data-link="{{f}}">
       <img src="/static/mime/{{m}}.svg" class="small_icon item_caption item_stuff"/>
       <span class="item_stuff item_caption">{{f}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="popup_menu($(this).parent());false;" />
-    </li>
+    </div>
   </script>
 
   <script id="view_folder" type="text/html">
@@ -56,11 +56,11 @@
         </header>
 
        {{#have_child}}
-        <ul class="items">
+        <div class="items">
             {{#child}}
             {{>view_item}}
             {{/child}}
-        </ul>
+        </div>
         {{/have_child}}
         {{^have_child}}
         <div>
