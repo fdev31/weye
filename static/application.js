@@ -250,7 +250,7 @@ ks.ready(function() {
             }
             var items = $('.items');
             for (var i=0; i<data.child.length;i++) {
-                ItemTool.render(data.child[i]).appendTo(items);
+            	items.isotope( 'insert', ItemTool.render(data.child[i]) );
             }
         }
     });
