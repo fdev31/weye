@@ -51,6 +51,7 @@ def get_object_from_path(path):
     st = os.stat(fpath)
     if not infos:
         infos = {'id': "%x-%x"%(st.st_ctime, st.st_ino),
+                'size': st.st_size,
                 'name': os.path.basename(fpath),
                 'path': path,
                 'description': u'',

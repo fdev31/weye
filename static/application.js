@@ -89,6 +89,7 @@ var ItemTool = new function() {
     };
 
     this.render = function (data) {
+//        console.log('rendering', data);
         var o = ich.view_item(data);
         ItemTool.prepare(o);
         return o;
@@ -107,6 +108,18 @@ function go_back() {
         bref = bref[1] || '/';
         view_path(bref);
     }
+}
+
+function hr_size(size) {
+    var units = ['', 'k', 'M', 'G'];
+    var i = 0;
+    
+    while(size >= 1024) {
+        size /= 1024.0;
+        ++i;
+    }
+    
+    return size.toFixed(1) + ' ' + units[i]+'B';
 }
 
 function refocus(elt) {
@@ -187,6 +200,7 @@ function view_path(path) {
                         permalink: plink
                         })
                    );
+                   $('.filesize').each( function(i, x) { var o=$(x); o.text(hr_size(eval(o.text()))) } )
                     // mime-type specific handling (appended to generic template)
                     if (d.mime == 'video') {
                         $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);

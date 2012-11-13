@@ -20,7 +20,7 @@
   <!-- Prompt IE 6/7 users to install Chrome Frame. Remove this if you support IE 7-.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 8]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-<!--! END KICKSTRAP HEADER --> 
+<!--! END KICKSTRAP HEADER -->
 
 
 
@@ -30,10 +30,10 @@
       <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
       <a title="Share item with RightClick>Copy location" href="{{permalink}}" class="icon-bookmark" > Permalink</a>
 
-      <h1>Viewing {{item.mime}}</h1>
-      
+      <h1>Viewing {{item.mime}} (<span class="filesize">{{item.size}}</span>)</h1>
+
       <h3><a id="download_link" title="Click to download" href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
-	      
+
   </script>
 
   <script id="view_item" class="partial" type="text/html">
@@ -112,9 +112,9 @@
         </div>
       </div>
     </div>
-    
+
     	<div id="qunit"></div>
-    
+
     <div class="container">
     	<div class="row">
             <div class="span12">
@@ -137,7 +137,7 @@
                 </section>
     	  </div>
     	</div>
-    </div>  	
+    </div>
 
 
   <!--! KICKSTRAP FOOTER -->
