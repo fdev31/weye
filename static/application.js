@@ -209,7 +209,7 @@ function view_path(path) {
                     } else if (d.mime.match(RegExp('^audio'))) {
                         $('<audio src="/d'+path+'" controls><span>Audio preview not supported on your browser</span></audio>').appendTo(o);
                     } else if (d.mime.match(RegExp('^text'))) {
-                        $('<iframe class="row" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
+                        $('<iframe class="span11" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
                     }
                 }
                 // finished successfuly
