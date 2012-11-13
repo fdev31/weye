@@ -12,6 +12,7 @@ try: # backward compat for python2.x
 except NameError:
     FileNotFoundError = None
     PermissionError = None
+    FileExistsError = None
 
 def save_object_to_path(path, read_func):
     if os.path.exists(path):
@@ -33,7 +34,7 @@ def save_object_to_path(path, read_func):
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
-    meta_fpath = fpath + config.special_extension
+    meta_fpath = os.path.join(config.shared_db, path).rstrip('/') + config.special_extension
     up_to_date = False
     infos = None
 
@@ -55,6 +56,12 @@ def get_object_from_path(path):
                 'description': u'',
                 'mime': file_type}
     if not up_to_date:
+        if not os.path.exists(meta_fpath):
+            try:
+                os.makedirs( os.path.dirname( meta_fpath ) )
+            except (OSError, FileExistsError):
+                pass
+
         try:
             open(meta_fpath, 'wb').write(dumps(infos).encode())
         except (OSError, IOError, PermissionError) as e:
