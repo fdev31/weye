@@ -107,6 +107,19 @@
               <li><a href="/">Remove</a></li>
               <li><a href="#" class="folder-item" title="Download as ZIP">Download</a></li>
               <li class="active"><a href="#">Preferences</a></li>
+              <li><form id="addsearch_form" class="form-search" action="/search" method="post">
+<!--    <legend>Legend</legend>-->
+<!--    <label>Label name</label>-->
+    <input name="text" type="text" class="input-large search-query" placeholder="Type something…">
+<!--    <span class="help-block">Example block-level help text here.</span>-->
+<!--    <label class="checkbox">-->
+<!--      <input type="checkbox"> Check me out-->
+<!--    </label>-->
+    <button name="search" type="submit" onclick="search_for();return false;"class="btn">Search</button>
+    <button name="add" onclick="add_new_item()" class="btn">Add</button>
+</form>
+              </li>
+
             </ul>
           </div><!--/.nav-collapse -->
         </div>

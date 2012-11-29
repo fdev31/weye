@@ -9,9 +9,30 @@ from .configuration import config
 from . import root_objects
 log = logging.getLogger('application')
 
-@bottle.route('/')
+@bottle.get('/')
 def cb():
     return bottle.static_file('weye.html', config.static_root)
+
+@bottle.post('/search')
+def cb():
+    bottle.response.set_header('Content-Type', 'application/json')
+    log.debug("search")
+    yield '['
+    first = True
+    for item in root_objects.search_objects(bottle.request.POST['text'].encode('utf-8')):
+        if not first:
+            yield ','
+        else:
+            first = False
+        yield dumps(item)
+    yield ']'
+
+@bottle.post('/push')
+def cb():
+    bottle.response.set_header('Content-Type', 'application/json')
+    log.debug("add")
+    fname = root_objects.add_new_object(bottle.request.POST['text'].encode('utf-8'))
+    return '{"href": %s}'%dumps('/o/'+fname)
 
 @bottle.route('/favicon.ico')
 def cb():

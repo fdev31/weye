@@ -1,5 +1,52 @@
 "use strict";
 
+function search_for() {
+    var pattern = $('#addsearch_form input').val();
+    var p = $.post('/search', {text: pattern});
+    p.success( function(data) {
+        var list = $('<ul></ul>');
+        ui.doc_ref = '/';
+        $('.folder-item').hide();
+        $('.pure-item').hide();
+        // render item generic template
+        var o = $('#contents');
+        console.log(data, data.map( function(x) { return {m: 'application-x-executable', f: x} }));
+        // TODO: add some text input allowing user to use a "grep"-like feature
+        o.html( 
+            ich.view_folder({
+                mime: 'application-x-executable',
+                path: '/',
+                have_child: true,
+                child: data.map( function(x) { return {m: 'application-x-executable', f: x} }),
+                backlink: false,
+                permalink: '/'
+            })
+        );
+        finalize_item_list(o);
+      })
+     .error(function(data) {
+          console.log(data);
+      })
+     ;
+};
+
+function add_new_item() {
+    var pattern = $('#addsearch_form input').val();
+    console.log(pattern);
+    $.post('/push', {text: pattern}).success( function(d) {
+        console.log(d);
+        $.get(d.href).success(function(d) {
+            console.log('render', d);
+            $('.items').isotope('insert', ItemTool.render(d));
+        });
+    });
+};
+
+function finalize_item_list(o) {
+    ItemTool.prepare(o);
+    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
+};
+
 var ui = new function() {
     this.doc_ref = '/';
     this.nav_hist = {};
@@ -89,6 +136,8 @@ var ItemTool = new function() {
     };
 
     this.render = function (data) {
+        if (!!!data.f || !!!data.m)
+            var data = {m: data.mime, f: data.name}
 //        console.log('rendering', data);
         var o = ich.view_item(data);
         ItemTool.prepare(o);
@@ -185,8 +234,7 @@ function view_path(path) {
                                 })
                             );
                             // make those items funky
-                            ItemTool.prepare(o);
-                            o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
+                            finalize_item_list(o);
                         });
                 } else {
                     // Current document is an item/file
@@ -226,6 +274,8 @@ function view_path(path) {
 // ON-Ready
 
 ks.ready(function() {
+    // prevent default action
+    $('#addsearch_form').submit(function() {return false})
 
     // load page
   
