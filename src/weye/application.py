@@ -7,6 +7,7 @@ from bottle import json_loads as loads
 from .utils import guess_type
 from .configuration import config
 from . import root_objects
+from .search_engine import search
 log = logging.getLogger('application')
 
 @bottle.get('/')
@@ -19,7 +20,10 @@ def cb():
     log.debug("search")
     yield '['
     first = True
-    for item in root_objects.search_objects(bottle.request.POST['text'].encode('utf-8')):
+    # TODO: handle multi-page
+    pages, results = search( bottle.request.POST['text'], results=100 )
+#    for item in root_objects.search_objects(bottle.request.POST['text'].encode('utf-8')):
+    for item in results:
         if not first:
             yield ','
         else:

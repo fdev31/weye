@@ -17,7 +17,7 @@ function search_for() {
                 mime: 'application-x-executable',
                 path: '/',
                 have_child: true,
-                child: data.map( function(x) { return {m: 'application-x-executable', f: x} }),
+                child: data,
                 backlink: false,
                 permalink: '/'
             })

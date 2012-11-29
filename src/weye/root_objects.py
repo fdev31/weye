@@ -4,6 +4,7 @@ from bottle import json_loads as loads
 import itertools
 from .utils import guess_type
 from .configuration import config
+from .search_engine import ObjAdder
 import logging
 
 log = logging.getLogger('root_objects')
@@ -30,27 +31,13 @@ def add_new_object(content, type=None, filename=None):
     else:
         filename = os.path.join(config.shared_root, filename)
 
+    name = filename.rsplit('/', 1)[-1]
+
+    with ObjAdder() as add:
+        add(path=name, tags='text note', txtcontent=content.decode('utf-8'), mime='text-plain', description='')
     open(filename, 'wb').write(content)
     log.info("Created %r", filename)
-    return filename.rsplit('/', 1)[-1]
-
-def search_objects(pattern):
-    """
-    pattern: part of the document you'r looking for
-    returns: list of object's URIs
-    """
-    pfx_len = len(config.shared_root)
-    for root, dirs, files in os.walk(config.shared_root):
-        for fname in files:
-            try:
-                path = os.path.join(root, fname)
-                d = open( path, 'rb' ).read()
-            except Exception:
-                log.warning("Can't open %r in %r !", fname, root)
-            else:
-                if pattern in d:
-                    yield path[pfx_len:]
-
+    return name
 def save_object_to_path(path, read_func):
     if os.path.exists(path):
         yield 'File exists!'
