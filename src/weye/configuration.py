@@ -22,7 +22,7 @@ config = Config()
 
 # set the defaults
 config.static_root = 'static'
-config.shared_root = '/tmp/'
+config.shared_root = os.environ.get('ROOT', '/tmp/')
 config.debug = int(os.environ.get('DEBUG', 0)) != 0
 
 config.static_root = config.static_root.rstrip(os.path.sep) # path for static files
