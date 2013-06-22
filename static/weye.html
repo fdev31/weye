@@ -1,55 +1,35 @@
-<!doctype html>
-<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en-gb"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en-gb"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en-gb"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en-gb"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>File manager</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
-  <!-- You can also compile style.less to use regular css. Your apps will still work. -->
-  <style type="text/css">body{padding-top:60px}.hidden{margin:20px;border:5px solid #a24c4c;background-color:red;padding:10px;width:400px;color:white;font-family:helvetica,sans-serif}</style>
-  <link rel="stylesheet/less" type="text/css" href="/static/bootstrap.min.css">
-  <link rel="stylesheet/less" type="text/css" href="/static/bootstrap-responsive.min.css">
-  <link rel="stylesheet/less" type="text/css" href="/static/jquery.pnotify.default.css">
-  <script src="/static/Kickstrap/js/less-1.3.0.min.js"></script>
-</head>
-<body>
-<div id="sf-wrapper"> <!-- Sticky Footer Wrapper -->
-   <div class="hidden"><h1>No Stylesheet Loaded</h1><p><strong>Could not load Kickstrap.</strong>There are <a href="http://getkickstrap.com/docs/1.1/#lessjs-errors">several common reasons for this error.</a></p></div>
-  <!-- Prompt IE 6/7 users to install Chrome Frame. Remove this if you support IE 7-.
-       chromium.org/developers/how-tos/chrome-frame-getting-started -->
-  <!--[if lt IE 8]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-<!--! END KICKSTRAP HEADER -->
-</div>
-  <div id="push"></div></div> <!-- sf-wrapper -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>File manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+    <link href="/static/css/jquery.pnotify.default.css" rel="stylesheet" media="screen">
+    <link type="text/css" rel="stylesheet" href="/static/css/theme.css" media="screen">
 
-  <!-- TEMPLATES -->
 
+<!--   TEMPLATES -->
   <script id="view_file" type="text/html">
-      <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
-      <a title="Share item with RightClick>Copy location" href="{{permalink}}" class="icon-bookmark" > Permalink</a>
+    <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
+      <a title="Share item with RightClick>Copy location" href="{{permalink}}" class="icon-bookmark" >&nbsp;Permalink</a>
 
       <h1>Viewing {{item.mime}} (<span class="filesize">{{item.size}}</span>)</h1>
 
       <h3><a id="download_link" title="Click to download" href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
 
-  </script>
-
-  <script id="view_item" class="partial" type="text/html">
-    <div class="item" data-link="{{f}}">
+  </script> <script id="view_item" class="partial" type=
+  "text/html">
+  <div class="item" data-link="{{f}}">
       <img src="/static/mime/{{m}}.svg" class="small_icon item_caption item_stuff"/>
       <span class="item_stuff item_caption">{{f}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="ItemTool.popup($(this).parent());false;" />
     </div>
-  </script>
-
-  <script id="view_folder" type="text/html">
-        {{#backlink}}
+  </script> <script id="view_folder" type="text/html">
+      {{#backlink}}
         <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
-        <a title="Share item with RightClick>Copy location" href="{{permalink}}" class="icon-bookmark" > Permalink</a>
+            <a title="Share item with RightClick>Copy location" href="{{permalink}}" ><i class="icon-bookmark"/> Permalink</a>
         {{/backlink}}
         <header>
             <hgroup>
@@ -69,10 +49,8 @@
         No item.
         </div>
         {{/have_child}}
-  </script>
-
-  <script id="question" type="text/html">
-      <div class="modal hide fade" id="question_popup">
+  </script> <script id="question" type="text/html">
+    <div class="modal hide fade" id="question_popup">
           <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h3>{{header}}</h3>
@@ -89,87 +67,106 @@
               {{/buttons}}
           </div>
       </div>
-  </script>
+  </script> <!-- END templates -->
 
-  <!-- END templates -->
+  </head>
+  <body data-spy="scroll" data-target=".bs-sidebar">
 
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <a class="btn btn-navbar" data-toggle="collapse"
+        data-target=".nav-collapse"><span class=
+        "icon-bar">aa</span> <span class="icon-bar">bb</span>
+        <span class="icon-bar">cc</span></a> <a class="brand" href=
+        "/">Web eye</a>
 
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li>
+              <a href="/">Remove</a>
+            </li>
 
-   <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/">Web eye</a>
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li><a href="/">Remove</a></li>
-              <li><a href="#" class="folder-item" title="Download as ZIP">Download</a></li>
-              <li class="active"><a href="#">Preferences</a></li>
-              <li><form id="addsearch_form" class="form-search" action="/search" method="post">
-<!--    <legend>Legend</legend>-->
-<!--    <label>Label name</label>-->
-    <input name="text" type="text" class="input-large search-query" placeholder="Type something…">
-<!--    <span class="help-block">Example block-level help text here.</span>-->
-<!--    <label class="checkbox">-->
-<!--      <input type="checkbox"> Check me out-->
-<!--    </label>-->
-    <button name="search" type="submit" onclick="search_for();return false;"class="btn">Search</button>
-    <button name="add" onclick="add_new_item()" class="btn">Add</button>
-</form>
-              </li>
+            <li>
+              <a href="#" class="folder-item" title=
+              "Download as ZIP">Download</a>
+            </li>
 
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
+            <li class="active">
+              <a href="#">Preferences</a>
+            </li>
+
+            <li>
+              <form id="addsearch_form" class="form-search form-inline form-horizontal" action=
+              "/search" method="post" name="addsearch_form">
+                <!--    <legend>Legend</legend>-->
+                <!--    <label>Label name</label>-->
+                <input name="text" type="text" class=
+                "input-large search-query" placeholder=
+                "Type something..."> 
+                <!--    <span class="help-block">Example block-level help text here.</span>-->
+                <!--    <label class="checkbox">-->
+                <!--      <input type="checkbox"> Check me out-->
+                <!--    </label>-->
+                 <button name="search" type="submit" onclick=
+                "search_for();return false;" class=
+                "btn">Search</button> <button name="add" onclick=
+                "add_new_item()" class="btn">Add</button>
+              </form>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
     </div>
-
-    	<div id="qunit"></div>
-
-    <div class="container">
-    	<div class="row">
-            <div class="span12">
-                <aside  onclick="$('#up_panel').removeClass('hidden')"  class="pull-right span3 well autodim folder-item">
-                <div id="glou">
-                    <label for="file">Upload</label>
-                    <div id="up_panel" class="hidden" >
-                        <input type="file" name="file" id="file" />
-                        <button id="upload">Upload</button>
-                        <p><span id="progress" class="progress">0%</span></p>
-                    </div>
-                </div>
-                </aside>
-
-                <section class="row-fluid">
-
-                <div class="row" id="contents">
-                </div>
-
-                </section>
-    	  </div>
-    	</div>
-    </div>
+  </div>
 
 
-  <!--! KICKSTRAP FOOTER -->
-  <footer class="container" id="footer">
-	  <p>Foin fouin</p>
-  </footer>
-<!--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
-<!--  <script>window.jQuery || document.write('<script src="/static/Kickstrap/js/jquery-1.7.1.min.js"><\/script>');</script>-->
-    <script src="/static/js/jquery-1.8.2.min.js"> </script> <!-- jquery -->
-  <script src="/static/Kickstrap/js/bootstrap.min.js"></script> <!-- kickstrap -->
-  <script src="/static/js/jquery.isotope.min.js"></script> <!-- TODO: nice content rendering -->
-  <script src="/static/js/ICanHaz.min.js"></script> <!-- templating -->
-  <script src="/static/js/hammer.js"></script>
-  <script src="/static/js/jquery.hammer.js"></script> <!-- mobile touch events -->
-  <script src="/static/js/bacon.min.js"></script> <!-- detect mobiles (isMobile())-->
-  <script src="/static/js/mousetrap.min.js"></script> <!-- keyboard events -->
-  <script src="/static/js/uploader.js"></script> <!-- Upload -->
-  <script src="/static/application.js"></script>
-</body>
+  <div class="container-fluid">
+
+      <aside id="uploadzone" onclick="$('#up_panel').removeClass('hidden')" class="pull-right span3 well autodim folder-item">
+          <label for="file">Upload</label>
+
+          <div id="up_panel" class="hidden">
+              <input type="file" name="file" id="file"> <button id=
+                  "upload">Upload</button>
+
+              <p><span id="progress" class="progress">0%</span></p>
+          </div>
+      </aside>
+
+      <div class="row-fluid" id="contents"></div>
+
+
+  </div>
+
+<!-- SCRIPTS -->
+
+  <!--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>-->
+  <!--  <script>window.jQuery || document.write('<script src="/static/Kickstrap/js/jquery-1.7.1.min.js"><\/script>');</script>-->
+  <script src="/static/js/jquery-1.8.2.min.js">
+</script> <!-- jquery -->
+   <script src="/static/js/bootstrap.min.js">
+</script> <!-- kickstrap -->
+   <script src="/static/js/jquery.isotope.min.js">
+</script> <!-- TODO: nice content rendering -->
+   <script src="/static/js/ICanHaz.min.js">
+</script> <!-- templating -->
+   <script src="/static/js/hammer.js">
+</script> <script src="/static/js/jquery.hammer.js">
+</script> <!-- mobile touch events -->
+   <script src="/static/js/bacon.min.js">
+</script> <!-- detect mobiles (isMobile())-->
+   <script src="/static/js/mousetrap.min.js">
+</script> <!-- keyboard events -->
+   <script src="/static/js/uploader.js">
+</script> <!-- Upload -->
+   <script src="/static/js/jquery.pnotify.min.js">
+</script> <!-- Upload -->
+   <script src="/static/application.js">
+</script>
+
+
+
+  </body>
 </html>
+
