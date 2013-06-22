@@ -1,0 +1,198 @@
+/*---------------------------------------------------
+    LESS Elements 0.6
+  ---------------------------------------------------
+    A set of useful LESS mixins by Dmitry Fadeyev
+    Special thanks for mixin suggestions to:
+      Kris Van Herzeele,
+      Benoit Adam,
+      Portenart Emile-Victor,
+      Ryan Faerman
+
+    More info at: http://lesselements.com
+-----------------------------------------------------*/
+/*
+
+body {
+    background-color: #252A30;
+}
+
+.ui-pnotify-history-container {
+    margin-right: 3em;
+}
+
+iframe {
+    background: rgba(255,255,255,0.9);
+}
+*/
+.progress {
+  width: 0%;
+  overflow: hidden;
+  height: 40px;
+  display: inline-block;
+  vertical-align: middle;
+  color: #FFF;
+  text-align: right;
+  text-shadow: 1px 1px 0 #000;
+  background: -o-linear-gradient(top, #888888, #333333);
+  background: -moz-linear-gradient(top, #888888, #333333);
+  background: -webkit-gradient(linear, left top, left bottom, from(#888888), to(#333333));
+  background: -webkit-linear-gradient(top, #888888, #333333);
+  -o-transition-property: width;
+  -o-transition-duration: .5s;
+  -moz-transition-property: width;
+  -moz-transition-duration: .5s;
+  -webkit-transition-property: width;
+  -webkit-transition-duration: .5s;
+  height: 2ex;
+  margin: 1ex 0 0 0;
+  padding: 0;
+}
+.item.highlighted {
+  background: #F8B744 !important;
+  color: black;
+  -webkit-transition: all background 0.1s linear ease-out !important;
+  -moz-transition: all background 0.1s linear ease-out !important;
+  transition: all background 0.1s linear ease-out !important;
+  -webkit-transition: all color 0.1s linear ease-out !important;
+  -moz-transition: all color 0.1s linear ease-out !important;
+  transition: all color 0.1s linear ease-out !important;
+}
+.item.highlighted:hover {
+  background: #FFE7A4 !important;
+  -webkit-transition: all background 5s linear ease-out !important;
+  -moz-transition: all background 5s linear ease-out !important;
+  transition: all background 5s linear ease-out !important;
+}
+.show_on_hover {
+  opacity: 0;
+  -webkit-transition: all opacity 1s linear ease-out;
+  -moz-transition: all opacity 1s linear ease-out;
+  transition: all opacity 1s linear ease-out;
+}
+.item {
+  list-style-type: none;
+  -webkit-border-top-right-radius: 3px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 3px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  margin: .3ex;
+  padding-left: 1ex;
+  cursor: pointer;
+  -webkit-transition: all background 0.5s linear ease-out;
+  -moz-transition: all background 0.5s linear ease-out;
+  transition: all background 0.5s linear ease-out;
+}
+.item:hover {
+  background: white !important;
+  color: black;
+  -webkit-transition: all background 0.5s linear ease-out !important;
+  -moz-transition: all background 0.5s linear ease-out !important;
+  transition: all background 0.5s linear ease-out !important;
+  -webkit-transition: all #000000 0.5s linear ease-out !important;
+  -moz-transition: all #000000 0.5s linear ease-out !important;
+  transition: all #000000 0.5s linear ease-out !important;
+}
+.item:hover .show_on_hover {
+  opacity: 1;
+}
+.other {
+  background: #ffa;
+}
+.autodim .qq-upload-button {
+  color: #666;
+  cursor: pointer;
+  text-align: center;
+  -moz-transition-duration: 1s;
+  -webkit-transition-duration: 1s;
+  transition-duration: 1s;
+  font-size: 130%;
+  font-weight: bold;
+}
+.autodim .qq-upload-button:hover {
+  color: white;
+  background: #122;
+}
+.dragged {
+  background: #555 !important;
+  color: #ffe !important;
+}
+.hot {
+  background: #ecc;
+  color: black;
+}
+img.big_icon {
+  width: 2.5em;
+  height: 2.5em;
+}
+img.small_icon {
+  width: 2em;
+  height: 2em;
+}
+.animClass {
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+}
+/**** Isotope Filtering ****/
+.isotope-item {
+  z-index: 2;
+}
+.isotope-hidden.isotope-item {
+  pointer-events: none;
+  z-index: 1;
+}
+/**** Isotope CSS3 transitions ****/
+.isotope,
+.isotope .isotope-item {
+  -webkit-transition-duration: 0.8s;
+  -moz-transition-duration: 0.8s;
+  -ms-transition-duration: 0.8s;
+  -o-transition-duration: 0.8s;
+  transition-duration: 0.8s;
+}
+.isotope {
+  -webkit-transition-property: height, width;
+  -moz-transition-property: height, width;
+  -ms-transition-property: height, width;
+  -o-transition-property: height, width;
+  transition-property: height, width;
+}
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+  -moz-transition-property: -moz-transform, opacity;
+  -ms-transition-property: -ms-transform, opacity;
+  -o-transition-property: -o-transform, opacity;
+  transition-property: transform, opacity;
+}
+/**** disabling Isotope CSS3 transitions ****/
+.isotope.no-transition,
+.isotope.no-transition .isotope-item,
+.isotope .isotope-item.no-transition {
+  -webkit-transition-duration: 0s;
+  -moz-transition-duration: 0s;
+  -ms-transition-duration: 0s;
+  -o-transition-duration: 0s;
+  transition-duration: 0s;
+}
+#addsearch_form {
+  margin-bottom: 0;
+}
+@media (min-width: 979px) {
+  #contents {
+    margin-top: 3em;
+  }
+  #uploadzone {
+    margin-top: 3em;
+  }
+}

@@ -1,5 +1,6 @@
 THEME=default
-all: ../static/theme.css
+SRC=../static/css/theme.css
+all: ${SRC}
 
-../static/theme.css: ${THEME}.less
+${SRC}: ${THEME}.less
 	lessc $< $@
