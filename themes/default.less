@@ -5,10 +5,9 @@
 @import "elements.less";
 
 @import "variables.less";
-/*
 
 body {
-    background-color: #252A30;
+    background-color: #D0DEDE;
 }
 
 .ui-pnotify-history-container {
@@ -16,9 +15,9 @@ body {
 }
 
 iframe {
-    background: rgba(255,255,255,0.9);
+     background: rgba(255,255,255,0.9);
+     margin-bottom: 1ex;
 }
-*/
 
 .progress {
     width:0%;
@@ -185,10 +184,22 @@ img.small_icon {
 }
 
 @media (min-width: @navbarCollapseWidth) {
+    .maincontainer {
+        min-height: 800px;
+    }
     #contents {
         margin-top: 3em;
+        height: 100%;
     }
     #uploadzone {
         margin-top: 3em;
     }
+}
+.background_text {
+    color: rgba(0, 0, 0, 0.3);
+    text-shadow:1px 1px 0 #fff;
+    font-variant:small-caps;
+    font-size: 30px;
+    width: 100%;
+    text-align: center;
 }
