@@ -10,20 +10,16 @@
 
     More info at: http://lesselements.com
 -----------------------------------------------------*/
-/*
-
 body {
-    background-color: #252A30;
+  background-color: #D0DEDE;
 }
-
 .ui-pnotify-history-container {
-    margin-right: 3em;
+  margin-right: 3em;
 }
-
 iframe {
-    background: rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1ex;
 }
-*/
 .progress {
   width: 0%;
   overflow: hidden;
@@ -192,10 +188,22 @@ img.small_icon {
   margin-bottom: 0;
 }
 @media (min-width: 979px) {
+  .maincontainer {
+    min-height: 800px;
+  }
   #contents {
     margin-top: 3em;
+    height: 100%;
   }
   #uploadzone {
     margin-top: 3em;
   }
+}
+.background_text {
+  color: rgba(0, 0, 0, 0.3);
+  text-shadow: 1px 1px 0 #fff;
+  font-variant: small-caps;
+  font-size: 30px;
+  width: 100%;
+  text-align: center;
 }
