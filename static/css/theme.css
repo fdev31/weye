@@ -92,6 +92,9 @@ iframe {
   -webkit-transition: all background 0.5s linear ease-out;
   -moz-transition: all background 0.5s linear ease-out;
   transition: all background 0.5s linear ease-out;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .item:hover {
   background: white !important;

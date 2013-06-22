@@ -9,25 +9,24 @@
     <link href="/static/css/jquery.pnotify.default.css" rel="stylesheet" media="screen">
     <link type="text/css" rel="stylesheet" href="/static/css/theme.css" media="screen">
 
-
 <!--   TEMPLATES -->
-  <script id="view_file" type="text/html">
+<script id="view_file" type="text/html">
     <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
       <a title="Share item with RightClick>Copy location" href="{{permalink}}"  ><i class="icon-bookmark"/> Permalink</a>
 
       <h1>Viewing {{item.mime}} (<span class="filesize">{{item.size}}</span>)</h1>
 
       <h3><a id="download_link" title="Click to download" href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
-
-  </script> <script id="view_item" class="partial" type=
-  "text/html">
-  <div class="item" data-link="{{f}}">
+</script>
+<script id="view_item" class="partial" type= "text/html">
+  <div class="item span12" data-link="{{f}}">
       <img src="/static/mime/{{m}}.svg" class="small_icon item_caption item_stuff"/>
       <span class="item_stuff item_caption">{{f}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="ItemTool.popup($(this).parent());false;" />
     </div>
-  </script> <script id="view_folder" type="text/html">
-      {{#backlink}}
+</script>
+<script id="view_folder" type="text/html">
+    {{#backlink}}
         <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
             <a title="Share item with RightClick>Copy location" href="{{permalink}}" ><i class="icon-bookmark"/> Permalink</a>
         {{/backlink}}
@@ -38,7 +37,8 @@
         </header>
 
        {{#have_child}}
-        <div class="items">
+        <div class="items row-fluid">
+            <br/>
             {{#child}}
             {{>view_item}}
             {{/child}}
@@ -49,7 +49,8 @@
         No item.
         </div>
         {{/have_child}}
-  </script> <script id="question" type="text/html">
+</script>
+<script id="question" type="text/html">
     <div class="modal hide fade" id="question_popup">
           <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
