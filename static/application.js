@@ -273,7 +273,7 @@ function view_path(path) {
 
 // ON-Ready
 
-ks.ready(function() {
+$(function() {
     // prevent default action
     $('#addsearch_form').submit(function() {return false})
 
