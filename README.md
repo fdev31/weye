@@ -33,9 +33,9 @@ or
 
     To render HTML ([mustache](http://mustache.github.com/mustache.5.html)-powered templates)
 
-- [KickStrap](http://getkickstrap.com/docs/1.1/first-steps/)
+- [BootStrap](http://twitter.github.io/bootstrap/)
 
-    To handles all the HTML5 boilerplate
+    To handles most of the HTML5 boilerplate
 
 ### Not chosen yet
 
