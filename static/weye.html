@@ -125,12 +125,12 @@
 
   <div class="container-fluid maincontainer">
 
-      <aside id="uploadzone" onclick="$('#up_panel').removeClass('hidden')" class="pull-right span3 well autodim folder-item">
-          <label for="file" class="background_text">Upload zone</label>
+      <aside id="uploadzone"class="pull-right span3 well autodim folder-item">
+          <label for="file" onclick="$('#up_panel').slideToggle().toggleClass('hidden'); return false;" class="background_text">Upload zone</label>
 
-          <div id="up_panel" class="hidden">
-              <input type="file" name="file" id="file">
-              <button id="upload">Upload</button>
+          <div onclick="return true" id="up_panel" class="hidden slide">
+              <input type="file" name="file" id="file" title="Browse..." />
+              <button id="upload" class="btn pull-right btn-primary">Upload</button>
               <p><span id="progress" class="progress">0%</span></p>
           </div>
       </aside>
@@ -146,7 +146,8 @@
   <!--  <script>window.jQuery || document.write('<script src="/static/Kickstrap/js/jquery-1.7.1.min.js"><\/script>');</script>-->
   <script src="/static/js/jquery-1.8.2.min.js">
 </script> <!-- jquery -->
-   <script src="/static/js/bootstrap.min.js">
+<script src="/static/js/bootstrap.min.js"></script>
+   <script src="/static/js/bootstrap.file-input.min.js">
 </script> <!-- kickstrap -->
    <script src="/static/js/jquery.isotope.min.js">
 </script> <!-- TODO: nice content rendering -->

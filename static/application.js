@@ -269,7 +269,7 @@ function view_path(path) {
                 }
                 /* compute back ref & permalink */
                 var plink = window.location + '?view=' + path;
-                $('#up_panel').addClass('hidden')
+                $('#up_panel').slideUp().addClass('hidden');
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
@@ -344,6 +344,7 @@ $(function() {
     // handle upload stuff
 
     var _p = $('#progress');
+    $('#file').bootstrapFileInput();
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { console.log('#########', data); return {'prefix': ui.doc_ref} },
@@ -361,6 +362,10 @@ $(function() {
             for (var i=0; i<data.child.length;i++) {
             	items.isotope( 'insert', ItemTool.render(data.child[i]) );
             }
+            setTimeout( function() {
+                _p.html('');
+                _p.css('width', 0);
+            }, 500);
         }
     });
 
