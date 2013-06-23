@@ -14,7 +14,7 @@
     <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
       <a title="Share item with RightClick>Copy location" href="{{permalink}}"  ><i class="icon-bookmark"/> Permalink</a>
 
-      <h1>Viewing {{item.mime}} (<span class="filesize">{{item.size}}</span>)</h1>
+          <h1><small>Viewing</small> {{item.mime}} (<span class="filesize">{{item.size}}</span>)</h1>
 
       <h3><a id="download_link" title="Click to download" href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
 </script>
@@ -32,7 +32,7 @@
         {{/backlink}}
         <header>
             <hgroup>
-            <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> Browsing {{path}}</h1>
+            <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>Browsing</small> {{path}}</h1>
             </hgroup>
         </header>
 

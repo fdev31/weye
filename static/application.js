@@ -79,6 +79,9 @@ function add_new_item() {
 function finalize_item_list(o) {
     ItemTool.prepare(o);
     o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
+    setTimeout( function() {
+    ui.recover_selected();
+    }, 100);
 };
 
 var ui = new function() {
@@ -86,10 +89,12 @@ var ui = new function() {
     this.nav_hist = {};
     this.selected_item = -1;
     this._cached_filter = null;
+    this._on_hold = true;
     this.flush_caches = function() {
         this._cached_filter = null;
         $('#addsearch_form input[name=text]').val('');
-    }
+        this._on_hold = true;
+    };
 
     this.select_next = function() {
         return ui.select_idx(ui.selected_item, ui.selected_item+1);
@@ -107,6 +112,8 @@ var ui = new function() {
         }
     };
     this.select_idx = function(old_idx, new_idx) {
+        if(ui._on_hold )
+            return;
         /* changes selection from old_idx to new_idx
          if new_idx == -1, then selects the last item
          */
@@ -136,6 +143,7 @@ var ui = new function() {
     };
     this.recover_selected = function() {
         /* set current selected item state from saved history information */
+        ui._on_hold = false;
         ui.select_idx(null, ui.nav_hist[ui.doc_ref]?ui.nav_hist[ui.doc_ref].selected:0);
     };
     return this;
@@ -241,7 +249,7 @@ function view_path(path) {
     /* document viewer, give it a valid path */
 //    console.log('view_path', path);
     $('audio').each( function() {this.pause(); this.src = "";} );
-    $('.row-fluid').fadeOut('fast');
+//    $('.row-fluid').fadeOut('fast');
     setTimeout( function() {
         $.get('/o'+path)
         .success(function(d) {
@@ -265,9 +273,6 @@ function view_path(path) {
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
-                    setTimeout( function() {
-                        ui.recover_selected();
-                    }, 1002);
                     // Current document is a folder
                     $('.folder-item').show();
                     $('.pure-item').hide();
@@ -315,7 +320,7 @@ function view_path(path) {
                     }
                 }
                 // finished successfuly
-                $('.row-fluid').fadeIn('slow');
+//                $('.row-fluid').fadeIn('slow');
             }
         }
     )
