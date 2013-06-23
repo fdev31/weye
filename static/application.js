@@ -272,7 +272,11 @@ function view_path(path) {
                     ui.doc_ref = '/';
                 }
                 /* compute back ref & permalink */
-                var plink = window.location + '?view=' + path;
+                var loc = '' + window.location;
+                if (loc.search('[?]view=')) {
+                    loc = loc.substring(0, loc.search('[?]view='))
+                }
+                var plink = loc + '?view=' + path;
                 $('#up_panel').slideUp().addClass('hidden');
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
