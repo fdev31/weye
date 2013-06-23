@@ -99,7 +99,7 @@ var ui = new function() {
         return true;
     };
     this.get_items = function() {
-        if ( $('.items > item.filtered').length != 0 ) {
+        if ( $('.items > .item.filtered').length != 0 ) {
             return $('.items > .item.filtered');
         } else {
             return $('.items > .item');
