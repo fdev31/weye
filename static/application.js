@@ -304,7 +304,6 @@ function view_path(path) {
                                         console.log('ok');
                                         $('.folder-item').hide();
                                         $('.pure-item').hide();
-                                        var permalink = window.location + '?view=' + path;
                                         try {
                                             eval(d);
                                         } catch(e) {
