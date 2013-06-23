@@ -5,7 +5,7 @@ var current_filter = '';
 function show_help() {
     $.pnotify({
         title: "Keyboard shortcuts!",
-        text: "Use UP/DOWN, ENTER/BACKspace, HOME/END to navigate...<br/>Close popups using ESCAPE.",
+        text: "Use <b>UP</b>/<b>DOWN</b>, <b>ENTER</b>/<b>BACKspace</b>, <b>HOME</b>/<b>END</b> to navigate...<br/>Close popups using <b>ESCAPE</b>.<br/><br/><b>Ctrl+Space</b> & <b>Tab</b> will change focus from text filter to the list.",
     });
 
 }
