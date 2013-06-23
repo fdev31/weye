@@ -9,14 +9,16 @@ function filter_result(filter) {
         current_filter = $('#addsearch_form input[name=text]').val() ;
     }
     if (current_filter.match(RegExp('^type:'))) {
-        var t = new RegExp(current_filter.split(':')[1].trim());
+        var t = new RegExp(current_filter.toLocaleLowerCase().split(':')[1].trim());
         var match_func = function(elt) {
             return elt.data('mime').match(t);
         }
     } else {
-        var re = new RegExp( current_filter );
+        var re = new RegExp( current_filter.toLocaleLowerCase() );
         var match_func = function(elt) {
-            return elt.data('link').match(re);
+            var v = !!elt.data('link').toLocaleLowerCase().match(re);
+            console.log(re, elt.data('link').toLocaleLowerCase(), v);
+            return v;
         };
     }
     $('.item').each(
@@ -77,10 +79,10 @@ function add_new_item() {
 };
 
 function finalize_item_list(o) {
-    ItemTool.prepare(o);
     o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
+    ItemTool.prepare(o);
     setTimeout( function() {
-    ui.recover_selected();
+        ui.recover_selected();
     }, 100);
 };
 
@@ -262,6 +264,8 @@ function view_path(path) {
             } else {
                 // normal continuation
                 /* update current document reference */
+                while(path[1] === '/')
+                    path = path.substr(1);
                 if (path !== '/') {
                     ui.doc_ref = path;
                 } else {
@@ -282,18 +286,65 @@ function view_path(path) {
 //                            console.log('children: /c/'+path);
                             // render
                             base_data = c;
-                            o.html( 
-                                ich.view_folder({
-                                    mime: d.mime,
-                                    path: d.path,
-                                    have_child: c.length>0,
-                                    child: c,
-                                    backlink: bref,
-                                    permalink: plink
+                            var is_an_app = false;
+                            var app_indice = 'infos.js';
+                            base_data.forEach(function(o) {
+                                if(o.f === app_indice)
+                                    is_an_app = true;
+                            })
+                            if(is_an_app) {
+                                console.log('/d'+path+'/infos.js');
+                                var plugin = null;
+
+                                var load_plugin = function() {
+                                    $('#contents').html('');
+                                    console.log('ok1', plugin.js, path);
+                                    $.ajax({url:'/d'+path+'/'+plugin.js, dataType: 'text'})
+                                    .done(function(d) {
+                                        console.log('ok');
+                                        $('.folder-item').hide();
+                                        $('.pure-item').hide();
+                                        var permalink = window.location + '?view=' + path;
+                                        try {
+                                            eval(d);
+                                        } catch(e) {
+                                            $.pnotify({type:'error', text: 'Invalid application code', title: 'Loading failure'});
+                                            console.log("ERR", e);
+                                        }
+                                    })
+                                    .fail(function(e) {
+                                        $.pnotify({type: 'error', title: "Invalid data", text: "Impossible to load application"});
+                                        console.log("ERR", e);
+                                    });
+                                };
+                                $.ajax({url: '/d'+path+'/infos.js', dataType: 'json'})
+                                .done( function(d) {
+                                    plugin = d;
+                                    if(!!d.templates) {
+                                        for(var key in d.templates) {
+                                            ich.addTemplate(key, d.templates[key]);
+                                        };
+                                    }
+                                    load_plugin();
                                 })
-                            );
-                            // make those items funky
-                            finalize_item_list(o);
+                                .fail(function(e) {
+                                    $.pnotify({type: 'error', title: "Invalid data", text: "Impossible to load application informations"});
+                                    console.log("ERR", e);
+                                });
+                            } else {
+                                o.html( 
+                                    ich.view_folder({
+                                        mime: d.mime,
+                                        path: d.path,
+                                        have_child: c.length>0,
+                                        child: c,
+                                        backlink: bref,
+                                        permalink: plink
+                                    })
+                                );
+                                // make those items funky
+                                finalize_item_list(o);
+                            }
                         });
                 } else {
                     // Current document is an item/file
