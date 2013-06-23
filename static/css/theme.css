@@ -202,6 +202,9 @@ img.small_icon {
     margin-top: 3em;
     background: #e5f4f4;
   }
+  #uploadzone #up_panel {
+    overflow: clip;
+  }
 }
 .background_text {
   color: rgba(0, 0, 0, 0.3);
@@ -211,4 +214,8 @@ img.small_icon {
   width: 100%;
   font-weight: bold;
   text-align: center;
+}
+.file-input-name {
+  word-wrap: break-word;
+  display: block;
 }
