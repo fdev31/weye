@@ -75,48 +75,51 @@
 
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
-      <div class="container-fluid">
-        <a class="btn btn-navbar" data-toggle="collapse"
-        data-target=".nav-collapse"><span class=
-        "icon-bar">aa</span> <span class="icon-bar">bb</span>
-        <span class="icon-bar">cc</span></a> <a class="brand" href=
-        "/">Web eye</a>
+      <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+          </a>
+          <div class="nav-collapse collapse navbar-responsive-collapse">
+          <a class="brand" href="/">Web eye</a>
+            <ul class="nav">
+<!--                <li class="folder-item"><h4 class="listtitle">Sort:</h4></li>-->
+                <li class="folder-item"><a href="#" onclick="$('.items').isotope({ sortBy : 'name' });">By name</a></li>
+                <li class="folder-item"><a href="#" onclick="$('.items').isotope({ sortBy : 'type' });">type</a></li>
+                <li class="folder-item"><a href="#" onclick="$('.items').isotope({ sortBy : 'original-order' });">or natural</a></li>
+                <!--
+                <li>
+                <a href="/">Remove</a>
+                </li>
 
-        <div class="nav-collapse">
-          <ul class="nav">
-            <!--
-            <li>
-              <a href="/">Remove</a>
-            </li>
+                <li>
+                <a href="#" class="folder-item" title=
+                "Download as ZIP">Download</a>
+                </li>
 
-            <li>
-              <a href="#" class="folder-item" title=
-              "Download as ZIP">Download</a>
-            </li>
-
-            <li class="active">
-              <a href="#">Preferences</a>
-            </li>
-            -->
-
-            <li>
-              <form id="addsearch_form" class="form-search form-inline form-horizontal" action=
-              "/search" method="post" name="addsearch_form">
+                <li class="active">
+                <a href="#">Preferences</a>
+                </li>
+                -->
+            </ul>
+            <form id="addsearch_form" class="folder-item form-search form-inline form-horizontal" action="/search" method="post" name="addsearch_form">
                 <!--    <legend>Legend</legend>-->
                 <!--    <label>Label name</label>-->
-                <input name="text" type="text" class=
-                "input-large search-query" placeholder=
-                "Type something..."> 
                 <!--    <span class="help-block">Example block-level help text here.</span>-->
                 <!--    <label class="checkbox">-->
                 <!--      <input type="checkbox"> Check me out-->
                 <!--    </label>-->
-                 <button name="filter" type="submit" onclick= "filter_result();return false;" class= "btn">Filter</button>
-                 <button name="search" type="submit" onclick="search_for();return false;" class="btn">Search</button>
-                <button name="add" onclick= "add_new_item()" class="btn">Add</button>
-              </form>
-            </li>
-          </ul>
+                <div class="btn-group">
+                    <input name="text" type="text" class="btn input-large search-query" placeholder="Type something..."> 
+                    <button name="filter" type="submit" onclick= "filter_result();return false;" title="Look for something in current folder" class= "btn btn-info">Filter</button>
+                    <button name="search" type="submit" onclick="search_for();return false;" title="Search items in whole database" class="btn">Search</button>
+                    <button name="add" onclick= "add_new_item()" class="btn" title="Create a new note">Add</button>
+                </div>
+                <div class="btn-group pull-right">
+                    <button onclick= "show_help()" class="btn" title="Display help"><i class="icon-book"></i></button>
+                </div>
+            </form>
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -126,7 +129,7 @@
   <div class="container-fluid maincontainer">
 
       <aside id="uploadzone"class="pull-right span3 well autodim folder-item">
-          <label for="file" onclick="$('#up_panel').slideToggle().toggleClass('hidden'); return false;" class="background_text">Upload zone</label>
+          <label for="file" onclick="$('#up_panel').slideToggle().toggleClass('hidden'); return false;" class="background_text">upload</label>
 
           <div onclick="return true" id="up_panel" class="hidden slide">
               <input type="file" class="btn btn-info btn-large span2" name="file" id="file" title=" <i class='icon-white icon-folder-open'></i> Select" />

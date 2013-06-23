@@ -15,6 +15,11 @@ body {
 
 .ui-pnotify-history-container {
     margin-right: 3em;
+    position: fixed;
+    .basicshadow(10px, 0.3);
+}
+.brand {
+    z-index: 1;
 }
 
 iframe {
@@ -27,6 +32,10 @@ iframe {
     background:-moz-linear-gradient(top,@col1,@col2);
     background:-webkit-gradient(linear,left top,left bottom,from(@col1),to(@col2));
     background:-webkit-linear-gradient(top,@col1,@col2);
+}
+
+.basicshadow(@val: 5px, @opa: 0.7) {
+    box-shadow: 0 1px @val 1px rgba(0, 0, 0, @opa);
 }
 
 .progress {
@@ -49,7 +58,11 @@ iframe {
     margin: 1ex 0 0 0;
     padding: 0;
 }
-
+.listtitle {
+    color: #BAB;
+    margin-right: 1ex;
+    font-size: 100%;
+}
 .item.highlighted {
     background: #F8B744 !important;
     color: black;
@@ -191,7 +204,11 @@ img.small_icon {
 }
 
 .navbar-inner {
-    box-shadow: 0 1px 15px 1px rgba(0, 0, 0, 0.7) !important;
+    .basicshadow(15px) !important;
+}
+
+#uploadzone {
+    .basicshadow(10px, 0.3);
 }
 
 @media (min-width: @navbarCollapseWidth) {
@@ -201,10 +218,18 @@ img.small_icon {
     #contents {
         margin-top: 3em;
         height: 100%;
+        z-index: 0;
+        .items {
+            z-index: 1;
+        }
     }
     #uploadzone {
         margin-top: 3em;
         background: @BG_COLOR*1.1;
+        position: fixed;
+        left: auto;
+        z-index: 10;
+        right: 1ex;
         #up_panel {
             overflow: clip;
         }

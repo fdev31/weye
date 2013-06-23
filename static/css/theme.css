@@ -15,6 +15,11 @@ body {
 }
 .ui-pnotify-history-container {
   margin-right: 3em;
+  position: fixed;
+  box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
+}
+.brand {
+  z-index: 1;
 }
 iframe {
   background: rgba(255, 255, 255, 0.9);
@@ -42,6 +47,11 @@ iframe {
   height: 2ex;
   margin: 1ex 0 0 0;
   padding: 0;
+}
+.listtitle {
+  color: #BAB;
+  margin-right: 1ex;
+  font-size: 100%;
 }
 .item.highlighted {
   background: #F8B744 !important;
@@ -190,6 +200,9 @@ img.small_icon {
 .navbar-inner {
   box-shadow: 0 1px 15px 1px rgba(0, 0, 0, 0.7) !important;
 }
+#uploadzone {
+  box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
+}
 @media (min-width: 979px) {
   .maincontainer {
     min-height: 800px;
@@ -197,10 +210,18 @@ img.small_icon {
   #contents {
     margin-top: 3em;
     height: 100%;
+    z-index: 0;
+  }
+  #contents .items {
+    z-index: 1;
   }
   #uploadzone {
     margin-top: 3em;
     background: #e5f4f4;
+    position: fixed;
+    left: auto;
+    z-index: 10;
+    right: 1ex;
   }
   #uploadzone #up_panel {
     overflow: clip;
