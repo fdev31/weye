@@ -2,6 +2,14 @@
 
 var current_filter = '';
 
+function show_help() {
+    $.pnotify({
+        title: "Keyboard shortcuts!",
+        text: "Use UP/DOWN, ENTER/BACKspace, HOME/END to navigate...<br/>Close popups using ESCAPE.",
+    });
+
+}
+
 function filter_result(filter) {
     if (typeof(filter) === 'string') {
         current_filter = filter;
@@ -79,7 +87,16 @@ function add_new_item() {
 };
 
 function finalize_item_list(o) {
-    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows'});
+    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows',
+        getSortData : {
+            name : function ( $elem ) {
+                return $elem.data('link');
+            },
+            type: function ( $elem ) {
+                return $elem.data('mime');
+            }
+        }
+    });
     ItemTool.prepare(o);
     setTimeout( function() {
         ui.recover_selected();
@@ -483,11 +500,5 @@ $(function() {
     Mousetrap.bind('end', function(e) {
         return ui.select_idx(ui.selected_item, -1);
     });
-    setTimeout(function() {
-        $.pnotify({
-            title: "Keyboard shortcuts!",
-            text: "Use UP/DOWN, ENTER/BACKspace, HOME/END to navigate...<br/>Close popups using ESCAPE.",
-        });
-    }, 1000);
 });
 
