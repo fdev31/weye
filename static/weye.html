@@ -19,7 +19,7 @@
       <h3><a id="download_link" title="Click to download" href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
 </script>
 <script id="view_item" class="partial" type= "text/html">
-  <div class="item span12" data-link="{{f}}">
+    <div class="item span12" data-link="{{f}}" data-mime="{{m}}">
       <img src="/static/mime/{{m}}.svg" class="small_icon item_caption item_stuff"/>
       <span class="item_stuff item_caption">{{f}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="ItemTool.popup($(this).parent());false;" />
@@ -84,6 +84,7 @@
 
         <div class="nav-collapse">
           <ul class="nav">
+            <!--
             <li>
               <a href="/">Remove</a>
             </li>
@@ -96,6 +97,7 @@
             <li class="active">
               <a href="#">Preferences</a>
             </li>
+            -->
 
             <li>
               <form id="addsearch_form" class="form-search form-inline form-horizontal" action=
@@ -109,10 +111,9 @@
                 <!--    <label class="checkbox">-->
                 <!--      <input type="checkbox"> Check me out-->
                 <!--    </label>-->
-                 <button name="search" type="submit" onclick=
-                "search_for();return false;" class=
-                "btn">Search</button> <button name="add" onclick=
-                "add_new_item()" class="btn">Add</button>
+                 <button name="filter" type="submit" onclick= "filter_result();return false;" class= "btn">Filter</button>
+                 <button name="search" type="submit" onclick="search_for();return false;" class="btn">Search</button>
+                <button name="add" onclick= "add_new_item()" class="btn">Add</button>
               </form>
             </li>
           </ul>
@@ -128,9 +129,8 @@
           <label for="file" class="background_text">Upload zone</label>
 
           <div id="up_panel" class="hidden">
-              <input type="file" name="file" id="file"> <button id=
-                  "upload">Upload</button>
-
+              <input type="file" name="file" id="file">
+              <button id="upload">Upload</button>
               <p><span id="progress" class="progress">0%</span></p>
           </div>
       </aside>
