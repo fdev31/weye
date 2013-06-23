@@ -11,7 +11,7 @@
     More info at: http://lesselements.com
 -----------------------------------------------------*/
 body {
-  background-color: #D0DEDE;
+  background-color: #d0dede;
 }
 .ui-pnotify-history-container {
   margin-right: 3em;
@@ -197,6 +197,7 @@ img.small_icon {
   }
   #uploadzone {
     margin-top: 3em;
+    background: #e5f4f4;
   }
 }
 .background_text {
@@ -205,5 +206,6 @@ img.small_icon {
   font-variant: small-caps;
   font-size: 30px;
   width: 100%;
+  font-weight: bold;
   text-align: center;
 }

@@ -1,5 +1,38 @@
 "use strict";
 
+var current_filter = '';
+
+function filter_result(filter) {
+    if (typeof(filter) === 'string') {
+        current_filter = filter;
+    } else {
+        current_filter = $('#addsearch_form input[name=text]').val() ;
+    }
+    if (current_filter.match(RegExp('^type:'))) {
+        var t = new RegExp(current_filter.split(':')[1].trim());
+        var match_func = function(elt) {
+            return elt.data('mime').match(t);
+        }
+    } else {
+        var re = new RegExp( current_filter );
+        var match_func = function(elt) {
+            return elt.data('link').match(re);
+        };
+    }
+    $('.item').each(
+            function(i, e) {
+                var e=$(e);
+                if (match_func(e)) {
+                    e.addClass('filtered');
+                } else {
+                    e.removeClass('filtered');
+                }
+            }
+            );
+    $('.items').isotope({filter:'.filtered'});
+    ui.select_idx(ui.selected_item, 1);
+};
+
 function search_for() {
     var pattern = $('#addsearch_form input').val();
     var p = $.post('/search', {text: pattern});
@@ -51,6 +84,11 @@ var ui = new function() {
     this.doc_ref = '/';
     this.nav_hist = {};
     this.selected_item = -1;
+    this._cached_filter = null;
+    this.flush_caches = function() {
+        this._cached_filter = null;
+        $('#addsearch_form input[name=text]').val('');
+    }
 
     this.select_next = function() {
         return ui.select_idx(ui.selected_item, ui.selected_item+1);
@@ -60,18 +98,30 @@ var ui = new function() {
             return ui.select_idx(ui.selected_item, ui.selected_item-1);
         return true;
     };
+    this.get_items = function() {
+        if ( $('.items > item.filtered').length != 0 ) {
+            return $('.items > .item.filtered');
+        } else {
+            return $('.items > .item');
+        }
+    };
     this.select_idx = function(old_idx, new_idx) {
         /* changes selection from old_idx to new_idx
          if new_idx == -1, then selects the last item
          */
-        var items=$('.items > .item');
+        var items = ui.get_items();
+
         if (new_idx >= items.length)
-            return true;
-        if (old_idx != undefined) 
-            $(items[old_idx]).removeClass('highlighted');
-        if (new_idx == -1)
             new_idx = items.length-1;
+
+        if (old_idx != undefined && !!ui._cached_filter) 
+            $(ui._cached_filter[old_idx]).removeClass('highlighted');
+
+        if (new_idx == -1) // allow list to shorten
+            new_idx = items.length-1;
+        ui._cached_filter = items;
         var n = $(items[new_idx]);
+        console.log(n, new_idx, old_idx);
         n.addClass('highlighted');
         ui.save_selected(new_idx);
         refocus(n);
@@ -81,7 +131,7 @@ var ui = new function() {
         ui.selected_item = idx;
         if(!!!ui.nav_hist[ui.doc_ref])
             ui.nav_hist[ui.doc_ref] = {};
-        ui.nav_hist[ui.doc_ref].selected = idx;
+        ui.nav_hist[ui.doc_ref].selected = idx-1;
     };
     this.recover_selected = function() {
         /* set current selected item state from saved history information */
@@ -153,6 +203,7 @@ return this;}();
 function go_back() {
     /* returns to parent item */
     var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
+    ui.flush_caches();
     if (!!bref) {
         bref = bref[1] || '/';
         view_path(bref);
@@ -185,6 +236,7 @@ function refocus(elt) {
 };
 
 function view_path(path) {
+    ui.flush_caches();
     /* document viewer, give it a valid path */
 //    console.log('view_path', path);
     $('audio').each( function() {this.pause(); this.src = "";} );
@@ -208,13 +260,13 @@ function view_path(path) {
                 }
                 /* compute back ref & permalink */
                 var plink = window.location + '?view=' + path;
-                setTimeout( function() {
-                    ui.recover_selected();
-                }, 1001);
                 $('#up_panel').addClass('hidden')
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
+                    setTimeout( function() {
+                        ui.recover_selected();
+                    }, 1002);
                     // Current document is a folder
                     $('.folder-item').show();
                     $('.pure-item').hide();
@@ -223,6 +275,7 @@ function view_path(path) {
                         .success(function(c) {
 //                            console.log('children: /c/'+path);
                             // render
+                            base_data = c;
                             o.html( 
                                 ich.view_folder({
                                     mime: d.mime,
@@ -272,6 +325,7 @@ function view_path(path) {
 };
 
 // ON-Ready
+var base_data = {};
 
 $(function() {
     // prevent default action
@@ -283,18 +337,17 @@ $(function() {
 
     // handle upload stuff
 
-    var $b = $('#upload'),
-    $f = $('#file'),
-    $p = $('#progress'),
-    up = new uploader($f.get(0), {
+    var _p = $('#progress');
+    var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { console.log('#########', data); return {'prefix': ui.doc_ref} },
-        progress:function(ev){ console.log('progress'); $p.html(((ev.loaded/ev.total)*100)+'%'); $p.css('width',$p.html()); },
+        progress:function(ev){ console.log('progress'); _p.html(((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
         error:function(ev){ console.log('error', ev); },
         success:function(data){
-            $p.html('100%');
-            $p.css('width',$p.html());
+            _p.html('100%');
+            _p.css('width',_p.html());
             var data = JSON.parse(data);
+            console.log(data);
             if (data.error) {
                 $.pnotify({title: 'Unable to upload some files', text: data.error});
             }
@@ -305,7 +358,7 @@ $(function() {
         }
     });
 
-    $b.click(function(){
+    $('#upload').click(function(){
         up.send();
     });
 
@@ -328,7 +381,7 @@ $(function() {
         if ($('#download_link').length) {
             ItemTool.popup();
         } else {
-            var items=$('.items > .item');
+            var items=ui.get_items();
             $(items[ui.selected_item]).find('.item_stuff:first').trigger('tap');
         }
         return false;
@@ -346,6 +399,16 @@ $(function() {
         $.pnotify({text: 'Could show a delete popup... ?'});
         return false;
     });
+    Mousetrap.bind('ctrl+space', function(e) {
+        var inp = $('#addsearch_form input[name=text]');
+        console.log(inp.is(':focus'));
+        if(inp.is(':focus')) {
+            filter_result('');
+        } else {
+            inp.focus();
+        }
+        return false;
+    });
     Mousetrap.bind('esc', function(e) {
         return ui.select_idx(ui.selected_item, null);
     });
@@ -358,7 +421,7 @@ $(function() {
     setTimeout(function() {
         $.pnotify({
             title: "Keyboard shortcuts!",
-            text: "Use TAB, UP/DOWN & ENTER to navigate...<br/>Close popups using ESCAPE.",
+            text: "Use UP/DOWN, ENTER/BACKspace, HOME/END to navigate...<br/>Close popups using ESCAPE.",
         });
     }, 1000);
 });
