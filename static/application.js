@@ -67,10 +67,11 @@ function add_new_item() {
     var pattern = $('#addsearch_form input').val();
     console.log(pattern);
     $.post('/push', {text: pattern}).success( function(d) {
-        console.log(d);
         $.get(d.href).success(function(d) {
-            console.log('render', d);
-            $('.items').isotope('insert', ItemTool.render(d));
+            var elt = ItemTool.render(d);
+            if(current_filter) elt.addClass('filtered');
+            $('.items').isotope('insert', elt);
+            filter_result();
         });
     });
 };
