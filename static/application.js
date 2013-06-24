@@ -50,11 +50,13 @@ function show_help() {
         title: "Keyboard shortcuts",
         text: "<ul><li><b>UP</b>/<b>DOWN</b></li><li><b>ENTER</b>/<b>BACKspace</b> </li><li> <b>HOME</b>/<b>END</b> to navigate...</li><li>Close popups using <b>ESCAPE</b></li><li><b>Ctrl+Space</b> & <b>Tab</b> will change focus from text filter to the list</li></ul>",
     });
-    $.pnotify({
-        type: 'info',
-        title: "Filter Syntax (Ctrl+Space)",
-        text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
-    });
+    setTimeout(function(){
+        $.pnotify({
+            type: 'info',
+            title: "Filter Syntax (Ctrl+Space)",
+            text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
+        });
+    }, 500);
 
 }
 function filter_result(filter) {
