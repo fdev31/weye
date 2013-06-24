@@ -153,6 +153,7 @@ function finalize_item_list(o) {
 };
 
 var ui = new function() {
+    this.permalink = '#';
     this.doc_ref = '/';
     this.nav_hist = {};
     this.selected_item = -1;
@@ -276,10 +277,20 @@ return this;}();
 // TODO:
 // handle "template_prefix" global variable using "bacon.isMobile()"
 // to add a "mobile_" prefix to view_page's templates & co
+//
+var plugin_cleanup = false;
+var plugin_data = {};
 
 function go_back() {
     /* returns to parent item */
     var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
+    if(!!plugin_cleanup) {
+        try {
+            plugin_cleanup();
+        } catch (e) {
+            $.pnotify({type: 'error', title: 'plugin failed to cleanup', text: ''+e});
+        }
+    }
     ui.flush_caches();
     if (!!bref) {
         bref = bref[1] || '/';
@@ -312,8 +323,40 @@ function refocus(elt) {
     $(window).scrollTop(my_scroll);
 };
 
+var load_plugin = function() {
+    $('#contents').html('');
+    console.log('ok1', ui.plugin.js, ui.doc_ref);
+    $.ajax({url:'/d'+ui.doc_ref+'/'+ui.plugin.js, dataType: 'text'})
+    .done(function(d) {
+        $('.folder-item').hide();
+        $('.pure-item').hide();
+        try {
+            eval(d);
+        } catch(e) {
+            $.pnotify({type:'error', text: 'Invalid application code<br/>'+e, title: 'Loading failure'});
+            console.log("ERR", e);
+        }
+    })
+    .fail(function(e) {
+        $.pnotify({type: 'error', title: "Invalid data", text: "Impossible to load application"});
+        console.log("ERR", e);
+    });
+};
+
+function get_permalink() {
+    // TODO: check if different from ui.doc_ref
+    var loc = '' + window.location;
+    if (loc.search('[?]view=')) {
+        loc = loc.substring(0, loc.search('[?]view='))
+    }
+    var plink = loc + '?view=' + ui.doc_ref;
+    console.log(ui.doc_ref, plink);
+    return plink;
+}
+
 function view_path(path) {
     ui.flush_caches();
+    var buttons = $('#addsearch_form');
     /* document viewer, give it a valid path */
 //    console.log('view_path', path);
     $('audio').each( function() {this.pause(); this.src = "";} );
@@ -321,6 +364,7 @@ function view_path(path) {
     setTimeout( function() {
         $.get('/o'+path)
         .success(function(d) {
+            buttons.find('button').removeClass('hidden');
 //            console.log('object: /o/'+path, d);
             if (d.error) {
                 $.pnotify({
@@ -337,12 +381,8 @@ function view_path(path) {
                 } else {
                     ui.doc_ref = '/';
                 }
+                ui.permalink = get_permalink();
                 /* compute back ref & permalink */
-                var loc = '' + window.location;
-                if (loc.search('[?]view=')) {
-                    loc = loc.substring(0, loc.search('[?]view='))
-                }
-                var plink = loc + '?view=' + path;
                 $('#up_panel').slideUp().addClass('hidden');
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
@@ -362,33 +402,13 @@ function view_path(path) {
                                 if(o.f === app_indice)
                                     is_an_app = true;
                             })
+                            ui.plugin = null;
                             if(is_an_app) {
                                 console.log('/d'+path+'/infos.js');
-                                var plugin = null;
 
-                                var load_plugin = function() {
-                                    $('#contents').html('');
-                                    console.log('ok1', plugin.js, path);
-                                    $.ajax({url:'/d'+path+'/'+plugin.js, dataType: 'text'})
-                                    .done(function(d) {
-                                        console.log('ok');
-                                        $('.folder-item').hide();
-                                        $('.pure-item').hide();
-                                        try {
-                                            eval(d);
-                                        } catch(e) {
-                                            $.pnotify({type:'error', text: 'Invalid application code', title: 'Loading failure'});
-                                            console.log("ERR", e);
-                                        }
-                                    })
-                                    .fail(function(e) {
-                                        $.pnotify({type: 'error', title: "Invalid data", text: "Impossible to load application"});
-                                        console.log("ERR", e);
-                                    });
-                                };
                                 $.ajax({url: '/d'+path+'/infos.js', dataType: 'json'})
                                 .done( function(d) {
-                                    plugin = d;
+                                    ui.plugin = d;
                                     if(!!d.templates) {
                                         for(var key in d.templates) {
                                             ich.addTemplate(key, d.templates[key]);
@@ -408,7 +428,7 @@ function view_path(path) {
                                         have_child: c.length>0,
                                         child: c,
                                         backlink: bref,
-                                        permalink: plink
+                                        permalink: ui.permalink
                                     })
                                 );
                                 // make those items funky
@@ -424,7 +444,7 @@ function view_path(path) {
                         item: d,
                         path: path,
                         backlink: bref,
-                        permalink: plink
+                        permalink: ui.permalink
                         })
                    );
                    $('.filesize').each( function(i, x) { var o=$(x); o.text(hr_size(eval(o.text()))) } )
@@ -534,7 +554,6 @@ $(function() {
         return false;
     });
     Mousetrap.bind('backspace', function(e) {
-        var items=$('.items > .item');
         $('#backlink').click();
         return false;
     });
