@@ -37,14 +37,26 @@ var epic_opts = {
   }
 };
 
+function editor_save() {
+    var text = editor.exportFile(ui.doc_ref);
+    $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
+};
+
+var editor = null;
+
 function show_help() {
     $.pnotify({
-        title: "Keyboard shortcuts!",
-        text: "Use <b>UP</b>/<b>DOWN</b>, <b>ENTER</b>/<b>BACKspace</b>, <b>HOME</b>/<b>END</b> to navigate...<br/>Close popups using <b>ESCAPE</b>.<br/><br/><b>Ctrl+Space</b> & <b>Tab</b> will change focus from text filter to the list.",
+        type: 'info',
+        title: "Keyboard shortcuts",
+        text: "<ul><li><b>UP</b>/<b>DOWN</b></li><li><b>ENTER</b>/<b>BACKspace</b> </li><li> <b>HOME</b>/<b>END</b> to navigate...</li><li>Close popups using <b>ESCAPE</b></li><li><b>Ctrl+Space</b> & <b>Tab</b> will change focus from text filter to the list</li></ul>",
+    });
+    $.pnotify({
+        type: 'info',
+        title: "Filter Syntax (Ctrl+Space)",
+        text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
     });
 
 }
-
 function filter_result(filter) {
     if (typeof(filter) === 'string') {
         current_filter = filter;
@@ -139,7 +151,6 @@ function finalize_item_list(o) {
 };
 
 var ui = new function() {
-    this.editor = null;
     this.doc_ref = '/';
     this.nav_hist = {};
     this.selected_item = -1;
@@ -424,12 +435,17 @@ function view_path(path) {
                         $('<audio src="/d'+path+'" controls><span>Audio preview not supported on your browser</span></audio>').appendTo(o);
                     } else if (d.mime.match(RegExp('^text'))) {
 //                        $('<iframe class="span11" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
-                        $('<div id="epiceditor"></div>').appendTo(o);
-                        ui.editor = new EpicEditor(epic_opts).load( function() {
+                        $('<div class="row-fluid"><small>Fullscreen: <i>Alt+F</i>, Toggle preview: <i>Alt+P</i></small></div><div class="row-fluid" id="epiceditor"></div> <div class="pull-right btn-group"></div>').appendTo(o);
+
+
+                        $('<button class="btn btn-success btn-large" onclick="editor_save()">Save</button>')
+                        .appendTo( $('#download_link').parent() )
+
+                        editor = new EpicEditor(epic_opts).load( function() {
                             $.get('/d'+path)
                             .done(function(d) {
                                 console.log('EDIT', path);
-                                ui.editor.importFile(path, d);
+                                editor.importFile(path, d);
                             })
                             .fail(function(e) {
                                 $.pnotify({type: 'error', text: ''+e});
