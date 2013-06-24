@@ -100,7 +100,7 @@ function finalize_item_list(o) {
     ItemTool.prepare(o);
     setTimeout( function() {
         ui.recover_selected();
-    }, 100);
+    }, 1);
 };
 
 var ui = new function() {
@@ -398,7 +398,7 @@ function view_path(path) {
         .error(function() {
             $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
         });
-    }, 300);
+    }, 3);
 };
 
 // ON-Ready
@@ -436,7 +436,7 @@ $(function() {
             setTimeout( function() {
                 _p.html('');
                 _p.css('width', 0);
-            }, 500);
+            }, 5);
         }
     });
 
