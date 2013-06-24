@@ -4,10 +4,10 @@ import logging
 from bottle import json_dumps as dumps
 from bottle import json_loads as loads
 
-from .utils import guess_type
-from .configuration import config
-from . import root_objects
-from .search_engine import search
+from weye.utils import guess_type
+from weye.configuration import config
+from weye.search_engine import search
+from weye import root_objects
 log = logging.getLogger('application')
 
 @bottle.get('/')
