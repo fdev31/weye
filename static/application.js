@@ -2,6 +2,41 @@
 
 var current_filter = '';
 
+var epic_opts = {
+  container: 'epiceditor',
+  textarea: null,
+  basePath: '/static',
+  clientSideStorage: true,
+  localStorageName: 'epiceditor',
+  useNativeFullscreen: true,
+  parser: marked,
+  file: {
+    name: 'epiceditor',
+    defaultContent: '',
+    autoSave: 100
+  },
+  theme: {
+    base: '/themes/epic/base/epiceditor.css',
+    preview: '/themes/epic/preview/preview-dark.css',
+    editor: '/themes/epic/editor/epic-dark.css'
+  },
+  button: {
+    preview: true,
+    fullscreen: true
+  },
+  focusOnLoad: false,
+  shortcut: {
+    modifier: 18,
+    fullscreen: 70,
+    preview: 80
+  },
+  string: {
+    togglePreview: 'Toggle Preview Mode',
+    toggleEdit: 'Toggle Edit Mode',
+    toggleFullscreen: 'Enter Fullscreen'
+  }
+};
+
 function show_help() {
     $.pnotify({
         title: "Keyboard shortcuts!",
@@ -104,6 +139,7 @@ function finalize_item_list(o) {
 };
 
 var ui = new function() {
+    this.editor = null;
     this.doc_ref = '/';
     this.nav_hist = {};
     this.selected_item = -1;
@@ -387,7 +423,18 @@ function view_path(path) {
                     } else if (d.mime.match(RegExp('^audio'))) {
                         $('<audio src="/d'+path+'" controls><span>Audio preview not supported on your browser</span></audio>').appendTo(o);
                     } else if (d.mime.match(RegExp('^text'))) {
-                        $('<iframe class="span11" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
+//                        $('<iframe class="span11" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
+                        $('<div id="epiceditor"></div>').appendTo(o);
+                        ui.editor = new EpicEditor(epic_opts).load( function() {
+                            $.get('/d'+path)
+                            .done(function(d) {
+                                console.log('EDIT', path);
+                                ui.editor.importFile(path, d);
+                            })
+                            .fail(function(e) {
+                                $.pnotify({type: 'error', text: ''+e});
+                            });
+                        })
                     }
                 }
                 // finished successfuly
