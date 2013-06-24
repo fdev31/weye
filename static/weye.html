@@ -14,9 +14,10 @@
     <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
       <a title="Share item with RightClick>Copy location" href="{{permalink}}"  ><i class="icon-bookmark"/> Permalink</a>
 
-          <h1><small>Viewing</small> {{item.mime}} (<span class="filesize">{{item.size}}</span>)</h1>
+          <h1><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</h1>
 
-      <h3><a id="download_link" title="Click to download" href="/d{{path}}"><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</a></h3>
+          <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Download <em>{{item.mime}}</em> (<span class="filesize">{{item.size}}</span>)</a></div><hr/>
+
 </script>
 <script id="view_item" class="partial" type= "text/html">
     <div class="item span12" data-link="{{f}}" data-mime="{{m}}">
