@@ -65,6 +65,7 @@ class ObjAdder(object):
         self.add = self.writer.add_document
 
     def scan(self):
+        pat = itertools.cycle(r'|/-\\')
         # FIXME in whoosh: using the same indexer for the whole session makes things wrong
         reset()
         max_size = MAX_SIZE
@@ -92,7 +93,7 @@ class ObjAdder(object):
                             d = d.decode('latin1')
                     w(path=path[pfx_len:], mime=guess_type(path), description='', txtcontent=d if is_text else '')
                     i = next(c)
-                    print(' Collected {:d} items >> {:35s}'.format(i, m), end='\r')
+                    print(' Collected {:d} items {:s} {:35s}'.format(i, next(pat), m), end='\r')
         try:
             writer.commit()
         except Exception: # It might be closed/commited yet
@@ -158,7 +159,10 @@ if __name__ == '__main__':
     count = itertools.count()
     c = 10
     while True:
-        text = input('text> ')
+        try:
+            text = input('text> ')
+        except EOFError:
+            break
         if text.strip().lower() != 'p' and text.strip() != '':
             count = itertools.count()
             pattern = text
