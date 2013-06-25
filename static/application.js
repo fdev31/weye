@@ -41,7 +41,11 @@ function editor_save() {
     var text = editor.exportFile(ui.doc_ref);
     $.post('/d'+ui.doc_ref, {text: text, path: ui.doc_ref})
         .done(function(d) {
-            $.pnotify({type:'success', text: 'File saved'});
+            if(d.error) {
+                $.pnotify({type:'error', text: ''+d.error, title: "Unable to save"});
+            } else {
+                $.pnotify({type:'success', text: 'File saved'});
+            }
         })
         .fail(function(e) {
             $.pnotify({type:'error', text: ''+e, title: "Unable to save"});
