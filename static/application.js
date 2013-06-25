@@ -39,7 +39,14 @@ var epic_opts = {
 
 function editor_save() {
     var text = editor.exportFile(ui.doc_ref);
-    $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
+    $.post('/d'+ui.doc_ref, {text: text, path: ui.doc_ref})
+        .done(function(d) {
+            $.pnotify({type:'success', text: 'File saved'});
+        })
+        .fail(function(e) {
+            $.pnotify({type:'error', text: ''+e, title: "Unable to save"});
+        });
+//    $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
 };
 
 var editor = null;
@@ -93,6 +100,8 @@ function filter_result(filter) {
 };
 
 function search_for() {
+    $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
+    return;
     var pattern = $('#addsearch_form input').val();
     var p = $.post('/search', {text: pattern});
     p.success( function(data) {
@@ -124,7 +133,9 @@ function search_for() {
 
 function add_new_item() {
     var pattern = $('#addsearch_form input').val();
-    console.log(pattern);
+    $.pnotify({type: 'error', text: 'Operation currently disabled'});
+    return;
+    /*
     $.post('/push', {text: pattern}).success( function(d) {
         $.get(d.href).success(function(d) {
             var elt = ItemTool.render(d);
@@ -133,6 +144,7 @@ function add_new_item() {
             filter_result();
         });
     });
+    */
 };
 
 function finalize_item_list(o) {

@@ -10,10 +10,12 @@ from weye.search_engine import search
 from weye import root_objects
 log = logging.getLogger('application')
 
+# INDEX
 @bottle.get('/')
 def cb():
     return bottle.static_file('weye.html', config.static_root)
 
+# TODO: search
 @bottle.post('/search')
 def cb():
     bottle.response.set_header('Content-Type', 'application/json')
@@ -31,13 +33,6 @@ def cb():
         yield dumps(item)
     yield ']'
 
-@bottle.post('/push')
-def cb():
-    bottle.response.set_header('Content-Type', 'application/json')
-    log.debug("add")
-    fname = root_objects.add_new_object(bottle.request.POST['text'].encode('utf-8'))
-    return '{"href": %s}'%dumps('/o/'+fname)
-
 @bottle.route('/favicon.ico')
 def cb():
     return bottle.static_file('favicon.ico', config.static_root)
@@ -46,19 +41,15 @@ def cb():
 def cb(path):
     return bottle.static_file(path, config.static_root)
 
-# OBJECTS
-
+# OBJECTS / METADATA
 @bottle.route('/o/')
 @bottle.route('/o/<path:path>')
 def cb(path='/'):
     log.debug('~ Accessing %r', path)
     # TODO: session + permission mgmt
-    obj = root_objects.get_object_from_path(path)
-    if bottle.request.is_xhr:
-        return obj # dumps object
-    bottle.redirect('/?view='+path)
+    return root_objects.get_object_from_path(path)
 
-# CHILDREN
+# CHILDREN / CONTENT
 @bottle.route('/c/')
 @bottle.route('/c/<path:path>')
 def cb(path='/'):
@@ -66,18 +57,34 @@ def cb(path='/'):
     # TODO: session + permission mgmt
     bottle.response.set_header('Content-Type', 'application/json')
     obj = root_objects.list_children(path)
-    if bottle.request.is_xhr:
-        log.debug(obj)
-        return dumps(obj)
-    bottle.redirect('/')
+    return dumps(obj)
 
-# DOWNLOAD
+# DOWNLOAD / RAW DATA
 @bottle.route('/d/<path:path>')
 def cb(path):
     log.debug('~ Serving raw %r', path)
     return bottle.static_file(path, config.shared_root)
 
-# UPLOAD
+# UPLOAD / RAW DATA
+@bottle.route('/d/<path:path>', method='POST')
+def cb(path):
+    text = bottle.request.POST['text']
+    f = open(os.path.join(config.shared_root, path), 'w')
+    f.write(text)
+    f.close()
+    return {'ok': True}
+
+# PUSH / Add a note (text)
+# TODO: add filename support (read from search box)
+#@bottle.post('/push')
+#def cb():
+#    bottle.response.set_header('Content-Type', 'application/json')
+#    log.debug("add")
+#    fname = root_objects.add_new_object(bottle.request.POST['text'].encode('utf-8'))
+#    return '{"href": %s}'%dumps('/o/'+fname)
+
+# UPLOAD FILE / alias / ADD ONLY
+# TODO: add versionning support (+ allow overwriting)
 @bottle.route('/upload', method='POST')
 def cb():
     log.debug('~ Uploading!')
