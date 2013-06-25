@@ -39,7 +39,7 @@ var epic_opts = {
 
 function editor_save() {
     var text = editor.exportFile(ui.doc_ref);
-    $.post('/d'+ui.doc_ref, {text: text, path: ui.doc_ref})
+    $.post('/d'+fix_path(ui.doc_ref), {text: text, path: ui.doc_ref})
         .done(function(d) {
             if(d.error) {
                 $.pnotify({type:'error', text: ''+d.error, title: "Unable to save"});
@@ -54,6 +54,10 @@ function editor_save() {
 };
 
 var editor = null;
+
+function fix_path(url) {
+   return url.replace(/%/g, '%%').replace(/\?/g, '%3F');
+}
 
 function show_help() {
     $.pnotify({
@@ -292,7 +296,7 @@ return this;}();
 
 // TODO:
 // handle "template_prefix" global variable using "bacon.isMobile()"
-// to add a "mobile_" prefix to view_page's templates & co
+// to add a "mobile_" prefix to view_path's templates & co
 //
 var plugin_cleanup = false;
 var plugin_data = {};
@@ -342,7 +346,7 @@ function refocus(elt) {
 var load_plugin = function() {
     $('#contents').html('');
     console.log('ok1', ui.plugin.js, ui.doc_ref);
-    $.ajax({url:'/d'+ui.doc_ref+'/'+ui.plugin.js, dataType: 'text'})
+    $.ajax({url:'/d'+fix_path(ui.doc_ref)+'/'+ui.plugin.js, dataType: 'text'})
     .done(function(d) {
         $('.folder-item').hide();
         $('.pure-item').hide();
@@ -371,6 +375,7 @@ function get_permalink() {
 }
 
 function view_path(path) {
+    console.log('VIEW PATH', path);
     ui.flush_caches();
     var buttons = $('#addsearch_form');
     /* document viewer, give it a valid path */
@@ -378,7 +383,7 @@ function view_path(path) {
     $('audio').each( function() {this.pause(); this.src = "";} );
 //    $('.row-fluid').fadeOut('fast');
     setTimeout( function() {
-        $.get('/o'+path)
+        $.get('/o'+fix_path(path))
         .success(function(d) {
             buttons.find('button').removeClass('hidden');
 //            console.log('object: /o/'+path, d);
@@ -422,7 +427,7 @@ function view_path(path) {
                             if(is_an_app) {
                                 console.log('/d'+path+'/infos.js');
 
-                                $.ajax({url: '/d'+path+'/infos.js', dataType: 'json'})
+                                $.ajax({url: '/d'+fix_path(path)+'/infos.js', dataType: 'json'})
                                 .done( function(d) {
                                     ui.plugin = d;
                                     if(!!d.templates) {
@@ -480,7 +485,7 @@ function view_path(path) {
                         .appendTo( $('#download_link').parent() )
 
                         editor = new EpicEditor(epic_opts).load( function() {
-                            $.get('/d'+path)
+                            $.get('/d'+fix_path(path))
                             .done(function(d) {
                                 console.log('EDIT', path);
                                 editor.importFile(path, d);
