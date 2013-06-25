@@ -10,6 +10,9 @@ from weye.search_engine import search
 from weye import root_objects
 log = logging.getLogger('application')
 
+def _fix_path(url):
+    return url.replace('%%', '%').replace('%3F', '?')
+
 # INDEX
 @bottle.get('/')
 def cb():
@@ -45,6 +48,7 @@ def cb(path):
 @bottle.route('/o/')
 @bottle.route('/o/<path:path>')
 def cb(path='/'):
+    path = _fix_path(path)
     log.debug('~ Accessing %r', path)
     # TODO: session + permission mgmt
     return root_objects.get_object_from_path(path)
@@ -53,6 +57,7 @@ def cb(path='/'):
 @bottle.route('/c/')
 @bottle.route('/c/<path:path>')
 def cb(path='/'):
+    path = _fix_path(path)
     log.debug('~ Listing %r', path)
     # TODO: session + permission mgmt
     bottle.response.set_header('Content-Type', 'application/json')
@@ -62,12 +67,14 @@ def cb(path='/'):
 # DOWNLOAD / RAW DATA
 @bottle.route('/d/<path:path>')
 def cb(path):
+    path = _fix_path(path)
     log.debug('~ Serving raw %r', path)
     return bottle.static_file(path, config.shared_root)
 
 # UPLOAD / RAW DATA
 @bottle.route('/d/<path:path>', method='POST')
 def cb(path):
+    path = _fix_path(path)
     text = bottle.request.POST['text']
     fpath = os.path.join(config.shared_root, path)
     if config.no_overwrite and os.path.exists(fpath):
