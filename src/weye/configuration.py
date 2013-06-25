@@ -31,6 +31,9 @@ config.shared_db = os.path.join(config.shared_root, '.weye_db') # path for share
 config.special_extension = '.weye'
 config.exclude_dot_files = True
 
+# behavior
+config.no_overwrite = True
+
 try:
     os.mkdir(config.shared_db)
 except (OSError, IOError):

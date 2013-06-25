@@ -69,10 +69,18 @@ def cb(path):
 @bottle.route('/d/<path:path>', method='POST')
 def cb(path):
     text = bottle.request.POST['text']
-    f = open(os.path.join(config.shared_root, path), 'w')
-    f.write(text)
-    f.close()
-    return {'ok': True}
+    fpath = os.path.join(config.shared_root, path)
+    if config.no_overwrite and os.path.exists(fpath):
+        return {'error': "You are not allowed to overwrite this file"}
+    try:
+        f = open(fpath, 'w')
+        f.write(text)
+        f.close()
+    except Exception as e:
+        ret = {'error': repr(e)}
+    else:
+        ret = {'ok': True}
+    return ret
 
 # PUSH / Add a note (text)
 # TODO: add filename support (read from search box)
