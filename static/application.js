@@ -57,7 +57,12 @@ var editor = null;
 
 function fix_path(url) {
    return url.replace(/%/g, '%%').replace(/\?/g, '%3F');
-}
+};
+
+function fix_nav(link) {
+    $('div.navbar ul.nav li').removeClass('active');
+    $(link).parent().addClass('active');
+};
 
 function show_help() {
     $.pnotify({
@@ -72,8 +77,8 @@ function show_help() {
             text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
         });
     }, 500);
-
 }
+
 function filter_result(filter) {
     if (typeof(filter) === 'string') {
         current_filter = filter;
@@ -370,7 +375,6 @@ function get_permalink() {
         loc = loc.substring(0, loc.search('[?]view='))
     }
     var plink = loc + '?view=' + ui.doc_ref;
-    console.log(ui.doc_ref, plink);
     return plink;
 }
 
@@ -442,16 +446,12 @@ function view_path(path) {
                                     console.log("ERR", e);
                                 });
                             } else {
-                                o.html( 
-                                    ich.view_folder({
-                                        mime: d.mime,
-                                        path: d.path,
-                                        have_child: c.length>0,
-                                        child: c,
-                                        backlink: bref,
-                                        permalink: ui.permalink
-                                    })
-                                );
+                                d.have_child = c.length > 0; // XXX: is this really needed ??
+                                d.backlink = bref;
+                                d.permalink = ui.permalink;
+                                d.child = c;
+
+                                o.html( ich.view_folder(d) );
                                 // make those items funky
                                 finalize_item_list(o);
                             }
@@ -481,7 +481,7 @@ function view_path(path) {
                         $('<div class="row-fluid"><small>Fullscreen: <i>Alt+F</i>, Toggle preview: <i>Alt+P</i></small></div><div class="row-fluid" id="epiceditor"></div> <div class="pull-right btn-group"></div>').appendTo(o);
 
 
-                        $('<button class="btn btn-success btn-large" onclick="editor_save()">Save</button>')
+                        $('<button class="btn btn-success btn-large" onclick="editor_save()">Save changes</button>')
                         .appendTo( $('#download_link').parent() )
 
                         editor = new EpicEditor(epic_opts).load( function() {
