@@ -71,11 +71,18 @@ def get_object_from_path(path):
             file_type = guess_type(fpath)
 
     # read infos (TODO later: in the database)
-    st = os.stat(fpath)
     if not infos:
+        st = os.stat(fpath)
+        try:
+            cont, name = path.rsplit('/', 1)
+            cont += '/'
+        except ValueError:
+            cont = '/'
+            name = path
         infos = {'id': "%x-%x"%(st.st_ctime, st.st_ino),
                 'size': st.st_size,
-                'name': os.path.basename(fpath),
+                'name': name,
+                'cont': cont,
                 'path': path,
                 'description': u'',
                 'mime': file_type}

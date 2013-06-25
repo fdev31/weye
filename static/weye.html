@@ -14,9 +14,9 @@
     <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
       <a title="Share item with RightClick>Copy location" href="{{permalink}}"  ><i class="icon-bookmark"/> Permalink</a>
 
-          <h1><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{path}}</h1>
+          <h1><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> <small>{{item.cont}}</small>{{item.name}}</h1>
 
-          <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Download <em>{{item.mime}}</em> (<span class="filesize">{{item.size}}</span>)</a></div><hr/>
+          <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{item.mime}}</em> (<span class="filesize">{{item.size}}</span>)</a></div><hr/>
 
 </script>
 <script id="view_item" class="partial" type= "text/html">
@@ -33,7 +33,7 @@
         {{/backlink}}
         <header>
             <hgroup>
-            <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>Browsing</small> {{path}}</h1>
+            <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}</h1>
             </hgroup>
         </header>
 
@@ -86,9 +86,9 @@
           <a class="brand" href="/">Nanowork</a>
             <ul class="nav">
 <!--                <li class="folder-item"><h4 class="listtitle">Sort:</h4></li>-->
-                <li class="folder-item"><a href="#" onclick="$('.items').isotope({ sortBy : 'name' });">By name</a></li>
-                <li class="folder-item"><a href="#" onclick="$('.items').isotope({ sortBy : 'type' });">type</a></li>
-                <li class="folder-item"><a href="#" onclick="$('.items').isotope({ sortBy : 'original-order' });">or natural</a></li>
+                <li class="folder-item"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'name' });">By name</a></li>
+                <li class="folder-item"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'type' });">type</a></li>
+                <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'original-order' });">or natural</a></li>
                 <!--
                 <li>
                 <a href="/">Remove</a>
