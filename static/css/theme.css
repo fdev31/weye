@@ -231,6 +231,11 @@ img.small_icon {
   #uploadzone #up_panel {
     overflow: clip;
   }
+  #question_popup.modal {
+    width: 80%;
+    margin-left: -40%;
+    padding: 1ex;
+  }
 }
 .background_text {
   color: rgba(0, 0, 0, 0.3);
