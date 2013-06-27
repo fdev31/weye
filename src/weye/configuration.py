@@ -32,7 +32,7 @@ config.special_extension = '.weye'
 config.exclude_dot_files = True
 
 # behavior
-config.no_overwrite = True
+config.no_overwrite = os.environ.get('ALLOW_WRITE', '').upper() not in ('1', 'YES', 'TRUE', 'ON')
 
 try:
     os.mkdir(config.shared_db)
