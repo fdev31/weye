@@ -17,7 +17,6 @@
           <h1><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> <small>{{item.cont}}</small>{{item.name}}</h1>
 
           <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{item.mime}}</em> (<span class="filesize">{{item.size}}</span>)</a></div><hr/>
-
 </script>
 <script id="view_item" class="partial" type= "text/html">
     <div class="item span12" data-link="{{f}}" data-mime="{{m}}">
@@ -33,7 +32,7 @@
         {{/backlink}}
         <header>
             <hgroup>
-            <h1><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}</h1>
+            <h2><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}</h2>
             </hgroup>
         </header>
 
@@ -51,22 +50,40 @@
         </div>
         {{/have_child}}
 </script>
+<script id="input_text" type="text/html">
+    <div class="row-fluid"><span class="label">{{name}}</span></div>
+    <input
+    type="text"
+    class="{{^class}}input-xxlarge{{/class}}{{#class}}{{class}}{{/class}}"
+    placeholder="{{name}}"
+    value="{{content}}"
+    ></input>
+</script>
 <script id="question" type="text/html">
     <div class="modal hide fade" id="question_popup">
           <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h3>{{header}}</h3>
           </div>
+          <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> <small>{{item.cont}}</small>{{item.link}}</h4>
+          <div class="editable" data-cont="{{item.cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
+          {{#edit}}
+          <div class="row-fluid editable-property" data-name="{{name}}" data-type="{{type}}" />
+          {{/edit}}
+          </div>
           <div class="modal-body">
               <p>{{{body}}}</p>
           </div>
           <div class="modal-footer">
-              {{^buttons}}
-              <a href="#" data-dismiss="modal" class="btn btn-primary"> Ok</a>
-              {{/buttons}}
               {{#buttons}}
+                {{#onclick}}
+                <button onclick="{{onclick}}" class="btn {{class}}"> {{name}}</button>
+                {{/onclick}}
+                {{^onclick}}
                   <a href="{{href}}" class="btn btn-primary"> {{name}}</a>
+                {{/onclick}}
               {{/buttons}}
+              <a href="#" data-dismiss="modal" class="btn btn-primary"> Close</a>
           </div>
       </div>
   </script> <!-- END templates -->

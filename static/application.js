@@ -55,6 +55,13 @@ function editor_save() {
 
 var editor = null;
 
+function copy(obj) {
+    var o = {}
+    for(var key in obj)
+        o[key] = obj[key];
+    return o;
+};
+
 function fix_path(url) {
    return url.replace(/%/g, '%%').replace(/\?/g, '%3F');
 };
@@ -94,7 +101,6 @@ function filter_result(filter) {
         var re = new RegExp( current_filter.toLocaleLowerCase() );
         var match_func = function(elt) {
             var v = !!elt.data('link').toLocaleLowerCase().match(re);
-            console.log(re, elt.data('link').toLocaleLowerCase(), v);
             return v;
         };
     }
@@ -124,7 +130,7 @@ function search_for() {
         $('.pure-item').hide();
         // render item generic template
         var o = $('#contents');
-        console.log(data, data.map( function(x) { return {m: 'application-x-executable', f: x} }));
+//        console.log(data, data.map( function(x) { return {m: 'application-x-executable', f: x} }));
         // TODO: add some text input allowing user to use a "grep"-like feature
         o.html( 
             ich.view_folder({
@@ -139,7 +145,7 @@ function search_for() {
         finalize_item_list(o);
       })
      .error(function(data) {
-          console.log(data);
+         $.pnotify({type: 'error', title: "Search failed", text: ''+data});
       })
      ;
 };
@@ -223,7 +229,6 @@ var ui = new function() {
             new_idx = items.length-1;
         ui._cached_filter = items;
         var n = $(items[new_idx]);
-        console.log(n, new_idx, old_idx);
         n.addClass('highlighted');
         ui.save_selected(new_idx);
         refocus(n);
@@ -244,10 +249,10 @@ var ui = new function() {
 }();
 
 /* item actions */
+var bidule = 42;
 
 var ItemTool = new function() {
     this.execute_evt_handler = function(e) {
-        console.log('execute');
         var elt = $(e.target).parent();
         ui.save_selected(elt.index());
         view_path(ui.doc_ref+'/'+elt.data('link'));
@@ -258,7 +263,7 @@ var ItemTool = new function() {
     };
 
     this.popup = function (elt) {
-    //    console.log($('#question_popup'));
+     var    bidule = elt;
         var qp = $('#question_popup');
         if(qp.length != 0) {
             if (qp.css('display') === 'none') {
@@ -268,15 +273,36 @@ var ItemTool = new function() {
             }
         }
         var actions = ['infos', 'download', 'preferences', 'delete'];
-        ich.question({
-            header: "Hey!",
-            body: ("Here you'll be able to see: <ul><li>" + actions.join('</li><li>') + '</li></ul>')
-        }).modal();
+        var data = copy(elt.data());
+        data.path = ui.doc_ref+'/'+data.link;
+        data.cont = ui.doc_ref;
+        var pop = ich.question({
+            'item': data,
+            'header': "Edition panel",
+            'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
+            'edit': [
+                {'name' : 'mime', 'type': 'text'},
+                {'name' : 'link', 'type': 'text'}
+            ],
+            'buttons': [
+                {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
+                {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+            ]
+        });
+        pop.modal();
+        var edited = $('#question_popup .editable');
+        setTimeout(function() {
+            pop.find('.editable-property').each( function(i, o) {
+                var o = $(o);
+                var d = copy(o.data());
+                d.content = data[d.name];
+                o.append(ich['input_'+d.type](d));
+            });
+        }, 200);
     };
 
     /* setup all item templates within a jQuery element */
     this.prepare = function (o) {
-        console.log('prepare', o);
         o.find('.item_stuff').each( function(i, x) {
             $(x).hammer()
                 .bind({
@@ -291,7 +317,6 @@ var ItemTool = new function() {
     this.render = function (data) {
         if (!!!data.f || !!!data.m)
             var data = {m: data.mime, f: data.name}
-//        console.log('rendering', data);
         var o = ich.view_item(data);
         ItemTool.prepare(o);
         return o;
@@ -337,7 +362,6 @@ function hr_size(size) {
 
 function refocus(elt) {
     /* sets focus on given element */
-//    console.log('refocus',elt);
     if (elt.length == 0)
         return;
     var elem_top = elt.offset()['top'];
@@ -350,7 +374,6 @@ function refocus(elt) {
 
 var load_plugin = function() {
     $('#contents').html('');
-    console.log('ok1', ui.plugin.js, ui.doc_ref);
     $.ajax({url:'/d'+fix_path(ui.doc_ref)+'/'+ui.plugin.js, dataType: 'text'})
     .done(function(d) {
         $('.folder-item').hide();
@@ -379,7 +402,6 @@ function get_permalink() {
 }
 
 function view_path(path) {
-    console.log('VIEW PATH', path);
     ui.flush_caches();
     var buttons = $('#addsearch_form');
     /* document viewer, give it a valid path */
@@ -429,8 +451,6 @@ function view_path(path) {
                             })
                             ui.plugin = null;
                             if(is_an_app) {
-                                console.log('/d'+path+'/infos.js');
-
                                 $.ajax({url: '/d'+fix_path(path)+'/infos.js', dataType: 'json'})
                                 .done( function(d) {
                                     ui.plugin = d;
@@ -487,7 +507,6 @@ function view_path(path) {
                         editor = new EpicEditor(epic_opts).load( function() {
                             $.get('/d'+fix_path(path))
                             .done(function(d) {
-                                console.log('EDIT', path);
                                 editor.importFile(path, d);
                             })
                             .fail(function(e) {
@@ -524,14 +543,13 @@ $(function() {
     $('#file').bootstrapFileInput();
     var up = new uploader($('#file').get(0), {
         url:'/upload',
-        extra_data_func: function(data) { console.log('#########', data); return {'prefix': ui.doc_ref} },
+        extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
         progress:function(ev){ console.log('progress'); _p.html(((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
         error:function(ev){ console.log('error', ev); },
         success:function(data){
             _p.html('100%');
             _p.css('width',_p.html());
             var data = JSON.parse(data);
-            console.log(data);
             if (data.error) {
                 $.pnotify({title: 'Unable to upload some files', text: data.error});
             }
@@ -567,6 +585,8 @@ $(function() {
     });
     Mousetrap.bind('enter', function(e) {
         if ($('#download_link').length) {
+            console.log('IS THIS HAPPENING ?!!');
+            XXX;
             ItemTool.popup();
         } else {
             var items=ui.get_items();
@@ -588,7 +608,6 @@ $(function() {
     });
     Mousetrap.bind('ctrl+space', function(e) {
         var inp = $('#addsearch_form input[name=text]');
-        console.log(inp.is(':focus'));
         if(inp.is(':focus')) {
             filter_result('');
         } else {
