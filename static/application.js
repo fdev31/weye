@@ -295,7 +295,7 @@ var ItemTool = new function() {
         if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
             for(var k in data) { edited.push({name: k, type: 'text'}) };
         } else {
-            var editables = data.editable.split(' ');
+            var editables = data.editable.split(/ +/);
             for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
         }
         var pop = ich.question({

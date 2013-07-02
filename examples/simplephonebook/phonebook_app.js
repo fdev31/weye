@@ -8,13 +8,16 @@ $.ajax({url: '/d'+ui.doc_ref+'/phone_data.js', dataType: 'json'})
         cont: '',
         have_child: true,
         child: d.map( function(e) {
-            var searchinfos = e.name+' '+e.nickname+' '+e.phones.fixe;
+            var phones = [];
+            var phones_cls = '';
+            for(var k in e.phones) {
+                phones_cls += ' phone.'+k;
+                phones.push({k: 'phone.'+k, v: e.phones[k]});
+            };
             return {
-                D: [
-                    {k: 'fixe', v: e.phones.fixe}
-                ],
-                e: 'name fixe',
-                s: searchinfos,
+                D: phones,
+                e: 'name '+phones_cls,
+                s: e.name+' '+e.nickname+' '+e.phones.fixe,
                 d: e.phones.fixe,
                 t: e.name,
                 m: 'text-x-credits'
