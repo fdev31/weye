@@ -33,6 +33,7 @@ config.special_extension = '.weye'
 config.exclude_dot_files = True
 config.host = '0.0.0.0'
 config.port = '8080'
+config.file_encoding = 'utf-8'
 
 # behavior
 config.no_overwrite = os.environ.get('ALLOW_WRITE', '').upper() not in ('1', 'YES', 'TRUE', 'ON')
@@ -53,6 +54,8 @@ def import_conf(filename=None):
            config.port = int(rd('port'))
         if rd('host'):
             config.host = rd('host')
+        if rd('file_encoding'):
+            config.file_encoding = rd('file_encoding')
         config.debug = (rd('debug') or ' ')[0].lower() in 'yta'
         config.no_overwrite = (rd('write') or ' ')[0].lower() not in 'yta'
         if rd('home'):
