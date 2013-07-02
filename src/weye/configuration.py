@@ -56,6 +56,7 @@ def import_conf(filename=None):
         config.port = int(rd('port'))
         config.host = rd('host')
         config.debug = (rd('debug') or ' ')[0].lower() in 'yta'
+        config.no_overwrite = (rd('write') or ' ')[0].lower() not in 'yta'
         if rd('home'):
             os.chdir(rd('home'))
     config.shared_root = config.shared_root.rstrip(os.path.sep) # path for shared files
