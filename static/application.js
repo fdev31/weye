@@ -118,15 +118,6 @@ function filter_result(filter) {
     ui.select_idx(ui.selected_item, 1);
 };
 
-function adapt_children(c) {
-    return c.map(function(e) {
-        if(!!!e.t) e.t = e.f;
-        if(!!!e.e) e.e = 'name';
-        if(!!!e.s) e.s = e.f;
-        return e;
-    });
-};
-
 function search_for() {
     $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
     // XXX: REPAIR ME
@@ -494,7 +485,13 @@ function view_path(path, opts) {
                                 d.have_child = c.length > 0; // XXX: is this really needed ??
                                 d.backlink = bref;
                                 d.permalink = ui.permalink;
-                                d.child = adapt_children( c );
+                                c.forEach(function(e) {
+                                    if(!!!e.t) e.t = e.f;
+                                    if(!!!e.e) e.e = 'name';
+                                    if(!!!e.s) e.s = e.f;
+                                });
+                                d.child = c;
+
                                 o.html( ich.view_list(d) );
                                 // make those items funky
                                 finalize_item_list(o);
