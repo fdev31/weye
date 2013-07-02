@@ -100,7 +100,7 @@ function filter_result(filter) {
     } else {
         var re = new RegExp( current_filter.toLocaleLowerCase() );
         var match_func = function(elt) {
-            var v = !!elt.data('link').toLocaleLowerCase().match(re);
+            var v = !!elt.data('searchable').toLocaleLowerCase().match(re);
             return v;
         };
     }
@@ -118,8 +118,18 @@ function filter_result(filter) {
     ui.select_idx(ui.selected_item, 1);
 };
 
+function adapt_children(c) {
+    return c.map(function(e) {
+        if(!!!e.t) e.t = e.f;
+        if(!!!e.e) e.e = 'name';
+        if(!!!e.s) e.s = e.f;
+        return e;
+    });
+};
+
 function search_for() {
     $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
+    // XXX: REPAIR ME
     return;
     var pattern = $('#addsearch_form input').val();
     var p = $.post('/search', {text: pattern});
@@ -133,7 +143,7 @@ function search_for() {
 //        console.log(data, data.map( function(x) { return {m: 'application-x-executable', f: x} }));
         // TODO: add some text input allowing user to use a "grep"-like feature
         o.html( 
-            ich.view_folder({
+            ich.view_list({
                 mime: 'application-x-executable',
                 path: '/',
                 have_child: true,
@@ -170,7 +180,7 @@ function finalize_item_list(o) {
     o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows',
         getSortData : {
             name : function ( $elem ) {
-                return $elem.data('link');
+                return $elem.data('name');
             },
             type: function ( $elem ) {
                 return $elem.data('mime');
@@ -254,8 +264,13 @@ var bidule = 42;
 var ItemTool = new function() {
     this.execute_evt_handler = function(e) {
         var elt = $(e.target).parent();
-        ui.save_selected(elt.index());
-        view_path(ui.doc_ref+'/'+elt.data('link'));
+        var link = elt.data('link');
+        if(!!!link) {
+            $.pnotify({type: 'info', text: 'This is not a link!'});
+        } else {
+            ui.save_selected(elt.index());
+            view_path(ui.doc_ref+'/'+elt.data('link'));
+        }
     };
 
     this.popup_evt_handler = function (e) {
@@ -276,14 +291,18 @@ var ItemTool = new function() {
         var data = copy(elt.data());
         data.path = ui.doc_ref+'/'+data.link;
         data.cont = ui.doc_ref;
+        var edited = [];
+        if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
+            for(var k in data) { edited.push({name: k, type: 'text'}) };
+        } else {
+            var editables = data.editable.split(' ');
+            for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+        }
         var pop = ich.question({
             'item': data,
             'header': "Edition panel",
             'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
-            'edit': [
-                {'name' : 'mime', 'type': 'text'},
-                {'name' : 'link', 'type': 'text'}
-            ],
+            'edit': edited,
             'buttons': [
                 {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
                 {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
@@ -425,6 +444,8 @@ function view_path(path, opts) {
                 /* update current document reference */
                 while(path[1] === '/')
                     path = path.substr(1);
+                while(path.length > 1 && path.substr(-1) === '/')
+                    path = path.substr(0, path.length-1)
                 if (path !== '/') {
                     ui.doc_ref = path;
                 } else {
@@ -473,9 +494,8 @@ function view_path(path, opts) {
                                 d.have_child = c.length > 0; // XXX: is this really needed ??
                                 d.backlink = bref;
                                 d.permalink = ui.permalink;
-                                d.child = c;
-
-                                o.html( ich.view_folder(d) );
+                                d.child = adapt_children( c );
+                                o.html( ich.view_list(d) );
                                 // make those items funky
                                 finalize_item_list(o);
                             }
@@ -592,14 +612,8 @@ $(function() {
         return ui.select_prev();
     });
     Mousetrap.bind('enter', function(e) {
-        if ($('#download_link').length) {
-            console.log('IS THIS HAPPENING ?!!');
-            XXX;
-            ItemTool.popup();
-        } else {
-            var items=ui.get_items();
-            $(items[ui.selected_item]).find('.item_stuff:first').trigger('tap');
-        }
+        var items = ui.get_items();
+        $(items[ui.selected_item]).find('.item_stuff:first').trigger('tap');
         return false;
     });
     Mousetrap.bind('backspace', function(e) {

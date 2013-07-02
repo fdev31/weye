@@ -18,29 +18,51 @@
 
           <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{item.mime}}</em> (<span class="filesize">{{item.size}}</span>)</a></div><hr/>
 </script>
-<script id="view_item" class="partial" type= "text/html">
-    <div class="item span12" data-link="{{f}}" data-mime="{{m}}">
+<!--
+# mandatory #
+i: ID
+m: mime
+f: link
+
+# adviced #
+t: title (defaults to link)
+s: searchable (defaults to link, space separated list of "D" fields)
+
+# optional #
+d: description
+c: classes
+D: data{k:key, v:value}
+e: space-separated list of editable field names
+
+-->
+<script id="view_generic" class="partial" type= "text/html">
+    <div class="item span12 {{c}}" data-searchable="{{s}}" data-link="{{f}}" data-mime="{{m}}" data-uid="{{i}}" data-name="{{t}}" data-editable="{{e}}"
+        {{#D}}
+        data-{{k}}="{{v}}"
+        {{/D}}
+        >
       <img src="/static/mime/{{m}}.svg" class="small_icon item_caption item_stuff"/>
-      <span class="item_stuff item_caption">{{f}}</span>
+      <span title="{{d}}" class="item_stuff item_caption">{{t}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="ItemTool.popup($(this).parent());false;" />
     </div>
 </script>
-<script id="view_folder" type="text/html">
+<script id="view_list" type="text/html">
     {{#backlink}}
         <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
             <a title="Share item with RightClick>Copy location" href="{{permalink}}" ><i class="icon-bookmark"/> Permalink</a>
         {{/backlink}}
+        {{#mime}}
         <header>
             <hgroup>
             <h2><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}</h2>
             </hgroup>
         </header>
-
+        {{/mime}}
        {{#have_child}}
         <div class="items row-fluid">
             <br/>
             {{#child}}
-            {{>view_item}}
+            {{>view_generic}}
             {{/child}}
         </div>
         {{/have_child}}
@@ -65,7 +87,7 @@
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h3>{{header}}</h3>
           </div>
-          <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> <small>{{item.cont}}</small>{{item.link}}</h4>
+          <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{item.name}}</h4>
           <div class="editable" data-cont="{{item.cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
           {{#edit}}
           <div class="row-fluid editable-property" data-name="{{name}}" data-type="{{type}}" />
