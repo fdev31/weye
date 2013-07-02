@@ -185,15 +185,15 @@ function finalize_item_list(o) {
 
 var ui = new function() {
     this.permalink = '#';
-    this.doc_ref = '/';
+    this.doc_ref = null;
     this.nav_hist = {};
     this.selected_item = -1;
     this._cached_filter = null;
-    this._on_hold = true;
+    this.on_hold = true;
     this.flush_caches = function() {
         this._cached_filter = null;
         $('#addsearch_form input[name=text]').val('');
-        this._on_hold = true;
+        this.on_hold = true;
     };
 
     this.select_next = function() {
@@ -212,7 +212,7 @@ var ui = new function() {
         }
     };
     this.select_idx = function(old_idx, new_idx) {
-        if(ui._on_hold )
+        if(ui.on_hold )
             return;
         /* changes selection from old_idx to new_idx
          if new_idx == -1, then selects the last item
@@ -242,7 +242,7 @@ var ui = new function() {
     };
     this.recover_selected = function() {
         /* set current selected item state from saved history information */
-        ui._on_hold = false;
+        ui.on_hold = false;
         ui.select_idx(null, ui.nav_hist[ui.doc_ref]?ui.nav_hist[ui.doc_ref].selected:0);
     };
     return this;
@@ -332,6 +332,7 @@ var plugin_cleanup = false;
 var plugin_data = {};
 
 function go_back() {
+    var opts = opts || {};
     /* returns to parent item */
     var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
     if(!!plugin_cleanup) {
@@ -344,7 +345,7 @@ function go_back() {
     ui.flush_caches();
     if (!!bref) {
         bref = bref[1] || '/';
-        view_path(bref);
+        view_path(bref, {'history': !!! opts.disable_history});
     }
 }
 
@@ -401,11 +402,12 @@ function get_permalink() {
     return plink;
 }
 
-function view_path(path) {
+function view_path(path, opts) {
+    if (path === ui.doc_ref) return;
+    var opts = opts || {};
     ui.flush_caches();
     var buttons = $('#addsearch_form');
     /* document viewer, give it a valid path */
-//    console.log('view_path', path);
     $('audio').each( function() {this.pause(); this.src = "";} );
 //    $('.row-fluid').fadeOut('fast');
     setTimeout( function() {
@@ -429,6 +431,8 @@ function view_path(path) {
                     ui.doc_ref = '/';
                 }
                 ui.permalink = get_permalink();
+                if (!!!opts.disable_history)
+                    history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
                 /* compute back ref & permalink */
                 $('#up_panel').slideUp().addClass('hidden');
                 var o = $('#contents'); /* get main content DOM element */
@@ -569,6 +573,10 @@ $(function() {
     });
 
     // key binding
+    window.addEventListener("popstate", function(e) {
+        if(!!e.state) view_path(e.state.view, {disable_history: true})
+        return false;
+    });
 
     // start navigation
     Mousetrap.bind('tab', function(e) {
