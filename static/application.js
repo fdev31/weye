@@ -259,8 +259,13 @@ var ItemTool = new function() {
         if(!!!link) {
             $.pnotify({type: 'info', text: 'This is not a link!'});
         } else {
-            ui.save_selected(elt.index());
-            view_path(ui.doc_ref+'/'+elt.data('link'));
+            console.log(link);
+            if (!!link.match(/^js:/)) {
+                eval( link.substr(3) );
+            } else {
+                ui.save_selected(elt.index());
+                view_path(ui.doc_ref+'/'+elt.data('link'));
+            }
         }
     };
 
