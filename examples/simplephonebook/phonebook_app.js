@@ -20,6 +20,7 @@ $.ajax({url: '/d'+ui.doc_ref+'/phone_data.js', dataType: 'json'})
                 s: e.name+' '+e.nickname+' '+e.phones.fixe,
                 d: e.phones.fixe,
                 t: e.name,
+                f: "js:alert('couuin');",
                 m: 'text-x-credits'
             }
         } )
