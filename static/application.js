@@ -50,7 +50,6 @@ function editor_save() {
         .fail(function(e) {
             $.pnotify({type:'error', text: ''+e, title: "Unable to save"});
         });
-//    $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
 };
 
 var editor = null;
@@ -119,7 +118,7 @@ function filter_result(filter) {
 };
 
 function search_for() {
-    $.pnotify({type: 'warning', title: "Write operations disabled", text: 'Not implemented in this version'});
+    $.pnotify({type: 'warning', title: "TBD", text: 'Not implemented in this version'});
     // XXX: REPAIR ME
     return;
     var pattern = $('#addsearch_form input').val();
@@ -153,7 +152,7 @@ function search_for() {
 
 function add_new_item() {
     var pattern = $('#addsearch_form input').val();
-    $.pnotify({type: 'error', text: 'Operation currently disabled'});
+    $.pnotify({type: 'error', text: 'TBD'});
     return;
     /*
     $.post('/push', {text: pattern}).success( function(d) {
