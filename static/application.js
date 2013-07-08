@@ -61,9 +61,7 @@ function copy(obj) {
     return o;
 };
 
-function fix_path(url) {
-   return url.replace(/%/g, '%%').replace(/\?/g, '%3F');
-};
+var fix_path = encodeURIComponent;
 
 function fix_nav(link) {
     $('div.navbar ul.nav li').removeClass('active');
