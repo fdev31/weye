@@ -72,5 +72,5 @@ or
 
 # Bugs
 
-- Upload not working on mobiles
-- SVG not working on mobiles
+- Localized filenames are tested under uwsgi 1.4.9, otherwise it may not work
+- SVG not working on some mobiles (can't be fixed, switch to png ?)
