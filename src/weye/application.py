@@ -10,8 +10,12 @@ from weye.search_engine import search
 from weye import root_objects
 log = logging.getLogger('application')
 
-def _fix_path(url):
-    return url.replace('%%', '%').replace('%3F', '?')
+try:
+    from urllib.parse import unquote
+except ImportError: # python2
+    from urllib import unquote
+
+_fix_path = unquote
 
 # INDEX
 @bottle.get('/')
