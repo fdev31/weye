@@ -39,7 +39,7 @@ var epic_opts = {
 
 function editor_save() {
     var text = editor.exportFile(ui.doc_ref);
-    $.post('/d'+fix_path(ui.doc_ref), {text: text, path: ui.doc_ref})
+    $.post('/d'+ui.doc_ref, {text: text, path: ui.doc_ref})
         .done(function(d) {
             if(d.error) {
                 $.pnotify({type:'error', text: ''+d.error, title: "Unable to save"});
@@ -60,8 +60,6 @@ function copy(obj) {
         o[key] = obj[key];
     return o;
 };
-
-var fix_path = encodeURIComponent;
 
 function fix_nav(link) {
     $('div.navbar ul.nav li').removeClass('active');
@@ -387,7 +385,7 @@ function refocus(elt) {
 
 var load_plugin = function() {
     $('#contents').html('');
-    $.ajax({url:'/d'+fix_path(ui.doc_ref)+'/'+ui.plugin.js, dataType: 'text'})
+    $.ajax({url:'/d'+ui.doc_ref+'/'+ui.plugin.js, dataType: 'text'})
     .done(function(d) {
         $('.folder-item').hide();
         $('.pure-item').hide();
@@ -423,7 +421,7 @@ function view_path(path, opts) {
     $('audio').each( function() {this.pause(); this.src = "";} );
 //    $('.row-fluid').fadeOut('fast');
     setTimeout( function() {
-        $.get('/o'+fix_path(path))
+        $.get('/o'+path)
         .success(function(d) {
             buttons.find('button').removeClass('hidden');
 //            console.log('object: /o/'+path, d);
@@ -469,7 +467,7 @@ function view_path(path, opts) {
                             })
                             ui.plugin = null;
                             if(is_an_app) {
-                                $.ajax({url: '/d'+fix_path(path)+'/infos.js', dataType: 'json'})
+                                $.ajax({url: '/d'+path+'/infos.js', dataType: 'json'})
                                 .done( function(d) {
                                     ui.plugin = d;
                                     if(!!d.templates) {
@@ -528,7 +526,7 @@ function view_path(path, opts) {
                         .appendTo( $('#download_link').parent() )
 
                         editor = new EpicEditor(epic_opts).load( function() {
-                            $.get('/d'+fix_path(path))
+                            $.get('/d'+path)
                             .done(function(d) {
                                 editor.importFile(path, d);
                             })
