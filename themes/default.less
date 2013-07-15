@@ -208,7 +208,11 @@ img.small_icon {
 }
 
 #uploadzone {
+    background: @BG_COLOR*1.1;
     .basicshadow(10px, 0.3);
+    margin-top: 2em;
+    padding: 1px;
+    z-index: 10;
     button , .file-input-wrapper {
         .basicshadow(8px, 0.3);
         margin-top: 1ex;
@@ -228,11 +232,8 @@ img.small_icon {
         }
     }
     #uploadzone {
-        margin-top: 3em;
-        background: @BG_COLOR*1.1;
         position: fixed;
         left: auto;
-        z-index: 10;
         right: 1ex;
         #up_panel {
             overflow: clip;

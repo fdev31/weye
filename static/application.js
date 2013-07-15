@@ -562,6 +562,7 @@ $(function() {
 
     var _p = $('#progress');
     $('#file').bootstrapFileInput();
+    $('#up_panel > a.file-input-wrapper').css('width', '80px');
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
