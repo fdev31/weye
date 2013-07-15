@@ -201,7 +201,10 @@ img.small_icon {
   box-shadow: 0 1px 15px 1px rgba(0, 0, 0, 0.7) !important;
 }
 #uploadzone {
+  background: #f1ede4;
   box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
+  margin-top: 2em;
+  padding: 1px;
 }
 #uploadzone button,
 #uploadzone .file-input-wrapper {
@@ -221,8 +224,6 @@ img.small_icon {
     z-index: 1;
   }
   #uploadzone {
-    margin-top: 3em;
-    background: #f1ede4;
     position: fixed;
     left: auto;
     z-index: 10;

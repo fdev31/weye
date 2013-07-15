@@ -169,13 +169,15 @@ e: space-separated list of editable field names (editable)
 
   <div class="container-fluid maincontainer">
 
-      <aside id="uploadzone"class="pull-right span3 well autodim folder-item">
-          <label for="file" onclick="$('#up_panel').slideToggle().toggleClass('hidden'); return false;" class="background_text">upload</label>
+      <aside id="uploadzone"class="pull-right well autodim folder-item">
+          <label for="file" onclick="$('#up_panel').slideToggle().toggleClass('hidden'); $('#aside_toggler_icon').toggleClass('icon-chevron-down icon-chevron-up'); return false;" class="background_text">
+          <i id="aside_toggler_icon" class="icon-chevron-down" style="margin: 1ex 0 0"></i>
+      </label>
 
           <div onclick="return true" id="up_panel" class="hidden slide">
-              <input type="file" class="btn btn-info btn-large span2" name="file" id="file" title=" <i class='icon-white icon-folder-open'></i> Select" />
+              <input type="file" class="btn btn-info btn-large" name="file" id="file" title="<i class='icon-white icon-folder-open'></i> Select" />
               <p><span id="progress" class="progress">0%</span></p>
-              <button id="upload" class="btn row-fluid btn-primary btn-large"> <i class="icon-upload icon-white"></i> Upload!</button>
+              <button id="upload" class="btn row-fluid btn-primary btn-large" style="width: 100%"> <i class="icon-upload icon-white"></i> Upload!</button>
           </div>
       </aside>
 
