@@ -205,6 +205,9 @@ img.small_icon {
   box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
   margin-top: 2em;
   padding: 1px;
+  z-index: 10;
+  left: auto;
+  right: 1ex;
 }
 #uploadzone button,
 #uploadzone .file-input-wrapper {
@@ -225,9 +228,6 @@ img.small_icon {
   }
   #uploadzone {
     position: fixed;
-    left: auto;
-    z-index: 10;
-    right: 1ex;
   }
   #uploadzone #up_panel {
     overflow: clip;
