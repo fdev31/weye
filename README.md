@@ -74,3 +74,59 @@ or
 
 - Localized filenames are tested under uwsgi 1.4.9, otherwise it may not work
 - SVG not working on some mobiles (can't be fixed, switch to png ?)
+
+# TODO/refactoring
+
+## Introduce concept of *family*
+
+Convert "natural" mode to family sort, this is alphabetically sorted inside a family name.
+
+We may propose a list of "standard" prefixes to have high-priority families (like folders, as "!folders" for instance).
+
+## Chose good names
+
+Panel with download & actions:
+>  Action panel ?
+
+Top panel with sort & filter
+> View panel ?
+
+Main container
+> Main container ;)
+
+Item Actions (list of)
+> Actions (TBD, merge concept with *Action panel*)
+
+## Make it modular
+
+Split into:
+
+- **index** (Whoosh by default)
+- **storage** (vcs by default, may provide unversioned "flat" file backend support)
+- **applications**
+    - admin (TODO)
+    - filemanager (WIP)
+    - photo gallery
+    
+  _TODO_: fix concept of application/setup:
+   - mountpoint (server side)
+   - mimes/family hooks (client side)
+   - specific templates/js/css
+
+
+- **mimes**
+    - applications dedicated to a mime type
+        - actions
+        - view(s)
+- **skin** (or is this specific per app ??)
+    - css
+    - images (may inherit some)
+    - templates
+- **installer**
+    Will prompt for choice against all the options to generate a configuration file.
+    Will bring:
+    - run (python file)
+    - uwsgi.ini
+    - configuration.ini
+    - README.txt
+
