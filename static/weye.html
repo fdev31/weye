@@ -155,7 +155,6 @@ e: space-separated list of editable field names (editable)
                     <input name="text" type="text" class="btn input-large search-query" placeholder="Type something [Ctrl+Space]"> 
                     <button name="filter" type="submit" onclick= "filter_result();return false;" title="Look for something in current folder" class= "btn btn-info">Filter</button>
                     <button name="search" type="submit" onclick="search_for();return false;" title="Search items in whole database" class="btn">Search</button>
-                    <button name="add" onclick= "add_new_item()" class="btn" title="Create a new note">Add</button>
                 </div>
                 <div class="btn-group pull-right">
                     <button onclick= "show_help()" class="btn btn-info" title="Display help"><b>?</b></button>
@@ -170,15 +169,20 @@ e: space-separated list of editable field names (editable)
   <div class="container-fluid maincontainer">
 
       <aside id="uploadzone"class="pull-right well autodim folder-item">
-          <label for="file" onclick="$('#up_panel').slideToggle().toggleClass('hidden'); $('#aside_toggler_icon').toggleClass('icon-chevron-down icon-chevron-up'); return false;" class="background_text">
-          <i id="aside_toggler_icon" class="icon-chevron-down" style="margin: 1ex 0 0"></i>
-      </label>
 
-          <div onclick="return true" id="up_panel" class="hidden slide">
-              <input type="file" class="btn btn-info btn-large" name="file" id="file" title="<i class='icon-white icon-folder-open'></i> Select" />
-              <p><span id="progress" class="progress">0%</span></p>
-              <button id="upload" class="btn row-fluid btn-primary btn-large" style="width: 100%"> <i class="icon-upload icon-white"></i> Upload!</button>
+          <div onclick="return true" id="up_panel" class="hidden animated slide">
+              <br/>
+              <div class="row-fluid alt_title">Send file</div>
+              <input type="file" class="btn row-fluid" name="file" id="file" title="<i class='icon-folder-open'></i> Select" />
+              <button id="upload" class="btn row-fluid btn-primary"> <i class="icon-upload icon-white"></i> Upload!</button>
+              <div class="row-fluid"><span id="progress" class="progress">0%</span></div>
+              <div class="row-fluid alt_title">Actions</div>
+              <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-white icon-list-alt"></i>&nbsp;New note</button>
+              <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-download icon-white"></i>&nbsp;Get as .zip</button>
           </div>
+          <label for="file" onclick="return alt_panel_toggle()" class="background_text">
+              <i id="aside_toggler_icon" class="icon-chevron-down" style="margin: 1ex 0 0"></i>
+          </label>
       </aside>
 
       <div class="row-fluid" id="contents"></div>
