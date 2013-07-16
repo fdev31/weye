@@ -5,7 +5,7 @@ from bottle import json_dumps as dumps
 from bottle import json_loads as loads
 
 from weye.utils import guess_type
-from weye.configuration import config
+from weye.configuration import config, import_conf
 from weye.search_engine import search
 from weye import root_objects
 log = logging.getLogger('application')
@@ -128,4 +128,10 @@ def cb():
 
 
 application = bottle.app()
+
+try:
+    import uwsgi
+    import_conf(uwsgi.opt['weye-conf'])
+except ImportError:
+    uwsgi = None
 
