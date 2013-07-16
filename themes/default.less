@@ -208,15 +208,28 @@ img.small_icon {
 }
 
 #uploadzone {
+    margin-top: 3ex;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
     .basicshadow(10px, 0.3);
     padding: .2ex;
     button , .file-input-wrapper {
         .basicshadow(8px, 0.3);
         margin-top: 1ex;
     }
+    background: @BG_COLOR*1.1;
+    top: 2ex;
+    left: auto;
+    right: 1ex;
+    z-index: 5;
+    #up_panel {
+        overflow: clip;
+    }
 }
-
 @media (min-width: @navbarCollapseWidth) {
+    #uploadzone {
+        position: fixed;
+    }
     .maincontainer {
         min-height: 800px;
     }
@@ -226,17 +239,6 @@ img.small_icon {
         z-index: 0;
         .items {
             z-index: 1;
-        }
-    }
-    #uploadzone {
-        margin-top: 3em;
-        background: @BG_COLOR*1.1;
-        position: fixed;
-        left: auto;
-        z-index: 10;
-        right: 1ex;
-        #up_panel {
-            overflow: clip;
         }
     }
     #question_popup.modal {
@@ -256,6 +258,7 @@ img.small_icon {
 }
 .alt_title {
     font-variant: small-caps;
+    .border-radius(20px, 3px, 10px, 3px);
     color: #555;
     text-shadow:1px 1px 1px #fff;
     background: @BG_COLOR;
@@ -270,8 +273,6 @@ img.small_icon {
     min-height: 40em;
 }
 #uploadzone > label {
-    &:hover {
-        cursor: row-resize;
-    }
+    cursor: row-resize;
 }
 

@@ -169,9 +169,11 @@ e: space-separated list of editable field names (editable)
   <div class="container-fluid maincontainer">
 
       <aside id="uploadzone"class="pull-right well autodim folder-item">
+          <label for="file" onclick="return alt_panel_toggle()" class="background_text" style="padding: 0; margin:0;">
+              <i id="aside_toggler_icon" class="icon-chevron-down" style="margin: 1ex 0 0"></i>
+          </label>
 
           <div onclick="return true" id="up_panel" class="hidden animated slide">
-              <br/>
               <div class="row-fluid alt_title">Send file</div>
               <input type="file" class="btn row-fluid" name="file" id="file" title="<i class='icon-folder-open'></i> Select" />
               <button id="upload" class="btn row-fluid btn-primary"> <i class="icon-upload icon-white"></i> Upload!</button>
@@ -180,9 +182,7 @@ e: space-separated list of editable field names (editable)
               <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-white icon-list-alt"></i>&nbsp;New note</button>
               <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-download icon-white"></i>&nbsp;Get as .zip</button>
           </div>
-          <label for="file" onclick="return alt_panel_toggle()" class="background_text">
-              <i id="aside_toggler_icon" class="icon-chevron-down" style="margin: 1ex 0 0"></i>
-          </label>
+
       </aside>
 
       <div class="row-fluid" id="contents"></div>

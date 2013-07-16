@@ -201,15 +201,29 @@ img.small_icon {
   box-shadow: 0 1px 15px 1px rgba(0, 0, 0, 0.7) !important;
 }
 #uploadzone {
+  margin-top: 3ex;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
   box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
   padding: .2ex;
+  background: #f1ede4;
+  top: 2ex;
+  left: auto;
+  right: 1ex;
+  z-index: 5;
 }
 #uploadzone button,
 #uploadzone .file-input-wrapper {
   box-shadow: 0 1px 8px 1px rgba(0, 0, 0, 0.3);
   margin-top: 1ex;
 }
+#uploadzone #up_panel {
+  overflow: clip;
+}
 @media (min-width: 979px) {
+  #uploadzone {
+    position: fixed;
+  }
   .maincontainer {
     min-height: 800px;
   }
@@ -220,17 +234,6 @@ img.small_icon {
   }
   #contents .items {
     z-index: 1;
-  }
-  #uploadzone {
-    margin-top: 3em;
-    background: #f1ede4;
-    position: fixed;
-    left: auto;
-    z-index: 10;
-    right: 1ex;
-  }
-  #uploadzone #up_panel {
-    overflow: clip;
   }
   #question_popup.modal {
     width: 80%;
@@ -249,6 +252,21 @@ img.small_icon {
 }
 .alt_title {
   font-variant: small-caps;
+  -webkit-border-top-right-radius: 20px;
+  -webkit-border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 10px;
+  -webkit-border-top-left-radius: 3px;
+  -moz-border-radius-topright: 20px;
+  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomleft: 10px;
+  -moz-border-radius-topleft: 3px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 3px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
   color: #555;
   text-shadow: 1px 1px 1px #fff;
   background: #dbd7cf;
@@ -262,6 +280,6 @@ img.small_icon {
 #epiceditor {
   min-height: 40em;
 }
-#uploadzone > label:hover {
+#uploadzone > label {
   cursor: row-resize;
 }
