@@ -202,6 +202,7 @@ img.small_icon {
 }
 #uploadzone {
   box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
+  padding: .2ex;
 }
 #uploadzone button,
 #uploadzone .file-input-wrapper {
@@ -245,6 +246,14 @@ img.small_icon {
   width: 100%;
   font-weight: bold;
   text-align: center;
+}
+.alt_title {
+  font-variant: small-caps;
+  color: #555;
+  text-shadow: 1px 1px 1px #fff;
+  background: #dbd7cf;
+  padding-left: 1ex;
+  width: 66%;
 }
 .file-input-name {
   word-wrap: break-word;
