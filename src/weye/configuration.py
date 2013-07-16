@@ -42,6 +42,12 @@ config.no_overwrite = os.environ.get('ALLOW_WRITE', '').upper() not in ('1', 'YE
 _parser = configparser.ConfigParser()
 
 def import_conf(filename=None):
+    try:
+        _import_conf(filename)
+    except Exception as e:
+        print('[EE] Failed to load configuration: %s'% e)
+
+def _import_conf(filename=None):
     root_changed = False
     if filename:
         _parser.read(filename)

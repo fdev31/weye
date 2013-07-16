@@ -8,8 +8,16 @@ weye.configuration.config.debug = True
 log.info('starting application in debug mode, run using "uwsgi --ini uwsgi_conf.ini" to avoid those traces.')
 weye.configuration.log.setLevel(logging.NOTSET)
 
-if len(sys.argv) > 1:
+def helpanddie():
+    print("Syntax: %s [configuration file]"%sys.argv[0])
+    raise SystemExit(1)
+
+if '-h' in sys.argv or '--help' in sys.argv:
+    helpanddie()
+elif len(sys.argv) == 2:
     weye.configuration.import_conf(sys.argv[1])
+elif len(sys.argv) != 1:
+    helpanddie()
 
 application.catchall = False
 bottle.run(application,
