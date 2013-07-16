@@ -254,3 +254,7 @@ img.small_icon {
 #epiceditor {
   min-height: 40em;
 }
+.alt_title {
+  font-variant: small-caps;
+  color: #494845;
+}
