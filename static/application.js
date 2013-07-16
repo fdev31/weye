@@ -412,6 +412,36 @@ function get_permalink() {
     return plink;
 }
 
+function alt_panel_toggle(force) {
+    var pan = $('#up_panel');
+    var current = !! pan.is(':hidden');
+    var delay = 500;
+    if (force === current)
+        return;
+    else if(force === undefined) {
+        force = current;
+    }
+    if(force) {
+        $('#aside_toggler_icon')
+            .removeClass('icon-chevron-down')
+            .addClass('icon-chevron-up');
+        pan.parent().animate( {width: '120px'}, delay, function() {
+            pan.slideDown();
+            pan.removeClass('hidden');
+        });
+    } else {
+        $('#aside_toggler_icon')
+            .addClass('icon-chevron-down')
+            .removeClass('icon-chevron-up');
+        pan.slideUp( function() {
+            pan.parent().animate({width: '1em'}, delay, function() {
+                pan.addClass('hidden');
+            });
+        });
+    }
+    return false;
+}
+
 function view_path(path, opts) {
     if (path === ui.doc_ref) return;
     var opts = opts || {};
@@ -446,7 +476,8 @@ function view_path(path, opts) {
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
                 /* compute back ref & permalink */
-                $('#up_panel').slideUp().addClass('hidden');
+                
+                alt_panel_toggle(false);
                 var o = $('#contents'); /* get main content DOM element */
                 var bref = ui.doc_ref != '/';
                 if (d.mime === "folder") {
@@ -562,6 +593,7 @@ $(function() {
 
     var _p = $('#progress');
     $('#file').bootstrapFileInput();
+    $('#up_panel > a.file-input-wrapper').css('width', '94px');
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
