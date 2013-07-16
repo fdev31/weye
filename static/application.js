@@ -565,14 +565,14 @@ $(function() {
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
-        progress:function(ev){ console.log('progress'); _p.html(((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
-        error:function(ev){ console.log('error', ev); },
+        progress:function(ev){ _p.html(((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
+        error:function(ev){ $.pnotify({title: "Can't upload", text: ''+ ev, type: 'error'}) },
         success:function(data){
             _p.html('100%');
             _p.css('width',_p.html());
             var data = JSON.parse(data);
             if (data.error) {
-                $.pnotify({title: 'Unable to upload some files', text: data.error});
+                $.pnotify({title: 'Unable to upload some files', text: data.error, type: 'error'});
             }
             var items = $('.items');
             for (var i=0; i<data.child.length;i++) {
