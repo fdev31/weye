@@ -130,3 +130,12 @@ Split into:
     - configuration.ini
     - README.txt
 
+Ideas for a future companion tool (everything should be available in the gui first as admin module):
+
+    % nanow mount [file://]plop/something /medias <album> # may allow http (<a href..>), sshfs, ftpfs
+    % nanow ls /medias
+    % nanow get /medias
+    % nanow put mypicture.png /medias/truc # will add a versioned copy to the db
+    % nanow scan /media # may be done automatically, implies the mountpoint knows it's source, the command is just a trigger
+    % nanow umount /medias
+
