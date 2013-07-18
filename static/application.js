@@ -229,7 +229,28 @@ function show_help() {
             text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
         });
     }, 500);
-}
+};
+
+/*
+ * .. function:: hr_size(size)
+ *
+ *      :arg size: a number of bytes (file/data weight)
+ *      :type size: integer
+ *      :returns: Human readable size
+ *      :rtype: string
+ *
+ */
+function hr_size(size) {
+    var units = ['', 'k', 'M', 'G'];
+    var i = 0;
+    
+    while(size >= 1024) {
+        size /= 1024.0;
+        ++i;
+    }
+    
+    return size.toFixed(1) + ' ' + units[i]+'B';
+};
 
 /*
  * .. function:: alt_panel_toggle
@@ -755,18 +776,6 @@ function finalize_item_list(o) {
 var plugin_cleanup = false;
 var plugin_data = {};
 
-function hr_size(size) {
-    var units = ['', 'k', 'M', 'G'];
-    var i = 0;
-    
-    while(size >= 1024) {
-        size /= 1024.0;
-        ++i;
-    }
-    
-    return size.toFixed(1) + ' ' + units[i]+'B';
-}
-
 function refocus(elt) {
     /* sets focus on given element */
     if (elt.length == 0)
@@ -797,16 +806,6 @@ var load_plugin = function() {
         console.log("ERR", e);
     });
 };
-
-function get_permalink() {
-    // TODO: check if different from ui.doc_ref
-    var loc = '' + window.location;
-    if (loc.search('[?]view=')) {
-        loc = loc.substring(0, loc.search('[?]view='))
-    }
-    var plink = loc + '?view=' + ui.doc_ref;
-    return plink;
-}
 
 // ON-Ready
 var base_data = {};
@@ -925,4 +924,19 @@ function copy(obj) {
         o[key] = obj[key];
     return o;
 };
+
+/*
+ * .. function:: get_permalink
+ *
+ *      Computes the current permalink, used by :func:`view_path` to update :data:`ui.permalink`
+ */
+function get_permalink() {
+    // TODO: check if different from ui.doc_ref
+    var loc = '' + window.location;
+    if (loc.search('[?]view=')) {
+        loc = loc.substring(0, loc.search('[?]view='))
+    }
+    var plink = loc + '?view=' + ui.doc_ref;
+    return plink;
+}
 

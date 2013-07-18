@@ -7,5 +7,6 @@ Contents:
 
 * :ref:`genindex`
 * :doc:`jsapi`
+* :doc:`httpapi`
 
 
