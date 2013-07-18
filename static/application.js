@@ -1,6 +1,31 @@
 "use strict";
+/* :orphan:
+ * :author: Fabien Devaux
+ * :license: WTFPL
+ * :language: JavaScript
+ *
+ * .. default-domain:: js
+ *
+ * ###############################
+ * Javascript API (application.js)
+ * ###############################
+ */
 
-var current_filter = '';
+/*
+ *
+ * .. _epiceditor:
+ *
+ * Markdown Text Editor
+ * ####################
+ *
+ *
+ *
+ * .. data:: epic_opts
+ *      
+ *      options used in EpicEditor_
+ *
+ */
+
 
 var epic_opts = {
   container: 'epiceditor',
@@ -37,6 +62,24 @@ var epic_opts = {
   }
 };
 
+/*
+ *
+ * .. data:: editor
+ *
+ *     Object storing the EpicEditor__ object
+ *
+ * .. __: http://epiceditor.com/
+ *
+ */
+
+editor = null;
+
+/*
+ * .. function:: editor_save
+ *      
+ *      Saves the EpicEditor_ content
+ */
+
 function editor_save() {
     var text = editor.exportFile(ui.doc_ref);
     $.post('/d'+ui.doc_ref, {text: text, path: ui.doc_ref})
@@ -52,36 +95,28 @@ function editor_save() {
         });
 };
 
-var editor = null;
 
-function copy(obj) {
-    var o = {}
-    for(var key in obj)
-        o[key] = obj[key];
-    return o;
-};
 
-function fix_nav(link) {
-    $('div.navbar ul.nav li').removeClass('active');
-    $(link).parent().addClass('active');
-};
+/*
+ * Filtering
+ * #########
+ *
+ * .. data:: current_filter
+ *      
+ *      current pattern used in the last :func:`filter_result`
+ *
+ * .. function:: filter_result
+ *      
+ *      :arg filter: regex used as filter for the main content, if not passed, ``#addsearch_form``\ 's ``input`` is used
+ *          if `filter` starts with "type:", the the search is done against ``mime``` item's data, else ``searchable`` is used.
+ *      :type filter: str
+ *
+ *      Filter the ``.item``\s on display, updates the :data:`current_filter` with the applied text pattern.
+ */
 
-function show_help() {
-    $.pnotify({
-        type: 'info',
-        title: "Keyboard shortcuts",
-        text: "<ul><li><b>UP</b>/<b>DOWN</b></li><li><b>ENTER</b>/<b>BACKspace</b> </li><li> <b>HOME</b>/<b>END</b> to navigate...</li><li>Close popups using <b>ESCAPE</b></li><li><b>Ctrl+Space</b> & <b>Tab</b> will change focus from text filter to the list</li></ul>",
-    });
-    setTimeout(function(){
-        $.pnotify({
-            type: 'info',
-            title: "Filter Syntax (Ctrl+Space)",
-            text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
-        });
-    }, 500);
-}
-
+var current_filter = '';
 function filter_result(filter) {
+
     if (typeof(filter) === 'string') {
         current_filter = filter;
     } else {
@@ -179,6 +214,19 @@ function finalize_item_list(o) {
     }, 1);
 };
 
+/*
+ * .. _ui:
+ *
+ * User Interface
+ * ##############
+ *
+ * .. class:: ui
+ *
+ *     Main UI object, used for navigation logic and state
+ *
+ *      .. note:: This is in fact an object/singleton, you should not instanciate it
+ */
+
 var ui = new function() {
     this.permalink = '#';
     this.doc_ref = null;
@@ -207,12 +255,15 @@ var ui = new function() {
             return $('.items > .item');
         }
     };
+    /*
+     * .. function:: ui.select_idx
+     *
+     *      changes selection from old_idx to new_idx
+     *      if new_idx == -1, then selects the last item
+     */
     this.select_idx = function(old_idx, new_idx) {
         if(ui.on_hold )
             return;
-        /* changes selection from old_idx to new_idx
-         if new_idx == -1, then selects the last item
-         */
         var items = ui.get_items();
 
         if (new_idx >= items.length)
@@ -244,10 +295,74 @@ var ui = new function() {
     return this;
 }();
 
-/* item actions */
-var bidule = 42;
+/*
+ * Navigation
+ * ##########
+ *
+ * .. function:: fix_nav(link)
+ *
+ *      Handles the "click" on the given *link* in the ``.navbar`` 
+ *
+ *      Example usage:
+ *
+ *      .. code-block:: html
+ *
+ *          <a href="#" onclick="fix_nav(this); do_some_action();">link</a>
+ */
+function fix_nav(link) {
+    $('div.navbar ul.nav li').removeClass('active');
+    $(link).parent().addClass('active');
+};
+
+/*
+ * .. function:: alt_panel_toggle
+ *
+ *      Display or hide the right panel (with upload form & actions)
+ */
+
+
+function alt_panel_toggle(force) {
+    var pan = $('#up_panel');
+    var current = !! pan.is(':hidden');
+    var delay = 500;
+    if (force === current)
+        return;
+    else if(force === undefined) {
+        force = current;
+    }
+    if(force) {
+        $('#aside_toggler_icon')
+            .removeClass('icon-chevron-down')
+            .addClass('icon-chevron-up');
+        pan.parent().animate( {width: '120px'}, delay, function() {
+            pan.slideDown();
+            pan.removeClass('hidden');
+        });
+    } else {
+        $('#aside_toggler_icon')
+            .addClass('icon-chevron-down')
+            .removeClass('icon-chevron-up');
+        pan.slideUp( function() {
+            pan.parent().animate({width: '1em'}, delay, function() {
+                pan.addClass('hidden');
+            });
+        });
+    }
+    return false;
+}
+
+/*
+ * Item related
+ * ############
+ *
+ * .. class:: ItemTool
+ *
+ *      .. note:: This is in fact an object/singleton, you should not instanciate it
+ */
+
 
 var ItemTool = new function() {
+
     this.execute_evt_handler = function(e) {
         var elt = $(e.target).parent();
         var link = elt.data('link');
@@ -269,7 +384,6 @@ var ItemTool = new function() {
     };
 
     this.popup = function (elt) {
-     var    bidule = elt;
         var qp = $('#question_popup');
         if(qp.length != 0) {
             if (qp.css('display') === 'none') {
@@ -410,36 +524,6 @@ function get_permalink() {
     }
     var plink = loc + '?view=' + ui.doc_ref;
     return plink;
-}
-
-function alt_panel_toggle(force) {
-    var pan = $('#up_panel');
-    var current = !! pan.is(':hidden');
-    var delay = 500;
-    if (force === current)
-        return;
-    else if(force === undefined) {
-        force = current;
-    }
-    if(force) {
-        $('#aside_toggler_icon')
-            .removeClass('icon-chevron-down')
-            .addClass('icon-chevron-up');
-        pan.parent().animate( {width: '120px'}, delay, function() {
-            pan.slideDown();
-            pan.removeClass('hidden');
-        });
-    } else {
-        $('#aside_toggler_icon')
-            .addClass('icon-chevron-down')
-            .removeClass('icon-chevron-up');
-        pan.slideUp( function() {
-            pan.parent().animate({width: '1em'}, delay, function() {
-                pan.addClass('hidden');
-            });
-        });
-    }
-    return false;
 }
 
 function view_path(path, opts) {
@@ -676,4 +760,46 @@ $(function() {
         return ui.select_idx(ui.selected_item, -1);
     });
 });
+
+/*
+ * Misc
+ * ####
+ *
+ * .. function:: copy(obj)
+ *
+ *      :arg obj: Object to clone
+ *      :type obj: object
+ *      :returns: a new object with the same properties
+ *      :rtype: object
+ */
+
+function copy(obj) {
+    var o = {}
+    for(var key in obj)
+        o[key] = obj[key];
+    return o;
+};
+
+/*
+ *
+ * .. function:: show_help
+ *      
+ *      Displays help as notification items
+ *
+ */
+
+function show_help() {
+    $.pnotify({
+        type: 'info',
+        title: "Keyboard shortcuts",
+        text: "<ul><li><b>UP</b>/<b>DOWN</b></li><li><b>ENTER</b>/<b>BACKspace</b> </li><li> <b>HOME</b>/<b>END</b> to navigate...</li><li>Close popups using <b>ESCAPE</b></li><li><b>Ctrl+Space</b> & <b>Tab</b> will change focus from text filter to the list</li></ul>",
+    });
+    setTimeout(function(){
+        $.pnotify({
+            type: 'info',
+            title: "Filter Syntax (Ctrl+Space)",
+            text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
+        });
+    }, 500);
+}
 
