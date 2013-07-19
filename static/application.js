@@ -74,7 +74,7 @@ var epic_opts = {
  *
  */
 
-editor = null;
+var editor = null;
 
 /*
  * .. function:: editor_save
