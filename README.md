@@ -1,3 +1,5 @@
+[MERGE IT](https://nanowork.readthedocs.org/en/latest/)
+
 # Goal
 
 A simple but full-featured file manager using HTML5.
