@@ -34,6 +34,8 @@ config.exclude_dot_files = True
 config.host = '0.0.0.0'
 config.port = '8080'
 config.file_encoding = 'utf-8'
+config.check_security = True
+config.read_only = False
 
 # behavior
 config.no_overwrite = os.environ.get('ALLOW_WRITE', '').upper() not in ('1', 'YES', 'TRUE', 'ON')
@@ -50,22 +52,35 @@ def import_conf(filename=None):
 def _import_conf(filename=None):
     root_changed = False
     if filename:
+        log.debug('reading %s'%filename)
         _parser.read(filename)
+
         from functools import partial
-        rd = partial(_parser.get, 'general')
-        if rd('shared'):
-            config.shared_root = rd('shared')
-            root_changed = True
-        if rd('port'):
-           config.port = int(rd('port'))
-        if rd('host'):
-            config.host = rd('host')
-        if rd('file_encoding'):
-            config.file_encoding = rd('file_encoding')
-        config.debug = (rd('debug') or ' ')[0].lower() in 'yta'
-        config.no_overwrite = (rd('write') or ' ')[0].lower() not in 'yta'
-        if rd('home'):
-            os.chdir(rd('home'))
+        def rd(k):
+            try:
+                return _parser.get('general', k)
+            except Exception as e:
+                print("%s: %s"%(filename, e))
+
+        bool_values = 'check_security read_only exclude_dot_files'.split()
+
+        for k in 'port host file_encoding debug shared_root'.split():
+            val = rd(k)
+            if val:
+                if val == 'shared_root':
+                    root_changed = True
+                elif val.isdigit():
+                    val = int(val)
+
+                if k == 'home':
+                    os.chdir(val)
+                else:
+                    setattr(config, k, val)
+
+        for k in bool_values:
+            val = rd(k)
+            if val:
+                setattr(config, k, val[0] in 'yta' if val else False)
 
     if root_changed or not filename:
         config.shared_root = config.shared_root.rstrip(os.path.sep) # path for shared files

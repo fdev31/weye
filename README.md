@@ -141,3 +141,12 @@ Ideas for a future companion tool (everything should be available in the gui fir
     % nanow scan /media # may be done automatically, implies the mountpoint knows it's source, the command is just a trigger
     % nanow umount /medias
 
+
+Configuration of nanowork:
+
+[mounts]
+/ = browser
+/admin = admin
+
+Then, in files, if in info you have the proper infos, it's able to mount the app locally.
+
