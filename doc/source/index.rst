@@ -16,8 +16,8 @@ Description
 
 Spare time project to experiment some http techniques and try to make a good re-useable UI with a simple architecture.
 
-Screenshot
-##########
+Screenshots
+###########
 
 .. figure:: _static/shot1.jpg
     :width: 80%
@@ -31,6 +31,10 @@ Screenshot
 
     Raw files are accessible conserving path consistency, you can share web sites for instance.
 
+.. figure:: _static/shot-smallscreen.jpg
+    :align: center
+
+    Rendering on a smaller screen (showing bootstrap feature)
 
 Installing
 ##########
