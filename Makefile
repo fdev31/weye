@@ -8,7 +8,7 @@ all:
 PFX='#################### '
 SFX=' ####################'
 SFX=' '
-JS=doc/source/jsapi.rst
+JS=doc/source/dev/jsapi.rst
 
 themes:
 	@ echo "${PFX} BUILDING THEMES ${SFX}"
