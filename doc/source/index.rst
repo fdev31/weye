@@ -133,7 +133,10 @@ Copy |uwsgiconf| to a place we will call "`|uwsgiconf|`":
 
     % uwsgi --ini |uwsgiconf|
 
+Custom configurations
+=====================
 
+You will find a ready to use **WSGI** object under ``weye.application:application``.
 
 
 Concepts
