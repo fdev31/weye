@@ -9,12 +9,16 @@ Welcome to Nanowork's documentation!
 :OS: Should be portable but tested on Linux only.
 
 
-.. pull-quote:: Nanowork aims at providing a simple, modular, re-useable code base to develop simple web applications quickly.
+.. pull-quote:: Nanowork aims at providing a simple, modular, re-usable code base to develop simple web applications quickly.
+
+.. warning:: This project is WIP
+
+    The documentation can be synchronized from reality
 
 Description
 ###########
 
-Spare time project to experiment some http techniques and try to make a good re-useable UI with a simple architecture.
+Spare time project to experiment some HTTP techniques and try to make a good re-usable UI with a simple architecture.
 
 Screenshots
 ###########
@@ -115,7 +119,7 @@ Copy |uwsgiconf| to a place we will call "`|uwsgiconf|`":
 
     Edit the ``weye-conf`` entry to reflect the full path of the main configuration file.
    
-    Exemple:
+    Example:
 
     .. code-block:: ini
 
@@ -139,13 +143,60 @@ Custom configurations
 You will find a ready to use **WSGI** object under ``weye.application:application``.
 
 
-Concepts
-########
+Concepts (developers corner)
+#############################
 
 No time to detail about real concepts, but here is the libs involved: 
 
 - `mustache <http://mustache.github.io/>`_
 - `vcs <https://pypi.python.org/pypi/vcs>`_
+
+Object model
+============
+
+Mandatory
+---------
+
+:mime: Some mime type, but instead of slashes you have dashes
+:name: The exact file name of the item (used to browse & do queries)
+:title: The full name of the item
+:size: The "weight" of the item, some parts expect bytes
+
+Recommended
+-----------
+
+:family: An additional family 
+:searchable: A pattern that will be used in filter, in place of `title`.
+
+Additional
+----------
+
+:thumb: HTML of a thumbnail for that item
+:descr: The (short) description of the item
+
+JSON model
+==========
+
+Things are returned as collections (Array), to optimize transfers, the format is as follow:
+
+.. code-block:: js
+
+    children = {
+        c = ['title', 'mime', 'family', 'searchable'],
+        r = [ ['Foobar', 'text-plain', 'text', 'Foobar markdown'] ]
+        }
+
+.. pull-quote:: ...this example is suited to :ref:`HTTP_list_children`,
+
+    for :ref:`HTTP_get_object` the property is omitted:
+
+.. code-block:: js
+
+    { c = ['title', 'mime', 'family', 'searchable'],
+    r = [ ['Foobar', 'text-plain', 'text', 'Foobar markdown'],
+        ['Baz', 'text-javascript', 'text', 'bazjavascript']
+     ] }
+
 
 Public APIs
 ###########
