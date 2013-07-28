@@ -80,6 +80,14 @@ User Interface
 
      Display or hide the right panel (with upload form & actions)
 
+.. function:: get_view(template, item)
+
+     Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
+
+     :arg template: The name of the template to use.
+         .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
+
+
 .. class:: ui
 
     Main UI object, used for navigation logic and state
