@@ -232,6 +232,20 @@ Item related
 
      :arg o: Item (jQuery element) to prepare
 
+.. function:: uncompress_itemlist(keys_values_array)
+
+     :arg keys_values_array: tuple of *property names* and *list of values*. Ex:
+
+        .. code-block:: js
+            
+           [ ['name', 'age'], [ ['toto', 1], ['tata', 4], ['titi', 42] ] ]
+
+     :returns: "flat" array of objects. Ex:
+
+        .. code-block:: js
+
+           [ {'name': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
+
 .. function:: finalize_item_list(o)
 
 

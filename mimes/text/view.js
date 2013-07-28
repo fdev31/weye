@@ -3,13 +3,8 @@ function display(item) {
 
     ui.set_context('item');
     $('<div class="row-fluid"><small>Fullscreen: <i>Alt+F</i>, Toggle preview: <i>Alt+P</i></small></div><div class="row-fluid" id="epiceditor"></div> <div class="pull-right btn-group"></div>').appendTo(
-        $('#contents').html( ich.view_file({
-            item: item,
-            backlink: ui.doc_ref != '/',
-            permalink: ui.permalink
-            }
-        ))
-    );
+        $('#contents').html( get_view('file', item) )
+        );
 
     $('<button class="btn btn-success btn-large" onclick="editor_save()">Save changes</button>')
         .appendTo( $('#download_link').parent() );
@@ -24,6 +19,4 @@ function display(item) {
             $.pnotify({type: 'error', text: ''+e});
         })
     });
-
-    $('.filesize').each( function(i, x) { var o=$(x); o.text(hr_size(eval(o.text()))) } );
 };

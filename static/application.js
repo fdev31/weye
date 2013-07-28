@@ -295,7 +295,31 @@ function alt_panel_toggle(force) {
         });
     }
     return false;
-}
+};
+
+/*
+ * .. function:: get_view(template, item)
+ *
+ *      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
+ *
+ *      :arg template: The name of the template to use.
+ *                  .. rubric:: standard templates
+ *
+ *                  :file: file display
+ *                  :list: list display, for folders most of the time
+ *      :arg item: data used in itemplate
+ *
+ *          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
+ *
+ */
+
+function get_view(template, item) {
+    return ich['view_'+template]({
+        item: item,
+        backlink: ui.doc_ref != '/',
+        permalink: ui.permalink
+    });
+};
 
 
 /*
@@ -394,9 +418,16 @@ var ui = new function() {
         if(ctx == 'folder') {
             $('.folder-item').show();
             $('.pure-item').hide();
-        } else {
+        } else if(ctx == 'item') {
             $('.folder-item').hide();
             $('.pure-item').show();
+            $('.filesize').each( function(i, x) {
+                var o=$(x);
+                o.text(hr_size(eval(o.text())));
+            });
+        } else {
+            $('.folder-item').hide();
+            $('.pure-item').hide();
         }
     };
     /*
@@ -715,6 +746,38 @@ var ItemTool = new function() {
     };
 
 return this;}();
+
+/*
+ * .. function:: uncompress_itemlist(keys_values_array)
+ *
+ *      :arg keys_values_array: tuple of *property names* and *list of values*. Ex:
+ *
+ *         .. code-block:: js
+ *             
+ *            [ ['name', 'age'], [ ['toto', 1], ['tata', 4], ['titi', 42] ] ]
+ *
+ *      :returns: "flat" array of objects. Ex:
+ *
+ *         .. code-block:: js
+ *
+ *            [ {'name': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
+ */
+
+function uncompress_itemlist(keys_values_array) {
+    var keys = keys_values_array[0];
+    var list_of_values = keys_values_array[1];
+    var ret = [];
+
+    for (var i=0; i<list_of_values.length; i++) {
+        var values = list_of_values[i];
+        var item = {};
+        for (var pid=0; pid<keys.length; pid++) {
+            item[ keys[pid] ] = values[pid];
+        }
+        ret.push( item );
+    }
+    return ret;
+};
 
 /*
  * .. function:: finalize_item_list(o)
