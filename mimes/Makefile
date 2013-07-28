@@ -11,7 +11,9 @@ ${OUT}: build
 test: build ${OUT}
 	js ${OUT}
 
-install: ${OUT}
-#	jsmin < ${OUT} > ../static/mimetypes.js
+debug:
 	cp ${OUT} ../static/mimetypes.js
+
+install: ${OUT}
+	jsmin < ${OUT} > ../static/mimetypes.js
 
