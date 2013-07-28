@@ -554,108 +554,16 @@ function view_path(path, opts) {
                     path = path.substr(1);
                 while(path.length > 1 && path.substr(-1) === '/')
                     path = path.substr(0, path.length-1)
-                if (path !== '/') {
-                    ui.doc_ref = path;
-                } else {
-                    ui.doc_ref = '/';
-                }
+
+
+                d.path = ui.doc_ref = path;
                 ui.permalink = get_permalink();
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
                 /* compute back ref & permalink */
                 
-                alt_panel_toggle(false);
-                var o = $('#contents'); /* get main content DOM element */
-                var bref = ui.doc_ref != '/';
-                if (d.mime === "folder") {
-                    // Current document is a folder
-                    $('.folder-item').show();
-                    $('.pure-item').hide();
-                    // fetch childrens
-                    $.get('/c'+path)
-                        .success(function(c) {
-//                            console.log('children: /c/'+path);
-                            // render
-                            base_data = c;
-                            var is_an_app = false;
-                            var app_indice = 'infos.js';
-                            base_data.forEach(function(o) {
-                                if(o.f === app_indice)
-                                    is_an_app = true;
-                            })
-                            ui.plugin = null;
-                            if(is_an_app) {
-                                $.ajax({url: '/d'+path+'/infos.js', dataType: 'json'})
-                                .done( function(d) {
-                                    ui.plugin = d;
-                                    if(!!d.templates) {
-                                        for(var key in d.templates) {
-                                            ich.addTemplate(key, d.templates[key]);
-                                        };
-                                    }
-                                    load_plugin();
-                                })
-                                .fail(function(e) {
-                                    $.pnotify({type: 'error', title: "Invalid data", text: "Impossible to load application informations"});
-                                    console.log("ERR", e);
-                                });
-                            } else {
-                                d.have_child = c.length > 0; // XXX: is this really needed ??
-                                d.backlink = bref;
-                                d.permalink = ui.permalink;
-                                c.forEach(function(e) {
-                                    if(!!!e.t) e.t = e.f;
-                                    if(!!!e.e) e.e = 'name';
-                                    if(!!!e.s) e.s = e.f;
-                                });
-                                d.child = c;
-
-                                o.html( ich.view_list(d) );
-                                // make those items funky
-                                finalize_item_list(o);
-                            }
-                        });
-                } else {
-                    // Current document is an item/file
-                    $('.folder-item').hide();
-                    $('.pure-item').show();
-                    // render item generic template
-                    o.html( ich.view_file({
-                        item: d,
-                        path: path,
-                        backlink: bref,
-                        permalink: ui.permalink
-                        })
-                   );
-                   $('.filesize').each( function(i, x) { var o=$(x); o.text(hr_size(eval(o.text()))) } )
-                    // mime-type specific handling (appended to generic template)
-                    if (d.mime == 'video') {
-                        $('<video controls src="/d'+path+'">Alt descr</video>').appendTo(o);
-                    } else if (d.mime.match(RegExp('^image'))) {
-                        $('<img src="/d'+path+'" />').appendTo(o);
-                    } else if (d.mime.match(RegExp('^audio'))) {
-                        $('<audio src="/d'+path+'" controls><span>Audio preview not supported on your browser</span></audio>').appendTo(o);
-                    } else if (d.mime.match(RegExp('^text'))) {
-//                        $('<iframe class="span11" width="100%" height="100%" src="/d'+path+'" />').appendTo(o);
-                        $('<div class="row-fluid"><small>Fullscreen: <i>Alt+F</i>, Toggle preview: <i>Alt+P</i></small></div><div class="row-fluid" id="epiceditor"></div> <div class="pull-right btn-group"></div>').appendTo(o);
-
-
-                        $('<button class="btn btn-success btn-large" onclick="editor_save()">Save changes</button>')
-                        .appendTo( $('#download_link').parent() )
-
-                        editor = new EpicEditor(epic_opts).load( function() {
-                            $.get('/d'+path)
-                            .done(function(d) {
-                                editor.importFile(path, d);
-                            })
-                            .fail(function(e) {
-                                $.pnotify({type: 'error', text: ''+e});
-                            });
-                        })
-                    }
-                }
-                // finished successfuly
-//                $('.row-fluid').fadeIn('slow');
+                alt_panel_toggle(false); // fold panel
+                ui.view_item(d);
             }
         }
     )
