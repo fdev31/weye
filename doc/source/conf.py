@@ -97,7 +97,7 @@ pygments_style = 'sphinx'
 import cloud_sptheme as csp
 html_theme = "redcloud"
 html_theme_path = [csp.get_theme_dir()]
-html_theme_options = { "roottarget": "index" }
+html_theme_options = { "roottarget": "index" , 'defaultcollapsed': True}
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
