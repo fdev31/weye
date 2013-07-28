@@ -65,8 +65,7 @@ def cb(path='/'):
     log.debug('~ Listing %r', path)
     # TODO: session + permission mgmt
     bottle.response.set_header('Content-Type', 'application/json')
-    obj = root_objects.list_children(path)
-    return dumps(obj)
+    return dumps( root_objects.list_children(path) )
 
 # DOWNLOAD / RAW DATA
 @bottle.route('/d/<path:path>')

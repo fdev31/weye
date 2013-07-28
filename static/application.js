@@ -314,11 +314,10 @@ function alt_panel_toggle(force) {
  */
 
 function get_view(template, item) {
-    return ich['view_'+template]({
-        item: item,
-        backlink: ui.doc_ref != '/',
-        permalink: ui.permalink
-    });
+    var elt = copy(item);
+    elt.backlink = ui.doc_ref != '/';
+    elt.permalink = ui.permalink;
+    return ich['view_'+template](elt);
 };
 
 
@@ -423,7 +422,10 @@ var ui = new function() {
             $('.pure-item').show();
             $('.filesize').each( function(i, x) {
                 var o=$(x);
-                o.text(hr_size(eval(o.text())));
+                if (!!! o.data('_fs_converted')) {
+                    o.text(hr_size(eval(o.text())));
+                }
+                o.data('_fs_converted', 1);
             });
         } else {
             $('.folder-item').hide();
@@ -538,6 +540,7 @@ function fix_nav(link) {
  */
 function go_back() {
     var opts = opts || {};
+    console.log('go_back');
     /* returns to parent item */
     var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
     if(!!plugin_cleanup) {
@@ -569,6 +572,7 @@ function go_back() {
  */
 function view_path(path, opts) {
     if (path === ui.doc_ref) return;
+    console.log('view_path______________________', path, ui.doc_ref);
     var opts = opts || {};
     ui.flush_caches();
     var buttons = $('#addsearch_form');
@@ -637,6 +641,7 @@ var ItemTool = new function() {
      */
 
     this.execute_evt_handler = function(e) {
+        console.log('exec evt handler');
         var elt = $(e.target).parent();
         var link = elt.data('link');
         if(!!!link) {
@@ -764,8 +769,8 @@ return this;}();
  */
 
 function uncompress_itemlist(keys_values_array) {
-    var keys = keys_values_array[0];
-    var list_of_values = keys_values_array[1];
+    var keys = keys_values_array.c;
+    var list_of_values = keys_values_array.r;
     var ret = [];
 
     for (var i=0; i<list_of_values.length; i++) {

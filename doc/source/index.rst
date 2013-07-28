@@ -170,8 +170,9 @@ Mandatory
 
 :mime: Some mime type, but instead of slashes you have dashes
 :name: The exact file name of the item (used to browse & do queries)
-:title: The full name of the item
+:title: The full name of the item (will be set to `mime` if not set)
 :size: The "weight" of the item, some parts expect bytes
+:editables: space-separated list of editable fields
 
 Recommended
 -----------
@@ -184,6 +185,21 @@ Additional
 
 :thumb: HTML of a thumbnail for that item
 :descr: The (short) description of the item
+:classes: Additional (html) classes for this item
+
+Custom
+------
+
+Custom data can be returned, using a special attribute `data` (list) of  ``{k: <key>, v: <value> }`` on your JSON items.  Ex:
+
+.. code-block:: js
+
+    [
+    ['name', 'mime', 'size', 'data'],
+    ['Toto', 'guy', 150, [{'k': 'hair', 'v': 'blond'}]]
+    ['Tata', 'guri', 120, [{'k': 'hair', 'v': 'red'}, {k:'nails',v:'blue'}]]
+    ]
+
 
 JSON model
 ==========

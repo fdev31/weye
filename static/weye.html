@@ -15,40 +15,39 @@
     <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
       <a title="Share item with RightClick>Copy location" href="{{permalink}}"  ><i class="icon-bookmark"/> Permalink</a>
 
-          <h1><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> <small>{{item.cont}}</small>{{item.name}}</h1>
+          <h1><img class="big_icon" src="/static/mime/{{mime}}.svg"/> <small>{{cont}}</small>{{name}}</h1>
 
-          <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{item.path}}"> Get <em>{{item.mime}}</em> (<span class="filesize">{{item.size}}</span>)</a></div><hr/>
+          <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
 </script>
 <!--
 # mandatory #
-i: ID
-m: mime
-f: link
+mime: mime
+name: link
 
 # adviced #
-t: title (defaults to link)
-s: searchable (defaults to link, space separated list of "D" fields)
+title: caption (defaults to name/link)
+searchable: searchable (defaults to link, space separated list of "D" fields)
 
 # optional #
-d: description (used in title=)
-c: classes 
-D: data{k:key, v:value} used in data protocol
-e: space-separated list of editable field names (editable)
+descr: description (used in title=)
+classes: classes 
+data: data{k:key, v:value} used in data protocol
+editables: space-separated list of editable field names (editable)
 
 -->
 <script id="view_generic" class="partial" type= "text/html">
-    <div class="item span12 {{c}}" data-searchable="{{s}}" data-link="{{f}}" data-mime="{{m}}" data-uid="{{i}}" data-name="{{t}}" data-editable="{{e}}"
-        {{#D}}
+    <div class="item span12 {{classes}}" data-searchable="{{searchables}}" data-link="{{title}}" data-mime="{{mime}}"  data-name="{{name}}" data-editable="{{editable}}"
+        {{#data}}
         data-{{k}}="{{v}}"
-        {{/D}}
+        {{/data}}
         >
-      <img src="/static/mime/{{m}}.svg" class="small_icon item_caption item_stuff"/>
-      <span title="{{d}}" class="item_stuff item_caption">{{t}}</span>
+      <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
+      <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="ItemTool.popup($(this).parent());false;" />
     </div>
 </script>
 <script id="view_list" type="text/html">
-    {{#backlink}}
+        {{#backlink}}
         <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
             <a title="Share item with RightClick>Copy location" href="{{permalink}}" ><i class="icon-bookmark"/> Permalink</a>
         {{/backlink}}
