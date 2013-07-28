@@ -307,7 +307,7 @@ function alt_panel_toggle(force) {
  *
  *                  :file: file display
  *                  :list: list display, for folders most of the time
- *      :arg item: data used in itemplate
+ *      :arg item: data used in itemplate, `backlink` and `permalink` will automatically be added
  *
  *          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
  *
