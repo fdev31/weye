@@ -1,9 +1,10 @@
-.PHONY: themes jsapi doc
+.PHONY: themes jsapi doc mimes
 
 all:
 	@echo "Targets:"
 	@echo " themes"
 	@echo " jsapi"
+	@echo " mimes"
 
 PFX='#################### '
 SFX=' ####################'
@@ -15,6 +16,9 @@ themes:
 	cd themes && make
 
 jsapi: ${JS}
+
+mimes:
+	(cd mimes && make install)
 
 doc: jsapi
 	(cd doc && make html)
