@@ -13,7 +13,7 @@ Welcome to Nanowork's documentation!
 
 .. warning:: This project is WIP
 
-    The documentation can be synchronized from reality
+    The documentation can be synchronized from reality, sometimes.
 
 Description
 ###########
@@ -28,6 +28,12 @@ Screenshots
     :align: center
 
     Main page (file browser)
+
+.. rst-class:: html-toggle
+
+Show more...
+============
+
 
 .. figure:: _static/shot-rawhtml.jpg
     :width: 80%
@@ -54,6 +60,8 @@ Example:
     
     % wget 'https://github.com/fdev31/weye/archive/master.zip' && unzip master
 
+
+.. rst-class:: html-toggle
 
 Configuring
 ###########
@@ -142,6 +150,7 @@ Custom configurations
 
 You will find a ready to use **WSGI** object under ``weye.application:application``.
 
+.. rst-class:: html-toggle
 
 Concepts (developers corner)
 #############################
@@ -197,6 +206,7 @@ Things are returned as collections (Array), to optimize transfers, the format is
         ['Baz', 'text-javascript', 'text', 'bazjavascript']
      ] }
 
+.. rst-class:: html-toggle
 
 Public APIs
 ###########
