@@ -13,7 +13,7 @@ Welcome to Nanowork's documentation!
 
 .. warning:: This project is WIP
 
-    The documentation can be synchronized from reality, sometimes.
+    The documentation can be synchronized with reality, sometimes.
 
 Description
 ###########
