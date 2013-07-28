@@ -98,9 +98,28 @@ User Interface
 
      Selected item's index
 
+.. function:: ui.view_item
+
+     Display an item from its data (``mime`` property).
+     It will try to find a matching key in the :data:`mimes` dictionary.
+     Example:
+
+     If mime is "text-html"
+         The tested values will be (in this order): **text-html**, **text**, **default**
+
+     :arg item: the item object
+
 .. function ui.flush_caches
 
      Flush internal caches (useful on context change)
+
+.. function:: ui.set_context
+
+     sets the ui context, showing/hiding panels accordingly.
+
+     :arg ctx: the context to set, supported values:
+         :folder: Current item is a container
+         :item: Current item is a leaf/endpoint
 
 .. function:: ui.select_next
 

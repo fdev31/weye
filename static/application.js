@@ -326,6 +326,44 @@ var ui = new function() {
     this._cached_filter = null;
     this.on_hold = true;
     /*
+     * .. function:: ui.view_item
+     *
+     *      Display an item from its data (``mime`` property).
+     *      It will try to find a matching key in the :data:`mimes` dictionary.
+     *      Example:
+     *
+     *      If mime is "text-html"
+     *          The tested values will be (in this order): **text-html**, **text**, **default**
+     *
+     *      :arg item: the item object
+     */
+    this.view_item = function(item) {
+        console.log('*****************************');
+        var found = false;
+
+        var choices = [item.mime];
+
+        var subchoices = item.mime.split('-');
+        for(var n=subchoices.length-1; n>=1 ; n--) {
+            choices.push( subchoices.slice(0, n).join('-') );
+        }
+        choices.push('default');
+
+        for (var n=0; (!!! found) && n < choices.length ; n++) {
+            try {
+                console.log('try '+choices[n]);
+                found = mimes[ choices[n] ].display;
+            } catch(err) {
+                console.log(err);
+            }
+        }
+        if(!!!found) {
+            $.pnotify({'type': 'error', 'title': 'Type association', 'text': 'failed loading one of: '+choices});
+        } else {
+            found(item);
+        }
+    };
+    /*
      * .. function ui.flush_caches
      *
      *      Flush internal caches (useful on context change)
@@ -334,6 +372,24 @@ var ui = new function() {
         this._cached_filter = null;
         $('#addsearch_form input[name=text]').val('');
         this.on_hold = true;
+    };
+    /*
+     * .. function:: ui.set_context
+     *
+     *      sets the ui context, showing/hiding panels accordingly.
+     *
+     *      :arg ctx: the context to set, supported values:
+     *          :folder: Current item is a container
+     *          :item: Current item is a leaf/endpoint
+     */
+    this.set_context = function(ctx) {
+        if(ctx == 'folder') {
+            $('.folder-item').show();
+            $('.pure-item').hide();
+        } else {
+            $('.folder-item').hide();
+            $('.pure-item').show();
+        }
     };
     /*
      * .. function:: ui.select_next
