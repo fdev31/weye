@@ -513,7 +513,8 @@ function go_back() {
         bref = bref[1] || '/';
         view_path(bref, {'history': !!! opts.disable_history});
     }
-}
+};
+
 
 /*
  * .. function:: view_path(path, opts)
@@ -533,6 +534,7 @@ function view_path(path, opts) {
     ui.flush_caches();
     var buttons = $('#addsearch_form');
     /* document viewer, give it a valid path */
+    // TODO: plugin deactivate, possible for applications and mimes (as following:)
     $('audio').each( function() {this.pause(); this.src = "";} );
 //    $('.row-fluid').fadeOut('fast');
     setTimeout( function() {
