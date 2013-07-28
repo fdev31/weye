@@ -160,6 +160,8 @@ No time to detail about real concepts, but here is the libs involved:
 - `mustache <http://mustache.github.io/>`_
 - `vcs <https://pypi.python.org/pypi/vcs>`_
 
+.. _object_model:
+
 Object model
 ============
 

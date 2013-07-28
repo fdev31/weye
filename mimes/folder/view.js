@@ -39,7 +39,7 @@ function display(item) {
                 });
                 item.child = c;
                 // render & make those items funky
-                finalize_item_list( $('#contents').html(ich.view_list(item)) );
+                finalize_item_list( $('#contents').html( get_view('list', item) ) );
             }
         });
 };
