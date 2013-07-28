@@ -111,11 +111,8 @@ def list_children(path):
         if not os.access(os.path.join(fpath, f), os.R_OK):
             return False
         return True
-    l = list({'m': guess_type(os.path.join(fpath, f)), 'f': f}
-            for f in os.listdir(fpath) if is_listable(f))
-
-    def s(o):
-        return '!!!'+o['f']+o['m'] if o['m'] == 'folder' else o['f']+o['m']
-    l.sort(key=s)
-    return l
+    values = [ [f, guess_type(os.path.join(fpath, f))]
+            for f in os.listdir(fpath) if is_listable(f)]
+    values.sort(key=lambda o: '!!!'+o[0]+o[1] if o[1] == 'folder' else o[0]+o[1])
+    return {'children': {'c': ['name', 'mime'], 'r': values} }
 
