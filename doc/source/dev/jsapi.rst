@@ -85,6 +85,11 @@ User Interface
      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
 
      :arg template: The name of the template to use.
+                 .. rubric:: standard templates
+
+                 :file: file display
+                 :list: list display, for folders most of the time
+
          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
 
 
