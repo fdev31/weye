@@ -64,6 +64,10 @@ User Interface
      Displays help as notification items
 
 
+.. data:: mimes
+
+     Mimes dictionary, contains the "javascript extensions" of a given mime. Currently the only supported property is **display**.
+
 .. function:: hr_size(size)
 
      :arg size: a number of bytes (file/data weight)

@@ -232,6 +232,14 @@ function show_help() {
 };
 
 /*
+ * .. data:: mimes
+ *
+ *      Mimes dictionary, contains the "javascript extensions" of a given mime. Currently the only supported property is **display**.
+ */
+
+var mimes = {};
+
+/*
  * .. function:: hr_size(size)
  *
  *      :arg size: a number of bytes (file/data weight)
