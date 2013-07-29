@@ -48,7 +48,7 @@ def cb():
 def cb(path):
     return bottle.static_file(path, config.static_root)
 
-# OBJECTS / METADATA
+# GET OBJECTS METADATA
 @bottle.route('/o/')
 @bottle.route('/o/<path:path>')
 def cb(path='/'):
@@ -56,6 +56,17 @@ def cb(path='/'):
     log.debug('~ Accessing %r', path)
     # TODO: session + permission mgmt
     return root_objects.get_object_from_path(path)
+
+# UPDATE OBJECTS METADATA
+@bottle.route('/o/<path:path>', method='PUT')
+def cb(path='/'):
+    path = _fix_path(path)
+    log.debug('~ Updating %r', path)
+    # TODO: session + permission mgmt
+    m = loads(bottle.request.POST['meta'])
+    root_objects.update_object(path, m)
+    return {}
+#    return root_objects.get_object_from_path(path)
 
 # CHILDREN / CONTENT
 @bottle.route('/c/')

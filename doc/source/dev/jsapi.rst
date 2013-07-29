@@ -166,6 +166,12 @@ User Interface
 
      Recovers selection status for current :data:`ui.doc_ref` in :data:`ui.nav_hist`
 
+Edition
+#######
+.. function:: save_form()
+
+     Saves the ``#question_popup .editable``
+
 Navigation
 ##########
 
@@ -222,6 +228,10 @@ Item related
 
      :arg elt: DOM element
 
+.. todo:: GET clean meta from /o/<path> (slower but avoid hacks & limitations)
+.. todo:: update elt's `data` on save
+
+
 .. function:: ItemTool.prepare(o)
 
 
@@ -262,6 +272,8 @@ Misc
 
      :arg obj: Object to clone
      :type obj: object
+     :arg blacklist: List of properties to ignore
+     :type blacklist: Array of String
      :returns: a new object with the same properties
      :rtype: object
 

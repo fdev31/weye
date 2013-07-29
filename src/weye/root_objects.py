@@ -38,6 +38,7 @@ def add_new_object(content, type=None, filename=None):
     open(filename, 'wb').write(content)
     log.info("Created %r", filename)
     return name
+
 def save_object_to_path(path, read_func):
     if os.path.exists(path):
         yield 'File exists!'
@@ -53,6 +54,14 @@ def save_object_to_path(path, read_func):
                 break
             out( d )
             yield
+
+def update_object(path, meta):
+    path = path.rstrip('/').lstrip('/')
+    meta_fpath = os.path.join(config.shared_db, path).rstrip('/') + config.special_extension
+
+    infos = loads(open(meta_fpath, 'rb').read())
+    infos.update(meta)
+    open(meta_fpath, 'wb').write(dumps(infos).encode())
 
 def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
@@ -115,4 +124,5 @@ def list_children(path):
             for f in os.listdir(fpath) if is_listable(f)]
     values.sort(key=lambda o: '!!!'+o[0]+o[1] if o[1] == 'folder' else o[0]+o[1])
     return {'children': {'c': ['name', 'mime'], 'r': values} }
+
 

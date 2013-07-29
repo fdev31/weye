@@ -98,7 +98,6 @@ function editor_save() {
 };
 
 
-
 /*
  * Filtering
  * #########
@@ -118,6 +117,7 @@ function editor_save() {
  */
 
 var current_filter = '';
+
 function filter_result(filter) {
 
     if (typeof(filter) === 'string') {
@@ -327,6 +327,7 @@ function get_view(template, item) {
  *     Main UI object, used for navigation logic and state
  *
  *      .. note:: This is in fact an object/singleton, you should not instanciate it
+        .. todo:: create a method to update an item from its name
  */
 
 var ui = new function() {
@@ -515,6 +516,52 @@ var ui = new function() {
 }();
 
 /*
+ * Edition
+ * #######
+ * .. function:: save_form()
+ *
+ *      Saves the ``#question_popup .editable``
+ */
+
+function save_form() {
+    var o = $('#question_popup .editable');
+    var object_path = ui.doc_ref + '/' + o.data('link');
+    var metadata = {};
+    var metadata_list = [];
+
+    var close_form = function() {
+        o.parent().modal('hide');
+        setTimeout( function() {
+            o.parent().detach();
+        }, 1000);
+    }
+
+    o.find('.editable-property').each( function(x, property) {
+        var property = $(property);
+        var inp = property.find('input');
+        var orig = inp.data('orig-value');
+        var val = inp.val();
+        var name = property.data('name');
+        if (val !== orig) {
+            metadata[name] = inp.val();
+            metadata_list.push(name);
+        }
+    } );
+
+    if (metadata_list.length == 0) {
+        $.pnotify({text: 'No change'});
+    } else {
+        $.ajax('/o'+object_path, {dataType: 'json', data: {meta: JSON.stringify(metadata) }, type: 'PUT'})
+            .done( function(e) { $.pnotify({type: "success", text: "Saved"})
+            })
+        .fail( function(e) {
+            $.pnotify({type: "error", text: ''+e});
+        });
+    }
+    close_form();
+};
+
+/*
  * Navigation
  * ##########
  *
@@ -677,6 +724,11 @@ var ItemTool = new function() {
      */
 
     this.popup = function (elt) {
+        /*
+         * .. todo:: GET clean meta from /o/<path> (slower but avoid hacks & limitations)
+         * .. todo:: update elt's `data` on save
+         *
+         */
         var qp = $('#question_popup');
         if(qp.length != 0) {
             if (qp.css('display') === 'none') {
@@ -686,12 +738,14 @@ var ItemTool = new function() {
             }
         }
         var actions = ['infos', 'download', 'preferences', 'delete'];
-        var data = copy(elt.data());
-        data.path = ui.doc_ref+'/'+data.link;
-        data.cont = ui.doc_ref;
+        var data = copy(elt.data(), ['isoTransform', 'editable']);
         var edited = [];
         if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
-            for(var k in data) { edited.push({name: k, type: 'text'}) };
+            for(var k in data) {
+                if (!!!k.match(/^isotope/)) {
+                    edited.push({name: k, type: 'text'});
+                }
+            };
         } else {
             var editables = data.editable.split(/ +/);
             for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
@@ -739,14 +793,6 @@ var ItemTool = new function() {
                     swipe: ItemTool.popup_evt_handler
                 })
         });
-        return o;
-    };
-
-    this.render = function (data) {
-        if (!!!data.f || !!!data.m)
-            var data = {m: data.mime, f: data.name}
-        var o = ich.view_item(data);
-        ItemTool.prepare(o);
         return o;
     };
 
@@ -956,14 +1002,29 @@ $(function() {
  *
  *      :arg obj: Object to clone
  *      :type obj: object
+ *      :arg blacklist: List of properties to ignore
+ *      :type blacklist: Array of String
  *      :returns: a new object with the same properties
  *      :rtype: object
  */
 
-function copy(obj) {
+function copy(obj, blacklist) {
     var o = {}
-    for(var key in obj)
-        o[key] = obj[key];
+    if (blacklist) {
+        for(var key in obj) {
+            var blisted = false;
+            for (var bl in blacklist) {
+                if( blacklist[bl] === key )
+                    blisted = true;
+            }
+            if (! blisted)
+                o[key] = obj[key];
+        }
+    } else {
+        for(var key in obj) {
+            o[key] = obj[key];
+        }
+    }
     return o;
 };
 
