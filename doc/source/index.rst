@@ -143,7 +143,7 @@ Copy |uwsgiconf| to a place we will call "`|uwsgiconf|`":
 
 .. code-block:: console
 
-    % uwsgi --ini |uwsgiconf|
+    % uwsgi |uwsgiconf|
 
 Custom configurations
 =====================
