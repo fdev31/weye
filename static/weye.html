@@ -72,15 +72,20 @@ editables: space-separated list of editable field names (editable)
         </div>
         {{/have_child}}
 </script>
+
+<!-- FORM TEMPLATE(s) -->
+
 <script id="input_text" type="text/html">
     <div class="row-fluid"><span class="label">{{name}}</span></div>
     <input
+    data-orig-value='{{content}}'
     type="text"
     class="{{^class}}input-xxlarge{{/class}}{{#class}}{{class}}{{/class}}"
     placeholder="{{name}}"
     value="{{content}}"
     ></input>
 </script>
+
 <script id="question" type="text/html">
     <div class="modal hide fade" id="question_popup">
           <div class="modal-header">

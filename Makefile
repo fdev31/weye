@@ -5,6 +5,7 @@ all:
 	@echo " themes"
 	@echo " jsapi"
 	@echo " mimes"
+	@echo " doc"
 
 PFX='#################### '
 SFX=' ####################'
