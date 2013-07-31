@@ -1,4 +1,5 @@
 import os
+import sys
 import bottle
 import logging
 from bottle import json_dumps as dumps
@@ -21,6 +22,12 @@ _fix_path = unquote
 @bottle.get('/')
 def cb():
     return bottle.static_file('weye.html', config.static_root)
+
+import subprocess
+cwd = os.getcwd()
+os.chdir( os.path.join( config.static_root, 'mime') )
+subprocess.call([sys.executable, 'clean_dups.py', 'expand'])
+os.chdir(cwd)
 
 # TODO: search
 @bottle.post('/search')
