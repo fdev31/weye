@@ -23,11 +23,19 @@ _fix_path = unquote
 def cb():
     return bottle.static_file('weye.html', config.static_root)
 
-import subprocess
+
+# ensure mimes icons are expanded (optimization to avoid huge archives)
+_mimes_path = os.path.abspath( os.path.join( config.static_root, 'mime') )
+sys.path.insert(0, _mimes_path)
+from clean_dups import expand
+#print(sys.executable)
+#import subprocess
 cwd = os.getcwd()
-os.chdir( os.path.join( config.static_root, 'mime') )
-subprocess.call([sys.executable, 'clean_dups.py', 'expand'])
+os.chdir( _mimes_path )
+expand()
+#subprocess.call([sys.executable, 'clean_dups.py', 'expand'])
 os.chdir(cwd)
+del(sys.path[0], expand, _mimes_path)
 
 # TODO: search
 @bottle.post('/search')
