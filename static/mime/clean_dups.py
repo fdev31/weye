@@ -42,7 +42,7 @@ for dups in duplicates:
         continue
     cleaned_duplicates.append( duplicates[dups] )
 
-if force_expand or (not force_cleanup and len(cleaned_duplicates) == 0):
+def expand():
     # copy dups
     original_duplicates = json.load(open('duplicates.txt'))
     print("Expanding duplicates...")
@@ -51,10 +51,18 @@ if force_expand or (not force_cleanup and len(cleaned_duplicates) == 0):
         for fname in dups[1:]:
             if not os.path.exists(fname):
                 open(fname, 'w').write(master)
-else:
+
+def cleanup():
     print('Saving informations & removing dups...')
+    cleaned_duplicates.sort()
     json.dump(cleaned_duplicates, open('duplicates.txt', 'w'))
     for dups in cleaned_duplicates:
         for fname in dups[1:]:
             os.unlink(fname)
+
+if __name__ == '__main__':
+    if force_expand or (not force_cleanup and len(cleaned_duplicates) == 0):
+        expand()
+    else:
+        cleanup()
 
