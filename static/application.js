@@ -605,6 +605,14 @@ function go_back() {
 };
 
 
+function go_busy() {
+    $('a.brand').addClass('hot');
+};
+
+function go_ready() {
+    $('a.brand').removeClass('hot');
+};
+
 /*
  * .. function:: view_path(path, opts)
  *
@@ -620,6 +628,7 @@ function go_back() {
 function view_path(path, opts) {
     if (path === ui.doc_ref) return;
     console.log('view_path______________________', path, ui.doc_ref);
+    go_busy();
     var opts = opts || {};
     ui.flush_caches();
     var buttons = $('#addsearch_form');
@@ -637,6 +646,7 @@ function view_path(path, opts) {
                     title: 'Error displaying "'+d.link+'" content',
                     text: d.message
                 });
+                go_ready();
             } else {
                 // normal continuation
                 /* update current document reference */
@@ -654,11 +664,13 @@ function view_path(path, opts) {
                 
                 alt_panel_toggle(false); // fold panel
                 ui.view_item(d);
+                go_ready();
             }
         }
     )
         .error(function() {
             $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
+            go_ready();
         });
     }, 3);
 };
