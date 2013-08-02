@@ -1,7 +1,7 @@
 
-####################################
-Welcome to Nanowork's documentation!
-####################################
+##################################
+Welcome to |nw|\ 's documentation!
+##################################
 
 :Author: Fabien Devaux
 :License: WTFPL
@@ -9,7 +9,7 @@ Welcome to Nanowork's documentation!
 :OS: Should be portable but tested on Linux only.
 
 
-.. pull-quote:: Nanowork aims at providing a simple, modular, re-usable code base to develop simple web applications quickly.
+.. pull-quote:: |nw| aims at providing a simple, modular, re-usable code base to develop simple web applications quickly.
 
 .. warning:: This project is WIP
 
@@ -60,34 +60,35 @@ Example:
     
     % wget 'https://github.com/fdev31/weye/archive/master.zip' && unzip master
 
+Dependencies
+============
 
-.. rst-class:: html-toggle
+Python3
+    Refer to your Operating System packaging system or `install it manually <http://python.org/download/>`_
 
-Configuring
-###########
+    .. hint:: Python2.6 up to 3.3 is supported
+
+Whoosh
+    - install 
+    - or run ``hg clone http://bitbucket.org/mchaput/whoosh`` in **src** folder
+    - or ``easy_install Whoosh`` / ``pip install Whoosh``
+    - or `Download & uncompress <https://pypi.python.org/pypi/Whoosh/#downloads>`_ it and copy the content of the **src** folder to |nw|'s **src**\ 's folder
 
 Quick run
 =========
 
 This technique is using :mod:`python:wsgiref`, discouraged for production.
 
-Just run::
+.. parsed-literal::
     
-    ./run.py
+    ./run.py |nanoconf|
 
-.. pull-quote:: ...and if you want to share a specific folder quickly:
+You can enjoy `the home page on http://127.0.0.1:8080/ <http://127.0.0.1:8080/>`_ in theory ;)
 
-    .. code-block:: bash
+.. rst-class:: html-toggle
 
-        ROOT="/tmp/testing_website/" ./run.py
-
-You can enjoy `the home page on http://127.0.0.1:9988/ <http://127.0.0.1:9988/>`_ in theory ;)
-
-.. admonition:: You may already want to play with the weye-conf_ file, copy ``configs/example.ini`` to any place and give it to the ``run.py`` program. Example:
-
-    .. code-block:: console
-        
-        % ./run.py /tmp/test_weye.ini
+Configuring
+###########
 
 Real install
 ============
@@ -97,53 +98,51 @@ The supported method involves uwsgi_. You may have to `download and install it <
 Configuration file
 ------------------
 
-Edit ``configs/example.ini``\ :
+Edit |nanoconf|, you'll find explanations below:
 
 .. _weye-conf:
 
-*section* [general]
-~~~~~~~~~~~~~~~~~~~
+[general]
+~~~~~~~~~
+.. pull-quote::
 
-home
-    Path of the sources (you cloned or unpacked that folder) (ex: ``/home/toto/temporary/weye.git``).
-shared
-    Used in file manager, this is the path of the root folder you want *Nanowork* to work on.
-write    
-    Set it to anything but `yes`, `true` or `active` to de-activate overwrite on the server. Uploading new files will still granted.
-port
-    HTTP port to work on, if you run ``uwsgi`` with a proper configuration you may avoid giving the port number (ex: ``:8080``) on the URL to connect to the server.
-host
-    The default IP address will only listen on local host, if you want to be accessible from anybody, set it to `0.0.0.0`.
+    home
+        Path of the sources (you cloned or unpacked that folder) (ex: ``/home/toto/temporary/weye.git``).
+    shared_root
+        Used in file manager, this is the path of the root folder you want *Nanowork* to work on.
+    file_encoding
+        File encoding of your filesystem (*utf-8* by default).
+    no_overwrite    
+        Set it to `yes`, `true` or `active` to de-activate overwrite on the server. Uploading new files will still granted if **read_only** is false.
+    read_only
+        Do not allow any write operation.
+    port
+        HTTP port to work on, if you run ``uwsgi`` with a proper configuration you may avoid giving the port number (ex: ``:8080``) on the URL to connect to the server.
+    host
+        The default IP address will only listen on local host, if you want to be accessible from anybody, set it to `0.0.0.0`.
+    debug
+        Enable or disables debugging informations (currently broken)
 
-.. pull-quote:: You can rename or move the *example.ini* file of course ! Just think about changing the uwsgi-conf_ accordingly.
+[uwsgi]
+~~~~~~~
+.. pull-quote::
+
+    .. _chdir_opt:
+
+    chdir
+        You must chdir to |nw| sources' path for |nw| to work
+    http-socket
+        The ``ip:port`` you want to enable |nw| on
 
 
 Running
 -------
 
-.. _uwsgi-conf:
+.. parsed-literal::
 
-Copy |uwsgiconf| to a place we will call "`|uwsgiconf|`":
+    % uwsgi |nanoconf|
 
-    Edit the ``weye-conf`` entry to reflect the full path of the main configuration file.
-   
-    Example:
-
-    .. code-block:: ini
-
-        [uwsgi]
-        #weye-conf = ./configs/example.ini
-        weye-conf = /home/toto/configs/weye_test.ini
-
-   
-    .. attention:: Last "key + value" pair will overwrite others.
-
-    See `configuration file`_ section to know the format of the ``weye-conf`` file.
-
-
-.. code-block:: console
-
-    % uwsgi |uwsgiconf|
+.. hint:: You can move and rename the |nanoconf| file of course ! Just think about changing the chdir_opt_ accordingly.
 
 Custom configurations
 =====================
@@ -256,4 +255,6 @@ You might be interested in the :ref:`function index <genindex>` as well.
 .. links of the page should go here:
 
 .. _uwsgi: http://projects.unbit.it/uwsgi/
-.. |uwsgiconf| replace:: *uwsgi_conf.ini*
+.. |nanoconf| replace:: *sample_config.ini*
+.. |nw| replace:: Nanwork
+
