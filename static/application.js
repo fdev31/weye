@@ -167,6 +167,7 @@ function search_for() {
         var o = $('#contents');
 //        console.log(data, data.map( function(x) { return {m: 'application-x-executable', f: x} }));
         // TODO: add some text input allowing user to use a "grep"-like feature
+        data.forEach( ItemTool.fixit );
         o.html( 
             ich.view_list({
                 mime: 'application-x-executable',
@@ -687,6 +688,14 @@ function view_path(path, opts) {
 
 
 var ItemTool = new function() {
+    /*
+     */
+    this.fixit = function (data) {
+        if (!!!data.title) data.title = data.name;
+        if (!!!data.searchable) data.searchable = data.title;
+        if (!!!data.editables) data.editables = 'name';
+    };
+
 
     /*
      * .. function:: ItemTool.execute_evt_handler(e)
@@ -936,8 +945,9 @@ $(function() {
                 $.pnotify({title: 'Unable to upload some files', text: data.error, type: 'error'});
             }
             var items = $('.items');
-            for (var i=0; i<data.child.length;i++) {
-            	items.isotope( 'insert', ItemTool.render(data.child[i]) );
+            for (var i=0 ; i<data.child.length ; i++) {
+                ItemTool.fixit( data.child[i] );
+            	items.isotope( 'insert', data.child[i] );
             }
             setTimeout( function() {
                 _p.html('');

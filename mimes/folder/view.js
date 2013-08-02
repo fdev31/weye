@@ -34,11 +34,7 @@ function display(item) {
                 item.have_child = base_data.length > 0; // XXX: is this really needed ??
                 item.backlink = ui.doc_ref != '/';
                 item.permalink = ui.permalink;
-                base_data.forEach(function(e) {
-                    if(!!!e.title) e.title = e.name;
-                    if(!!!e.editables) e.editables = 'name';
-                    if(!!!e.searchable) e.searchable = e.title;
-                });
+                base_data.forEach(ItemTool.fixit);
                 item.child = base_data;
                 // render & make those items funky
                 finalize_item_list( $('#contents').html( get_view('list', item) ) );
