@@ -77,11 +77,11 @@ Whoosh
 Quick run
 =========
 
-This technique is using :mod:`python:wsgiref`, discouraged for production.
+This technique is using :mod:`python:wsgiref`, discouraged for production:
 
 .. parsed-literal::
     
-    ./run.py |nanoconf|
+   ./run.py |nanoconf|
 
 You can enjoy `the home page on http://127.0.0.1:8080/ <http://127.0.0.1:8080/>`_ in theory ;)
 
@@ -140,7 +140,7 @@ Running
 
 .. parsed-literal::
 
-    % uwsgi |nanoconf|
+    uwsgi |nanoconf|
 
 .. hint:: You can move and rename the |nanoconf| file of course ! Just think about changing the chdir_opt_ accordingly.
 
