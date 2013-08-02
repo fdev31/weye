@@ -136,8 +136,31 @@ iframe {
   background: #555 !important;
   color: #ffe !important;
 }
+a.brand {
+  -moz-transition-duration: 1s;
+  -webkit-transition-duration: 1s;
+  transition-duration: 1s;
+  -webkit-border-top-right-radius: 15px;
+  -webkit-border-bottom-right-radius: 15px;
+  -webkit-border-bottom-left-radius: 15px;
+  -webkit-border-top-left-radius: 15px;
+  -moz-border-radius-topright: 15px;
+  -moz-border-radius-bottomright: 15px;
+  -moz-border-radius-bottomleft: 15px;
+  -moz-border-radius-topleft: 15px;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+}
 .hot {
-  background: #ecc;
+  background-color: #ecc !important;
+  -moz-transition-duration: 1s;
+  -webkit-transition-duration: 1s;
+  transition-duration: 1s;
   color: black;
 }
 img.big_icon {
