@@ -4,8 +4,11 @@ import mimetypes
 
 try:
     import configparser # py3k
+    unicode = str
+    print("[Using Python3]")
 except ImportError:
     import ConfigParser as configparser
+    print("[Using Python2]")
 
 # mimetypes
 
@@ -53,7 +56,11 @@ def _import_conf(filename=None, encoding=None):
     root_changed = False
     if filename:
         log.debug('reading %s'%filename)
-        _parser.read(filename.decode(encoding or config.file_encoding))
+        _parser.read(
+            filename.decode(encoding or config.file_encoding)
+            if not isinstance(filename, (str, unicode))
+            else filename
+        )
 
         from functools import partial
         def rd(k):
