@@ -1,4 +1,5 @@
 import os
+import sys
 from bottle import json_dumps as dumps
 from bottle import json_loads as loads
 import itertools
@@ -9,9 +10,7 @@ import logging
 
 log = logging.getLogger('root_objects')
 
-try: # backward compat for python2.x
-    FileNotFoundError
-except NameError:
+if sys.version_info[:2] < (3,3):
     FileNotFoundError = IOError
     PermissionError = IOError
     FileExistsError = IOError
