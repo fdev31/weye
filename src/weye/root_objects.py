@@ -12,9 +12,9 @@ log = logging.getLogger('root_objects')
 try: # backward compat for python2.x
     FileNotFoundError
 except NameError:
-    FileNotFoundError = None
-    PermissionError = None
-    FileExistsError = None
+    FileNotFoundError = IOError
+    PermissionError = IOError
+    FileExistsError = IOError
 
 def add_new_object(content, type=None, filename=None):
     """
