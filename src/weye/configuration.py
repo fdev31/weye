@@ -72,7 +72,7 @@ def _import_conf(filename=None, encoding=None):
                 elif val.isdigit():
                     val = int(val)
 
-                if k == 'home':
+                if k == 'chdir':
                     os.chdir(val)
                 else:
                     setattr(config, k, val)
