@@ -49,18 +49,18 @@ def import_conf(filename=None):
     except Exception as e:
         print('[EE] Failed to load configuration: %s'% e)
 
-def _import_conf(filename=None):
+def _import_conf(filename=None, encoding=None):
     root_changed = False
     if filename:
         log.debug('reading %s'%filename)
-        _parser.read(filename)
+        _parser.read(filename.decode(encoding or config.file_encoding))
 
         from functools import partial
         def rd(k):
             try:
                 return _parser.get('general', k)
             except Exception as e:
-                print("%s: %s"%(filename, e))
+                print("warning %s: %s"%(filename, e))
 
         bool_values = 'check_security read_only exclude_dot_files'.split()
 
@@ -92,3 +92,4 @@ def _import_conf(filename=None):
             pass
 
 import_conf()
+

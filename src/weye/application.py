@@ -159,4 +159,3 @@ try:
     import_conf(uwsgi.opt['weye-conf'])
 except ImportError:
     uwsgi = None
-

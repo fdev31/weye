@@ -93,7 +93,7 @@ def get_object_from_path(path):
                 'name': name,
                 'cont': cont,
                 'path': path,
-                'description': u'',
+                'description': '',
                 'mime': file_type}
     if not up_to_date:
         if not os.path.exists(meta_fpath):
