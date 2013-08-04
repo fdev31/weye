@@ -1,3 +1,4 @@
+// TODO: provide special python route
 $.ajax({url: '/d'+ui.doc_ref+'/phone_data.js', dataType: 'json'})
 .done(function(d) {
     var c=$('#contents');
@@ -15,13 +16,12 @@ $.ajax({url: '/d'+ui.doc_ref+'/phone_data.js', dataType: 'json'})
                 phones.push({k: 'phone.'+k, v: e.phones[k]});
             };
             return {
-                D: phones,
-                e: 'name '+phones_cls,
-                s: e.name+' '+e.nickname+' '+e.phones.fixe,
-                d: e.phones.fixe,
-                t: e.name,
-                f: "js:alert('couuin');",
-                m: 'text-x-credits'
+                data: phones,
+                editables: 'name '+phones_cls,
+                searchable: e.name+' '+e.nickname+' '+e.phones.fixe,
+                title: e.name + " " + e.surname + " (aka "+ e.nickname + ")" + ' -- ' + e.phones.fixe,
+                name: "js:alert('"+e.email+"');",
+                mime: 'text-x-credits'
             }
         } )
 

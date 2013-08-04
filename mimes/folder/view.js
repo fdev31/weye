@@ -19,9 +19,9 @@ function display(item) {
                 $.ajax({url: '/d'+item.path+'/infos.js', dataType: 'json'})
                     .done( function(d) {
                         ui.plugin = d;
-                        if(!!item.templates) {
-                            for(var key in item.templates) {
-                                ich.addTemplate(key, item.templates[key]);
+                        if(!!d.templates) {
+                            for(var key in d.templates) {
+                                ich.addTemplate(key, d.templates[key]);
                             };
                         }
                         load_plugin();
