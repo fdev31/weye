@@ -1,11 +1,14 @@
 function display(item) {
+
+    // Do not forget to EDIT dependencies.js accordingly
     var _map = {
-        'text-x-c': 'c',
+//        'text-x-c': 'c',
         'text-css': 'css',
         'text-html': 'html',
+//        'text-x-diff': 'diff',
         'application-xhtml+xml': 'html',
         'application-javascript': 'javascript',
-        'text-x-lua': 'lua',
+//        'text-x-lua': 'lua',
         'text-x-sh': 'shell'
     }
     $.ajax('/d'+item.path, {dataType: 'text'})
@@ -17,9 +20,10 @@ function display(item) {
             pre.find('code').text(d);
             pre.appendTo(cont);
             Rainbow.color();
-            set_context('item');
+            ui.set_context('item');
         })
         .fail( function(e) {
+            $.pnotify({type: 'error', title: 'Loading item', text: e});
         });
 
     var cont = $('#contents').html( get_view('file', item) )

@@ -86,3 +86,11 @@ pre .string, pre .support.value  {
 pre .regexp {
     color: #009926;
 }
+
+pre .removed {
+    background-color: #FAA;
+}
+
+pre .added {
+    background-color: #AFA;
+}
