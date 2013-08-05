@@ -5,6 +5,8 @@ else
     OUT=$1
 fi
 
+PDIR="../static/mime/"
+
 
 echo "" > $OUT
 RDR=">> $OUT"
@@ -18,8 +20,31 @@ for n in */view.js ; do
     else
         echo "    ," >> $OUT
     fi
-    dirname $n |head -n1 | sed -E -e 's/^/    /' -e 's/$/: {\n      display:/' >> $OUT
+
+    name=`dirname $n|head -n1`
+
+    echo $name | sed -E -e 's/^/    "/' -e 's/$/": {\n      display:/' >> $OUT
+
     grep -Ev '^[ \t]*$' $n | sed -e 's/^ *function  *display/function/' -e 's/^/        /' -e '$s/;//' >> $OUT
+
+    echo '        , name: "'$name'"' >> $OUT
+
+    if [ -f "$name/style.css" ]; then
+        echo '        , stylesheet: true' >> $OUT
+        cp $name/style.css ${PDIR}/js/$name/
+    fi
+
+    if [ -f "$name/dependencies.js" ]; then
+        echo '    , dependencies: ' >> $OUT
+        sed 's/^/        /' < "$name/dependencies.js" >> $OUT
+    fi
+
     echo "    }" >> $OUT
+
+    if [ -d "$name/js" ]; then
+        mkdir ${PDIR}js/$name 2>/dev/null
+        cp -r $name/js/* ${PDIR}js/$name/
+    fi
+
 done
 echo "}" >> $OUT
