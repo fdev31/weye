@@ -17,3 +17,5 @@ debug:
 install: ${OUT}
 	jsmin < ${OUT} > ../static/mimetypes.js
 
+extract:
+	./extract_mimes.py | sort > ../src/weye/mimedata.txt
