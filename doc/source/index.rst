@@ -15,6 +15,7 @@ Welcome to |nw|\ 's documentation!
 
     The documentation can be synchronized with reality, sometimes.
 
+
 Description
 ###########
 
@@ -189,7 +190,7 @@ Additional
 Custom
 ------
 
-Custom data can be returned, using a special attribute `data` (list) of  ``{k: <key>, v: <value> }`` on your JSON items.  Ex:
+Custom data can be returned, using a special attribute **data** (list) of  ``{k: <key>, v: <value> }`` on your JSON items.  Ex:
 
 .. code-block:: js
 

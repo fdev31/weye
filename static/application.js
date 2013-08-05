@@ -385,15 +385,35 @@ var ui = new function() {
         for (var n=0; (!!! found) && n < choices.length ; n++) {
             try {
                 console.log('try '+choices[n]);
-                found = mimes[ choices[n] ].display;
+                found = mimes[ choices[n] ];
+                var dependencies = [];
+                var prefix = '/static/mime/js/' + found.name + '/';
+                if( !! found.stylesheet )
+                    dependencies.push( prefix + 'style.css' );
+                if (found.dependencies) {
+                    found.dependencies.forEach( function(x) {
+                        if ( x.match(/^[/]/) ) {
+                            dependencies.push( x ) 
+                        } else {
+                            dependencies.push( prefix + x );
+                        }
+                    })
+                }
+                if (dependencies.length !== 0) {
+                    var counter = 0;
+                    for (var dep in dependencies) {
+                        console.log( dependencies[dep] );
+                        toast(dependencies[dep], function() { counter += 1 ; if (counter === dependencies.length) found.display(item) } );
+                    }
+                } else { // no deps
+                    found.display(item);
+                }
             } catch(err) {
                 console.log(err);
             }
         }
         if(!!!found) {
             $.pnotify({'type': 'error', 'title': 'Type association', 'text': 'failed loading one of: '+choices});
-        } else {
-            found(item);
         }
     };
     /*
