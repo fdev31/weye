@@ -117,10 +117,6 @@ Edit |nanoconf|, you'll find explanations below:
         Set it to `yes`, `true` or `active` to de-activate overwrite on the server. Uploading new files will still granted if **read_only** is false.
     read_only
         Do not allow any write operation.
-    port
-        HTTP port to work on, if you run ``uwsgi`` with a proper configuration you may avoid giving the port number (ex: ``:8080``) on the URL to connect to the server.
-    host
-        The default IP address will only listen on local host, if you want to be accessible from anybody, set it to `0.0.0.0`.
     debug
         Enable or disables debugging informations (currently broken)
 
@@ -133,7 +129,12 @@ Edit |nanoconf|, you'll find explanations below:
     chdir
         You must chdir to |nw| sources' path for |nw| to work
     http-socket
-        The ``ip:port`` you want to enable |nw| on
+        The ``ip:port`` you want to enable |nw| on:
+
+        ip
+            The default IP address will only listen on local host, if you want to be accessible from anybody, set it to `0.0.0.0`.
+        port
+            HTTP port to work on, if you run ``uwsgi`` with a proper configuration you may avoid giving the port number (ex: ``:8080``) on the URL to connect to the server.
 
 
 Running
