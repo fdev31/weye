@@ -361,7 +361,7 @@ var ui = new function() {
     /*
      * .. function:: ui.view_item
      *
-     *      Display an item from its data (``mime`` property).
+     *      Display an item "fullscreen" (not in a list) from its data (``mime`` property).
      *      It will try to find a matching key in the :data:`mimes` dictionary.
      *      Example:
      *
