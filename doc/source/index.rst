@@ -153,13 +153,23 @@ You will find a ready to use **WSGI** object under ``weye.application:applicatio
 
 .. rst-class:: html-toggle
 
-Concepts (developers corner)
-#############################
+Developers index
+################
 
-No time to detail about real concepts, but here is the libs involved: 
+Dependencies
+============
 
-- `mustache <http://mustache.github.io/>`_
-- `vcs <https://pypi.python.org/pypi/vcs>`_
+To fully build Nanowork (``make all``), you will need:
+
+:make: The well known builder
+:lesscss: The *less css* compiler
+:jsmin: Any javascript minifier using stdin/stdout
+:sphinx: The documentation builder framework
+
+.. xx
+    No time to detail about real concepts, but here is the libs involved: 
+    - `mustache <http://mustache.github.io/>`_
+    - `vcs <https://pypi.python.org/pypi/vcs>`_
 
 .. _object_model:
 
