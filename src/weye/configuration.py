@@ -71,7 +71,7 @@ def _import_conf(filename=None, encoding=None):
 
         bool_values = 'check_security read_only exclude_dot_files'.split()
 
-        for k in 'port host file_encoding debug shared_root'.split():
+        for k in 'file_encoding debug shared_root'.split():
             val = rd(k)
             if val:
                 if val == 'shared_root':
@@ -88,6 +88,9 @@ def _import_conf(filename=None, encoding=None):
             val = rd(k)
             if val:
                 setattr(config, k, val[0] in 'yta' if val else False)
+
+        config.host, port = (_parser.get('uwsgi', 'http-socket') or '0.0.0.0:8080').split(':')
+        config.port = int(port)
 
     if root_changed or not filename:
         config.shared_root = config.shared_root.rstrip(os.path.sep) # path for shared files
