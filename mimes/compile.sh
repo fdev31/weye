@@ -50,3 +50,6 @@ for n in */view.js ; do
 
 done
 echo "}" >> $OUT
+for line in `cat aliases.txt`; do
+    echo $line | sed -e "s/^/mimes\['/" -e "s/:/']=mimes['/" -e "s/$/']/" >> $OUT
+done
