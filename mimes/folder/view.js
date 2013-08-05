@@ -1,6 +1,4 @@
 function display(item) {
-    // Current document is a folder
-    ui.set_context('folder');
     // fetch childrens
     $.get('/c'+item.path)
         .success(function(c) {
@@ -25,6 +23,8 @@ function display(item) {
                             };
                         }
                         load_plugin();
+                        // Current document is a folder
+                        ui.set_context('folder');
                     })
                     .fail(function(e) {
                         $.pnotify({type: 'error', title: "Invalid data", text: "Impossible to load application informations"});
@@ -38,6 +38,8 @@ function display(item) {
                 item.child = base_data;
                 // render & make those items funky
                 finalize_item_list( $('#contents').html( get_view('list', item) ) );
+                // Current document is a folder
+                ui.set_context('folder');
             }
         });
 };
