@@ -7,7 +7,7 @@ fi
 
 PDIR="../static/mime/"
 
-mkdir $PDIR/js
+mkdir $PDIR/js 2>/dev/null
 
 
 echo "" > $OUT
