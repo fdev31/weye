@@ -119,7 +119,6 @@ function editor_save() {
 var current_filter = '';
 
 function filter_result(filter) {
-
     if (typeof(filter) === 'string') {
         current_filter = filter;
     } else {
