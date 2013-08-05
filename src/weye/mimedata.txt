@@ -764,8 +764,8 @@ pub application-x-mspublisher
 pvb application-vnd.3gpp.pic-bw-var
 pwn application-vnd.3m.post-it-notes
 pya audio-vnd.ms-playready.media.pya
-pyc application-x-python-code
-pyo application-x-python-code
+pyc application-x-python-bytecode
+pyo application-x-python-bytecode
 py text-x-python
 pyv video
 qam application-vnd.epson.quickanime
