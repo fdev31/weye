@@ -195,8 +195,13 @@ Additional
 Custom
 ------
 
-Custom data can be returned, using a special attribute **data** (list) of  ``{k: <key>, v: <value> }`` on your JavaScript items.
+When returning/interpreting the item (in templates), non-standard metadata are passed to a **data** attribute, a list of **k**\ ey + **v**\ alue as in:
 
+.. code-block:: js
+
+    [ {'k': 'property-name', 'v': 'property-value'}, {'k': 'another prop', 'v': other_val} ]
+
+On the JavaScript object, this data can be accessed via jQuery's `data <http://api.jquery.com/data/>`_ method.
 
 JSON model
 ==========
@@ -205,11 +210,11 @@ When things are returned as collections (Array), to optimize transfers, the form
 
 .. code-block:: js
 
-    [
-    ['name', 'mime', 'size', 'data'],
-    ['Toto', 'guy', 150, [{'k': 'hair', 'v': 'blond'}]]
-    ['Tata', 'guri', 120, [{'k': 'hair', 'v': 'red'}, {k:'nails',v:'blue'}]]
-    ]
+    {'c': ['name', 'mime', 'size', 'data'],
+    'r': [
+        ['Toto', 'guy', 150, [{'k': 'hair', 'v': 'blond'}]],
+        ['Tata', 'guri', 120, [{'k': 'hair', 'v': 'red'}, {k:'nails',v:'blue'}]]
+    ]}
 
 .. rst-class:: html-toggle
 
