@@ -7,6 +7,8 @@ fi
 
 PDIR="../static/mime/"
 
+mkdir $PDIR/js
+
 
 echo "" > $OUT
 RDR=">> $OUT"
