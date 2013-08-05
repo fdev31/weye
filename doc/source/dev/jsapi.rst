@@ -207,6 +207,7 @@ Item related
 
      .. note:: This is in fact an object/singleton, you should not instanciate it
 
+
 .. function:: ItemTool.execute_evt_handler(e)
 
      Takes event's parent target ``data('link')`` and execute it:
