@@ -2,6 +2,8 @@ import os
 import logging
 import mimetypes
 
+# TODO: provide own mimetypes file / rely on magic only on fallback
+
 log = logging.getLogger('utils')
 
 try:
