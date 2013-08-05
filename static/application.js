@@ -431,6 +431,8 @@ var ui = new function() {
      *
      *      sets the ui context, showing/hiding panels accordingly.
      *
+     *      .. attention:: must be called **AFTER** setting view's content
+     *
      *      :arg ctx: the context to set, supported values:
      *          :folder: Current item is a container
      *          :item: Current item is a leaf/endpoint

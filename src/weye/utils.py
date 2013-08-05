@@ -17,7 +17,6 @@ for line in open(os.path.join(os.path.dirname(__file__), 'mimedata.txt')):
     k, v = line.split(None)
     MIMES[k] = v
 
-print(MIMES)
 def guess_type(fname):
     if os.path.isdir(fname):
         t = 'folder'

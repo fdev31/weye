@@ -17,6 +17,7 @@ function display(item) {
             pre.find('code').text(d);
             pre.appendTo(cont);
             Rainbow.color();
+            set_context('item');
         })
         .fail( function(e) {
         });
