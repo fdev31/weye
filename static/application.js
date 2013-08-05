@@ -11,6 +11,9 @@
  * ###############################
  *
  * .. todo:: generalize item object finding (top/bottom), used in touch/click events ...
+ *
+ *
+ * When talking about the *DOM* Element representing an item, I'll use `.item`. If I write about the :ref:`JavaScript object <object_model>`, I'll just say item.
  */
 
 /*
@@ -315,6 +318,7 @@ function alt_panel_toggle(force) {
  */
 
 function get_view(template, item) {
+//    console.log('get view for', item);
     var elt = copy(item);
     elt.backlink = ui.doc_ref != '/';
     elt.permalink = ui.permalink;
@@ -446,6 +450,7 @@ var ui = new function() {
             $('.pure-item').show();
             $('.filesize').each( function(i, x) {
                 var o=$(x);
+                console.log("o=",o);
                 if (!!! o.data('_fs_converted')) {
                     o.text(hr_size(eval(o.text())));
                 }
@@ -842,13 +847,21 @@ var ItemTool = new function() {
 return this;}();
 
 /*
+ *
+ * .. _compact_form:
+ *
+ * (compact form reverter)
+ * =======================
+ * 
  * .. function:: uncompress_itemlist(keys_values_array)
+ *
+ *      Uncompresses a list of items as returned by :py:func:`weye.root_objects.list_children` for instance.
  *
  *      :arg keys_values_array: tuple of *property names* and *list of values*. Ex:
  *
  *         .. code-block:: js
  *             
- *            [ ['name', 'age'], [ ['toto', 1], ['tata', 4], ['titi', 42] ] ]
+ *            { 'c': ['name', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
  *
  *      :returns: "flat" array of objects. Ex:
  *
@@ -1047,7 +1060,7 @@ $(function() {
  *      :arg obj: Object to clone
  *      :type obj: object
  *      :arg blacklist: List of properties to ignore
- *      :type blacklist: Array of String
+ *      :type blacklist: list of str
  *      :returns: a new object with the same properties
  *      :rtype: object
  */
