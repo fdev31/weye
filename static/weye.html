@@ -10,13 +10,23 @@
     <link href="/static/css/jquery.pnotify.default.css" rel="stylesheet" media="screen">
     <link type="text/css" rel="stylesheet" href="/static/css/theme.css" media="screen">
 
+<!-- dynamic headers -->
+<script id="header" type="text/html">
+    {{#backlink}}
+    <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
+        <a title="Share item with RightClick>Copy location" href="{{permalink}}" ><i class="icon-bookmark"/> Permalink</a>
+    {{/backlink}}
+    {{#mime}}
+    <header>
+        <hgroup>
+        <h2><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><i class="icon-bookmark"/> </a></h2>
+        </hgroup>
+    </header>
+    {{/mime}}
+</script>
 <!--   TEMPLATES -->
 <script id="view_file" type="text/html">
-    <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
-      <a title="Share item with RightClick>Copy location" href="{{permalink}}"  ><i class="icon-bookmark"/> Permalink</a>
-
-          <h1><img class="big_icon" src="/static/mime/{{mime}}.svg"/> <small>{{cont}}</small>{{name}}</h1>
-
+    {{>header}}
           <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
 </script>
 <!--
@@ -35,7 +45,7 @@ data: data{k:key, v:value} used in data protocol
 editables: space-separated list of editable field names (editable)
 
 -->
-<script id="view_generic" class="partial" type= "text/html">
+<script id="view_generic_item" class="partial" type= "text/html">
     <div class="item span12 {{classes}}" data-searchable="{{searchable}}" data-link="{{name}}" data-mime="{{mime}}"  data-name="{{name}}" data-editable="{{editable}}"
         {{#data}}
         data-{{k}}="{{v}}"
@@ -47,30 +57,20 @@ editables: space-separated list of editable field names (editable)
     </div>
 </script>
 <script id="view_list" type="text/html">
-        {{#backlink}}
-        <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
-            <a title="Share item with RightClick>Copy location" href="{{permalink}}" ><i class="icon-bookmark"/> Permalink</a>
-        {{/backlink}}
-        {{#mime}}
-        <header>
-            <hgroup>
-            <h2><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}</h2>
-            </hgroup>
-        </header>
-        {{/mime}}
-       {{#have_child}}
-        <div class="items row-fluid">
-            <br/>
-            {{#child}}
-            {{>view_generic}}
-            {{/child}}
-        </div>
-        {{/have_child}}
-        {{^have_child}}
-        <div>
-        No item.
-        </div>
-        {{/have_child}}
+    {{>header}}
+   {{#have_child}}
+    <div class="items row-fluid">
+        <br/>
+        {{#child}}
+        {{>view_generic_item}}
+        {{/child}}
+    </div>
+    {{/have_child}}
+    {{^have_child}}
+    <div>
+    No item.
+    </div>
+    {{/have_child}}
 </script>
 
 <!-- FORM TEMPLATE(s) -->
