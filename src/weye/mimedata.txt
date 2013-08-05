@@ -495,6 +495,7 @@ lsf video
 lsx video
 ltf application-vnd.frogans.ltf
 ltx text-x-tex
+lua text-x-lua
 lvp audio-vnd.lucent.voice
 lwp application-vnd.lotus-wordpro
 ly text-x-lilypond
