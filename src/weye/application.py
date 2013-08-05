@@ -1,3 +1,11 @@
+"""
+###########
+Application
+###########
+
+.. autofunction:: root_cb
+
+"""
 import os
 import sys
 import bottle
@@ -11,6 +19,8 @@ from weye.search_engine import search
 from weye import root_objects
 log = logging.getLogger('application')
 
+__all__ = ['root_cb']
+
 try:
     from urllib.parse import unquote
 except ImportError: # python2
@@ -20,22 +30,24 @@ _fix_path = unquote
 
 # INDEX
 @bottle.get('/')
-def cb():
+def root_cb():
+    """ Default route (aka ``/`` or *root* ), displays :file:`static/weye.html` """
     return bottle.static_file('weye.html', config.static_root)
 
 
 # ensure mimes icons are expanded (optimization to avoid huge archives)
 _mimes_path = os.path.abspath( os.path.join( config.static_root, 'mime') )
 sys.path.insert(0, _mimes_path)
-from clean_dups import expand
-#print(sys.executable)
-#import subprocess
-cwd = os.getcwd()
-os.chdir( _mimes_path )
-expand()
-#subprocess.call([sys.executable, 'clean_dups.py', 'expand'])
-os.chdir(cwd)
-del(sys.path[0], expand, _mimes_path)
+try:
+    from clean_dups import expand
+    cwd = os.getcwd()
+    os.chdir( _mimes_path )
+    expand()
+    #subprocess.call([sys.executable, 'clean_dups.py', 'expand'])
+    os.chdir(cwd)
+    del(sys.path[0], expand, _mimes_path)
+except Exception as e:
+    print("Failed to expand mimes: %r"%e)
 
 # TODO: search
 @bottle.post('/search')

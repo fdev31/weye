@@ -169,10 +169,11 @@ Object model
 Mandatory
 ---------
 
+:id: a unique id used for interractions with server
 :mime: Some mime type, but instead of slashes you have dashes
 :name: The exact file name of the item (used to browse & do queries)
 :title: The full name of the item (will be set to `mime` if not set)
-:size: The "weight" of the item, some parts expect bytes
+:size: The "weight" of the item, by default expect bytes (see :js:func:`hr_size`)
 :editables: space-separated list of editable fields
 
 Recommended
@@ -184,14 +185,23 @@ Recommended
 Additional
 ----------
 
+:descr: (description) Not used yet
 :thumb: HTML of a thumbnail for that item
 :descr: The (short) description of the item
 :classes: Additional (html) classes for this item
 
+.. _custom_data:
+
 Custom
 ------
 
-Custom data can be returned, using a special attribute **data** (list) of  ``{k: <key>, v: <value> }`` on your JSON items.  Ex:
+Custom data can be returned, using a special attribute **data** (list) of  ``{k: <key>, v: <value> }`` on your JavaScript items.
+
+
+JSON model
+==========
+
+When things are returned as collections (Array), to optimize transfers, the format is :js:func:`as follows<uncompress_itemlist>`, it shows some :ref:`custom data <custom_data>` as well:
 
 .. code-block:: js
 
@@ -200,30 +210,6 @@ Custom data can be returned, using a special attribute **data** (list) of  ``{k:
     ['Toto', 'guy', 150, [{'k': 'hair', 'v': 'blond'}]]
     ['Tata', 'guri', 120, [{'k': 'hair', 'v': 'red'}, {k:'nails',v:'blue'}]]
     ]
-
-
-JSON model
-==========
-
-Things are returned as collections (Array), to optimize transfers, the format is as follow:
-
-.. code-block:: js
-
-    children = {
-        c = ['title', 'mime', 'family', 'searchable'],
-        r = [ ['Foobar', 'text-plain', 'text', 'Foobar markdown'] ]
-        }
-
-.. pull-quote:: ...this example is suited to :ref:`HTTP_list_children`,
-
-    for :ref:`HTTP_get_object` the property is omitted:
-
-.. code-block:: js
-
-    { c = ['title', 'mime', 'family', 'searchable'],
-    r = [ ['Foobar', 'text-plain', 'text', 'Foobar markdown'],
-        ['Baz', 'text-javascript', 'text', 'bazjavascript']
-     ] }
 
 .. rst-class:: html-toggle
 
@@ -236,6 +222,7 @@ You might be interested in the :ref:`function index <genindex>` as well.
 
     dev/httpapi
     dev/jsapi
+    dev/pyapi
 
 ----
 

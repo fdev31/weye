@@ -14,6 +14,8 @@
 
 import sys, os
 sys.path.insert(0, os.path.join( os.path.pardir, 'cloud_sptheme-1.5'))
+sys.path.insert(0, os.path.abspath(os.path.join( os.path.pardir, os.path.pardir, 'src')))
+sys.path.insert(0, os.path.abspath(os.path.join( os.path.pardir, os.path.pardir, 'static', 'mime')))
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
