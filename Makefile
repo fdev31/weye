@@ -10,7 +10,6 @@ help:
 	@echo "    doc: Build Sphinx doc"
 	@echo "    all: all at once"
 
-all: mimes themes jpapi doc
 
 PFX='#################### '
 SFX=' ####################'
@@ -31,3 +30,6 @@ doc: jsapi
 
 ${JS}: static/application.js
 	./_makejsdoc.sh "$^" "$@"
+
+all: mimes themes jsapi doc
+
