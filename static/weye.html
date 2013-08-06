@@ -18,7 +18,7 @@
     {{#mime}}
     <header>
         <hgroup>
-        <h2><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><i class="icon-bookmark"/> </a></h2>
+        <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><i class="icon-bookmark"/> </a></h2>
         </hgroup>
     </header>
     {{/mime}}
@@ -148,14 +148,14 @@ editables: space-separated list of editable field names (editable)
                 </li>
                 -->
             </ul>
-            <form id="addsearch_form" class="folder-item form-search form-inline form-horizontal" action="/search" method="post" name="addsearch_form">
+            <form id="addsearch_form" class="form-search form-inline form-horizontal" action="/search" method="post" name="addsearch_form">
                 <!--    <legend>Legend</legend>-->
                 <!--    <label>Label name</label>-->
                 <!--    <span class="help-block">Example block-level help text here.</span>-->
                 <!--    <label class="checkbox">-->
                 <!--      <input type="checkbox"> Check me out-->
                 <!--    </label>-->
-                <div class="btn-group">
+                <div class="folder-item btn-group">
                     <input name="text" type="text" class="btn input-large search-query" placeholder="Type something [Ctrl+Space]"> 
                     <button name="filter" type="submit" onclick= "filter_result();return false;" title="Look for something in current folder" class= "btn btn-info">Filter</button>
                     <button name="search" type="submit" onclick="search_for();return false;" title="Search items in whole database" class="btn">Search</button>
@@ -172,12 +172,7 @@ editables: space-separated list of editable field names (editable)
 
   <div class="container-fluid maincontainer">
 
-      <aside id="uploadzone"class="pull-right well autodim folder-item">
-          <label for="file" onclick="return alt_panel_toggle()" class="background_text" style="padding: 0; margin:0;">
-              <i id="aside_toggler_icon" class="icon-chevron-down" style="margin: 1ex 0 0"></i>
-          </label>
-
-          <div onclick="return true" id="up_panel" class="hidden animated slide">
+      <aside id="shelve"class="folder-item animated folded">
               <div class="row-fluid alt_title">Send file</div>
               <input type="file" class="btn row-fluid" name="file" id="file" title="<i class='icon-folder-open'></i> Select" />
               <button id="upload" class="btn row-fluid btn-primary"> <i class="icon-upload icon-white"></i> Upload!</button>
@@ -185,7 +180,6 @@ editables: space-separated list of editable field names (editable)
               <div class="row-fluid alt_title">Actions</div>
               <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-white icon-list-alt"></i>&nbsp;New note</button>
               <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-download icon-white"></i>&nbsp;Get as .zip</button>
-          </div>
 
       </aside>
 
