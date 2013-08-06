@@ -380,6 +380,12 @@ var ui = new function() {
 
         var choices = [item.mime];
 
+        if (ui.doc_ref.endswith(item.name)) {
+            item.cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.name.length);
+        } else {
+            item.cont = ui.doc_ref;
+        }
+
         var subchoices = item.mime.split('-');
         for(var n=subchoices.length-1; n>=1 ; n--) {
             choices.push( subchoices.slice(0, n).join('-') );
