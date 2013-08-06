@@ -234,6 +234,7 @@ Public APIs
 You might be interested in the :ref:`function index <genindex>` as well.
 
 .. toctree::
+    :maxdepth: 2
 
     dev/httpapi
     dev/jsapi
