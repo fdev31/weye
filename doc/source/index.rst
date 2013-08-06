@@ -208,13 +208,13 @@ Bad example *(lacks some properties, but should work)*
 Recommended
 -----------
 
-:family: An additional family 
+:family: An additional family --- *Not used yet*
 :searchable: A pattern that will be used in filter, in place of `title` --- *defaults to "name"*
 
 Additional
 ----------
 
-:descr: (description) Not used yet
+:descr: (description) --- *Not used yet*
 :thumb: HTML of a thumbnail for that item
 :descr: The (short) description of the item
 :classes: Additional (html) classes for this item
