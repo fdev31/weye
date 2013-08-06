@@ -19,7 +19,12 @@ function display(item) {
             var pre = $('<pre><code data-language="'+lang+'"></code></pre>');
             pre.find('code').text(d);
             pre.appendTo(cont);
-            Rainbow.color();
+
+            if( item.size > 15000) {
+                $.pnotify({type: 'warning', title: 'File is too big', text: 'Disabled syntax coloring'});
+            } else {
+                Rainbow.color();
+            }
             ui.set_context('item');
         })
         .fail( function(e) {
