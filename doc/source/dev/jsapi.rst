@@ -173,9 +173,13 @@ User Interface
 
 Edition
 #######
+
 .. function:: save_form()
 
      Saves the ``#question_popup .editable``
+
+     .. seealso:: :func:`ItemTool.popup`
+
 
 Navigation
 ##########
@@ -212,6 +216,13 @@ Item related
 
      .. note:: This is in fact an object/singleton, you should not instanciate it
 
+.. function:: ItemTool.fixit(data)
+
+     "Fixes" an :ref:`object metadata <object_model>`, currently:
+
+     - missing **title** is set to *name*
+     - missing **searchable** is set to *title*
+     - missing **editables** is set to "name"
 
 .. function:: ItemTool.execute_evt_handler(e)
 
@@ -248,6 +259,20 @@ Item related
      :swipe: executes :func:`~ItemTool.popup_evt_handler`
 
      :arg o: Item (jQuery element) to prepare
+
+.. function:: ItemTool.make_item(data)
+
+     Makes some ready to use DOM element from an object owning :ref:`standard properties <object_model>`
+     Will call :func:`~ItemTool.fixit` on the `data` and :func:`~ItemTool.prepare` on the `generic_item` template after rendering.
+
+     :arg data: :ref:`object_model`
+     :type data: object
+
+     This object can then be inserted to main list with a single line:
+
+     .. code-block:: js
+
+         $('.items').isotope('insert', ItemTool.make_item(item_data));
 
 
 .. _compact_form:

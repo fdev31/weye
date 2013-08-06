@@ -539,9 +539,13 @@ var ui = new function() {
 /*
  * Edition
  * #######
+ *
  * .. function:: save_form()
  *
  *      Saves the ``#question_popup .editable``
+ *
+ *      .. seealso:: :func:`ItemTool.popup`
+ *
  */
 
 function save_form() {
@@ -708,6 +712,13 @@ function view_path(path, opts) {
 
 var ItemTool = new function() {
     /*
+     * .. function:: ItemTool.fixit(data)
+     *
+     *      "Fixes" an :ref:`object metadata <object_model>`, currently:
+     *
+     *      - missing **title** is set to *name*
+     *      - missing **searchable** is set to *title*
+     *      - missing **editables** is set to "name"
      */
     this.fixit = function (data) {
         if (!!!data.title) data.title = data.name;
