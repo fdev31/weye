@@ -197,7 +197,7 @@ Mandatory
 :size: The "weight" of the item, by default expect bytes (see :js:func:`hr_size`)
 
 :title: The full name of the item (will be set to `mime` if not set) --- *derived from name if not provided*
-:editables: space-separated list of editable fields --- *all properties by default (same as "*")*
+:editables: space-separated list of editable fields --- *all properties by default (same as "\*")*
 
 Bad example *(lacks some properties, but should work)*
 
