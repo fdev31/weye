@@ -835,6 +835,29 @@ var ItemTool = new function() {
         });
         return o;
     };
+    /*
+     * .. function:: ItemTool.make_item(data)
+     *
+     *      Makes some ready to use DOM element from an object owning :ref:`standard properties <object_model>`
+     *      Will call :func:`~ItemTool.fixit` on the `data` and :func:`~ItemTool.prepare` on the `generic_item` template after rendering.
+     *
+     *      :arg data: :ref:`object_model`
+     *      :type data: object
+     *
+     *      This object can then be inserted to main list with a single line:
+     *
+     *      .. code-block:: js
+     *
+     *          $('.items').isotope('insert', ItemTool.make_item(item_data));
+     */
+
+    this.make_item = function(data) {
+        ItemTool.fixit(data);
+        var dom = ich.view_generic_item(data);
+        ItemTool.prepare(dom);
+        return dom;
+
+    };
 
 return this;}();
 
@@ -971,9 +994,9 @@ $(function() {
                 $.pnotify({title: 'Unable to upload some files', text: data.error, type: 'error'});
             }
             var items = $('.items');
-            for (var i=0 ; i<data.child.length ; i++) {
-                ItemTool.fixit( data.child[i] );
-            	items.isotope( 'insert', data.child[i] );
+            var child = uncompress_itemlist(data.children);
+            for (var i=0 ; i<child.length ; i++) {
+                items.isotope('insert', ItemTool.make_item(child[i]));
             }
             setTimeout( function() {
                 _p.html('');
