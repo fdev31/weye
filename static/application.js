@@ -1001,7 +1001,7 @@ $(function() {
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
-        progress:function(ev){ _p.html(((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
+        progress:function(ev){ _p.html(Math.ceil((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
         error:function(ev){ $.pnotify({title: "Can't upload", text: ''+ ev, type: 'error'}) },
         success:function(data){
             _p.html('100%');
