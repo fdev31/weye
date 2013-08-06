@@ -21,7 +21,7 @@ function display(item) {
             pre.appendTo(cont);
 
             if( item.size > 15000) {
-                $.pnotify({type: 'warning', title: 'File is too big', text: 'Disabled syntax coloring'});
+                $.pnotify({type: 'warning', title: 'File is too big', text: 'Syntax coloring disabled.'});
             } else {
                 Rainbow.color();
             }
