@@ -121,7 +121,7 @@ function editor_save() {
  *      
  *      :arg filter: regex used as filter for the main content, if not passed, ``#addsearch_form``\ 's ``input`` is used
  *          if `filter` starts with "type:", the the search is done against ``mime``` item's data, else ``searchable`` is used.
- *      :type filter: str
+ *      :type filter: String
  *
  */
 
@@ -300,10 +300,12 @@ function alt_panel_toggle(force) {
  *      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
  *
  *      :arg template: The name of the template to use.
- *                  .. rubric:: standard templates
  *
- *                  :file: file display
- *                  :list: list display, for folders most of the time
+ *                  .. Attention:: standard templates
+ *
+ *                      :file: file display
+ *                      :list: list display, for folders most of the time
+ *
  *      :arg item: data used in itemplate, `backlink` and `permalink` will automatically be added
  *
  *          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
@@ -342,9 +344,12 @@ var ui = new function() {
      */
     this.doc_ref = null;
     /*
-     * .. function:: get_ref(subpath)
+     * .. function:: ui.get_ref(subpath)
      *
      *      Returns URL for given object *subpath*
+     *
+     *      :arg subpath: *name* property of an item
+     *      :type subpath: String
      */
     this.get_ref = function(subpath) {
         if (this.doc_ref === '/') {
@@ -890,11 +895,11 @@ var ItemTool = new function() {
     /*
      * .. function:: ItemTool.make_item(data)
      *
-     *      Makes some ready to use DOM element from an object owning :ref:`standard properties <object_model>`
+     *      Makes some ready to use DOM ``.item`` element from an object owning :ref:`standard properties <object_model>`
      *      Will call :func:`~ItemTool.fixit` on the `data` and :func:`~ItemTool.prepare` on the `generic_item` template after rendering.
      *
      *      :arg data: :ref:`object_model`
-     *      :type data: object
+     *      :type data: Object
      *
      *      This object can then be inserted to main list with a single line:
      *
@@ -954,13 +959,15 @@ function uncompress_itemlist(keys_values_array) {
 };
 
 /*
- * .. function:: finalize_item_list(o)
+ * .. xx: finalize_item_list is unused now (was used in search)
  *
- *
- *      Sets up isotope for those items, should be called once the content was updated
- *      Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
- *
- *      :arg o: DOM element containing ``.items`` elements
+   .. function:: finalize_item_list(o)
+  
+  
+        Sets up isotope for those items, should be called once the content was updated
+        Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
+  
+        :arg o: DOM element containing ``.items`` elements
  */
 function finalize_item_list(o) {
     o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows',
@@ -1124,11 +1131,11 @@ $(function() {
  * .. function:: copy(obj)
  *
  *      :arg obj: Object to clone
- *      :type obj: object
+ *      :type obj: Object
  *      :arg blacklist: List of properties to ignore
- *      :type blacklist: list of str
+ *      :type blacklist: Array of String
  *      :returns: a new object with the same properties
- *      :rtype: object
+ *      :rtype: Object
  */
 
 function copy(obj, blacklist) {
@@ -1166,4 +1173,17 @@ function get_permalink() {
     return plink;
 }
 
+
+/*
+   .. _array_of_string:
+   .. _Object:
+   .. _String:
+   .. _Array:
+  
+   JavaScript reference
+   ====================
+  
+   `From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
+  
+ */
 

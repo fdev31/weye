@@ -75,6 +75,8 @@ Whoosh
     - or ``easy_install Whoosh`` / ``pip install Whoosh``
     - or `Download & uncompress <https://pypi.python.org/pypi/Whoosh/#downloads>`_ it and copy the content of the **src** folder to |nw|'s **src**\ 's folder
 
+.. _QuickRun:
+
 Quick run
 =========
 
@@ -95,6 +97,24 @@ Real install
 ============
 
 The supported method involves uwsgi_. You may have to `download and install it <http://uwsgi-docs.readthedocs.org/en/latest/Install.html>`_.
+
+Dependencies
+============
+
+To fully build Nanowork (``make all``) and be able to make changes, you will need:
+
+:make: The well known builder
+:lesscss: The `less css <http://lesscss.org/>`_ compiler (``lessc``)
+
+.. _cat:
+
+:jsmin: Any javascript minifier using stdin/stdout
+
+        .. tip:: You can replace it by ``cat`` in the *Makefile* to avoid this dependency
+
+:sphinx: The `documentation builder framework <http://sphinx-doc.org/>`_
+
+.. tip:: Just type ``make`` to know all possible targets, you can then :samp:`make {target}`
 
 Configuration file
 ------------------
@@ -136,7 +156,6 @@ Edit |nanoconf|, you'll find explanations below:
         port
             HTTP port to work on, if you run ``uwsgi`` with a proper configuration you may avoid giving the port number (ex: ``:8080``) on the URL to connect to the server.
 
-
 Running
 -------
 
@@ -145,6 +164,8 @@ Running
     uwsgi |nanoconf|
 
 .. hint:: You can move and rename the |nanoconf| file of course ! Just think about changing the chdir_opt_ accordingly.
+
+.. important:: You must run ``make mimes`` if you didn't start |nw| using the QuickRun_ method --- You may need the cat_ trick as well
 
 Custom configurations
 =====================
@@ -156,15 +177,6 @@ You will find a ready to use **WSGI** object under ``weye.application:applicatio
 Developers index
 ################
 
-Dependencies
-============
-
-To fully build Nanowork (``make all``), you will need:
-
-:make: The well known builder
-:lesscss: The *less css* compiler
-:jsmin: Any javascript minifier using stdin/stdout
-:sphinx: The documentation builder framework
 
 .. xx
     No time to detail about real concepts, but here is the libs involved: 
@@ -182,15 +194,22 @@ Mandatory
 :id: a unique id used for interractions with server
 :mime: Some mime type, but instead of slashes you have dashes
 :name: The exact file name of the item (used to browse & do queries)
-:title: The full name of the item (will be set to `mime` if not set)
 :size: The "weight" of the item, by default expect bytes (see :js:func:`hr_size`)
-:editables: space-separated list of editable fields
+
+:title: The full name of the item (will be set to `mime` if not set) --- *derived from name if not provided*
+:editables: space-separated list of editable fields --- *all properties by default (same as "*")*
+
+Bad example *(lacks some properties, but should work)*
+
+.. code-block:: js
+
+    {id: 43, mime: "text/plain", name: "Fun stuff"}
 
 Recommended
 -----------
 
 :family: An additional family 
-:searchable: A pattern that will be used in filter, in place of `title`.
+:searchable: A pattern that will be used in filter, in place of `title` --- *defaults to "name"*
 
 Additional
 ----------
@@ -261,5 +280,5 @@ You might be interested in the :ref:`function index <genindex>` as well.
 
 .. _uwsgi: http://projects.unbit.it/uwsgi/
 .. |nanoconf| replace:: *sample_config.ini*
-.. |nw| replace:: Nanwork
+.. |nw| replace:: Nanowork
 
