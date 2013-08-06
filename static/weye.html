@@ -18,7 +18,7 @@
     {{#mime}}
     <header>
         <hgroup>
-        <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><i class="icon-bookmark"/> </a></h2>
+        <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{_cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><i class="icon-bookmark"/> </a></h2>
         </hgroup>
     </header>
     {{/mime}}
@@ -92,8 +92,8 @@ editables: space-separated list of editable field names (editable)
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h3>{{header}}</h3>
           </div>
-          <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{item.name}}</h4>
-          <div class="editable" data-cont="{{item.cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
+          <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{#item.title}}{{item.title}}{{/item.title}}{{^item.title}}{{item.name}}{{/item.title}}</h4>
+          <div class="editable" data-_cont="{{item._cont}}" data-name="{{item.name}}" data-mime="{{item.mime}}">
           {{#edit}}
           <div class="row-fluid editable-property" data-name="{{name}}" data-type="{{type}}" />
           {{/edit}}

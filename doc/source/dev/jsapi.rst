@@ -111,6 +111,10 @@ User Interface
 
      current page's item path
 
+.. function:: get_ref(subpath)
+
+     Returns URL for given object *subpath*
+
 .. data:: ui.nav_hist
 
      Stores data about navigation history, to recover selection for instance.
