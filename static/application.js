@@ -342,6 +342,26 @@ var ui = new function() {
      */
     this.doc_ref = null;
     /*
+     * .. function:: get_ref(subpath)
+     *
+     *      Returns URL for given object *subpath*
+     */
+    this.get_ref = function(subpath) {
+        if (this.doc_ref === '/') {
+            if (subpath[0] === '/') {
+                return subpath;
+            } else {
+                return '/' + subpath;
+            }
+        } else {
+            if (subpath[0] === '/') {
+                return ui.doc_ref + subpath;
+            } else {
+                return ui.doc_ref + '/' + subpath;
+            }
+        }
+    };
+    /*
      * .. data:: ui.nav_hist
      *
      *      Stores data about navigation history, to recover selection for instance.
@@ -368,7 +388,6 @@ var ui = new function() {
      *      :arg item: the item object
      */
     this.view_item = function(item) {
-        console.log('*****************************');
         var found = false;
 
         var choices = [item.mime];
@@ -556,7 +575,7 @@ var ui = new function() {
 
 function save_form() {
     var o = $('#question_popup .editable');
-    var object_path = ui.doc_ref + '/' + o.data('link');
+    var object_path = ui.get_ref(o.data('name'));
     var metadata = {};
     var metadata_list = [];
 
@@ -674,7 +693,7 @@ function view_path(path, opts) {
 //            console.log('object: /o/'+path, d);
             if (d.error) {
                 $.pnotify({
-                    title: 'Error displaying "'+d.link+'" content',
+                    title: 'Error displaying "'+d.name+'" content',
                     text: d.message
                 });
                 go_ready();
@@ -747,7 +766,7 @@ var ItemTool = new function() {
     this.execute_evt_handler = function(e) {
         console.log('exec evt handler');
         var elt = $(e.target).parent();
-        var link = elt.data('link');
+        var link = elt.data('name');
         if(!!!link) {
             $.pnotify({type: 'info', text: 'This is not a link!'});
         } else {
@@ -756,7 +775,7 @@ var ItemTool = new function() {
                 eval( link.substr(3) );
             } else {
                 ui.save_selected(elt.index());
-                view_path(ui.doc_ref+'/'+elt.data('link'));
+                view_path(ui.get_ref(elt.data('name')));
             }
         }
     };
@@ -786,47 +805,63 @@ var ItemTool = new function() {
          * .. todo:: update elt's `data` on save
          *
          */
-        var qp = $('#question_popup');
-        if(qp.length != 0) {
-            if (qp.css('display') === 'none') {
-                qp.remove();
-            } else {
-                return;
-            }
-        }
-        var actions = ['infos', 'download', 'preferences', 'delete'];
-        var data = copy(elt.data(), ['isoTransform', 'editable']);
-        var edited = [];
-        if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
-            for(var k in data) {
-                if (!!!k.match(/^isotope/)) {
-                    edited.push({name: k, type: 'text'});
+
+        $.get('/o' + ui.get_ref(elt.data('name')))
+           .done( function(data) {
+               if(data.error) {
+                   $.pnotify({
+                       type: 'error',
+                       title: data.name,
+                       text: data.message
+                   });
+                   return;
+               }
+               console.log('D=',data);
+            var qp = $('#question_popup');
+            if(qp.length != 0) {
+                if (qp.css('display') === 'none') {
+                    qp.remove();
+                } else {
+                    return;
                 }
-            };
-        } else {
-            var editables = data.editable.split(/ +/);
-            for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
-        }
-        var pop = ich.question({
-            'item': data,
-            'header': "Edition panel",
-            'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
-            'edit': edited,
-            'buttons': [
-                {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
-                {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
-            ]
-        });
-        pop.modal();
-        var edited = $('#question_popup .editable');
-        setTimeout(function() {
-            pop.find('.editable-property').each( function(i, o) {
-                var o = $(o);
-                var d = copy(o.data());
-                d.content = data[d.name];
-                o.append(ich['input_'+d.type](d));
+            }
+            var edited = [];
+            if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
+                for(var k in data) {
+                    if (!!!k.match(/^isotope/)) {
+                        edited.push({name: k, type: 'text'});
+                    }
+                };
+            } else {
+                var editables = data.editable.split(/ +/);
+                for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+            }
+            var pop = ich.question({
+                'item': data,
+                'header': "Edition panel",
+                'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
+                'edit': edited,
+                'buttons': [
+                    {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
+                    {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+                ]
             });
-        }, 200);
+            pop.modal();
+            var edited = $('#question_popup .editable');
+            setTimeout(function() {
+                pop.find('.editable-property').each( function(i, o) {
+                    var o = $(o);
+                    var d = copy(o.data());
+                    d.content = data[d.name];
+                    o.append(ich['input_'+d.type](d));
+                });
+            }, 200);
+
+        })
+        .fail(function(e) {
+            $.pnotify( {text: ''+e, type: 'error'}
+                );
+        });
     };
 
     /*
@@ -966,7 +1001,7 @@ function refocus(elt) {
 
 var load_plugin = function() {
     $('#contents').html('');
-    $.ajax({url:'/d'+ui.doc_ref+'/'+ui.plugin.js, dataType: 'text'})
+    $.ajax({url:'/d'+ui.get_ref(ui.plugin.js), dataType: 'text'})
     .done(function(d) {
         $('.folder-item').hide();
         $('.pure-item').hide();
