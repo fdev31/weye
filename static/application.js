@@ -16,6 +16,12 @@
  * When talking about the *DOM* Element representing an item, I'll use `.item`. If I write about the :ref:`JavaScript object <object_model>`, I'll just say item.
  */
 
+// Standard javascript objects overloading
+
+String.prototype.endswith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
+
 /*
  *
  * .. _epiceditor:
@@ -1126,7 +1132,3 @@ function get_permalink() {
 }
 
 
-// XXX
-String.prototype.endswith = function(suffix) {
-    return this.indexOf(suffix, this.length - suffix.length) !== -1;
-};
