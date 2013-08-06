@@ -6,7 +6,7 @@
 
 @import "variables.less";
 
-@BG_COLOR: rgb(219, 215, 207);
+@BG_COLOR: rgb(237, 234, 245);
 
 
 body {
@@ -211,29 +211,7 @@ img.small_icon {
     .basicshadow(15px) !important;
 }
 
-#uploadzone {
-    margin-top: 3ex;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-    .basicshadow(10px, 0.3);
-    padding: .2ex;
-    button , .file-input-wrapper {
-        .basicshadow(8px, 0.3);
-        margin-top: 1ex;
-    }
-    background: @BG_COLOR*1.1;
-    top: 2ex;
-    left: auto;
-    right: 1ex;
-    z-index: 5;
-    #up_panel {
-        overflow: clip;
-    }
-}
 @media (min-width: @navbarCollapseWidth) {
-    #uploadzone {
-        position: fixed;
-    }
     .maincontainer {
         min-height: 800px;
     }
@@ -262,10 +240,11 @@ img.small_icon {
 }
 .alt_title {
     font-variant: small-caps;
-    .border-radius(20px, 3px, 10px, 3px);
+    .border-radius(30px, 0px, 3px, 3px);
+    margin-bottom: -3px;
     color: #555;
     text-shadow:1px 1px 1px #fff;
-    background: @BG_COLOR;
+    background: @navbarLinkColor;
     padding-left: 1ex;
     width: 66%;
 }
@@ -276,7 +255,32 @@ img.small_icon {
 #epiceditor {
     min-height: 40em;
 }
-#uploadzone > label {
-    cursor: row-resize;
+
+#shelve.folded {
+    right: -31ex !important;
+    .transition(1s);
+}
+#shelve {
+    position: fixed;
+    margin: auto;
+    top: 8em;
+    right: 1em;
+    width: 30ex;
+    .transition(1s);
+    .basicshadow(10px, 0.3);
+    .border-radius(3px, 3px, 3px, 3px);
+    padding: 1ex;
+    button , .file-input-wrapper {
+        .basicshadow(8px, 0.3);
+        margin-top: 1ex;
+    }
+    z-index: 5;
+    #up_panel {
+        overflow: clip;
+    }
+    background-color: @BG_COLOR/2;
 }
 
+a.file-input-wrapper.btn.row-fluid {
+    width: 192px;
+}
