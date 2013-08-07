@@ -1,0 +1,3 @@
+:orphan:
+
+.. automodule:: weye.configuration

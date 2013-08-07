@@ -10,14 +10,23 @@
     <link href="/static/css/jquery.pnotify.default.css" rel="stylesheet" media="screen">
     <link type="text/css" rel="stylesheet" href="/static/css/theme.css" media="screen">
 
+<!-- dynamic headers -->
+<script id="header" type="text/html">
+    {{#backlink}}
+    <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
+    {{/backlink}}
+    {{#mime}}
+    <header>
+        <hgroup>
+        <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{_cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><i class="icon-bookmark"/> </a></h2>
+        </hgroup>
+    </header>
+    {{/mime}}
+</script>
 <!--   TEMPLATES -->
 <script id="view_file" type="text/html">
-    <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left" /> Back</button>
-      <a title="Share item with RightClick>Copy location" href="{{permalink}}"  ><i class="icon-bookmark"/> Permalink</a>
-
-          <h1><img class="big_icon" src="/static/mime/{{mime}}.svg"/> <small>{{cont}}</small>{{name}}</h1>
-
-          <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
+    {{>header}}
+    <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
 </script>
 <!--
 # mandatory #
@@ -35,7 +44,7 @@ data: data{k:key, v:value} used in data protocol
 editables: space-separated list of editable field names (editable)
 
 -->
-<script id="view_generic" class="partial" type= "text/html">
+<script id="view_generic_item" class="partial" type= "text/html">
     <div class="item span12 {{classes}}" data-searchable="{{searchable}}" data-link="{{name}}" data-mime="{{mime}}"  data-name="{{name}}" data-editable="{{editable}}"
         {{#data}}
         data-{{k}}="{{v}}"
@@ -44,33 +53,24 @@ editables: space-separated list of editable field names (editable)
       <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
       <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="ItemTool.popup($(this).parent());false;" />
+      {{#is_data}}<i class="show_on_hover small_icon icon-eye-open" onclick="window.location =  '/d' + ui.doc_ref + '/' + $(this).parent().data('link'); false;" />{{/is_data}}
     </div>
 </script>
 <script id="view_list" type="text/html">
-        {{#backlink}}
-        <button id="backlink" class="btn" onclick="go_back()"><i class="icon-arrow-left"/> Back</button>
-            <a title="Share item with RightClick>Copy location" href="{{permalink}}" ><i class="icon-bookmark"/> Permalink</a>
-        {{/backlink}}
-        {{#mime}}
-        <header>
-            <hgroup>
-            <h2><img src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{cont}}</small>{{name}}</h2>
-            </hgroup>
-        </header>
-        {{/mime}}
-       {{#have_child}}
-        <div class="items row-fluid">
-            <br/>
-            {{#child}}
-            {{>view_generic}}
-            {{/child}}
-        </div>
-        {{/have_child}}
-        {{^have_child}}
-        <div>
-        No item.
-        </div>
-        {{/have_child}}
+    {{>header}}
+   {{#have_child}}
+    <div class="items row-fluid">
+        <br/>
+        {{#child}}
+        {{>view_generic_item}}
+        {{/child}}
+    </div>
+    {{/have_child}}
+    {{^have_child}}
+    <div>
+    No item.
+    </div>
+    {{/have_child}}
 </script>
 
 <!-- FORM TEMPLATE(s) -->
@@ -92,8 +92,8 @@ editables: space-separated list of editable field names (editable)
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h3>{{header}}</h3>
           </div>
-          <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{item.name}}</h4>
-          <div class="editable" data-cont="{{item.cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
+          <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{#item.title}}{{item.title}}{{/item.title}}{{^item.title}}{{item.name}}{{/item.title}}</h4>
+          <div class="editable" data-_cont="{{item._cont}}" data-name="{{item.name}}" data-mime="{{item.mime}}">
           {{#edit}}
           <div class="row-fluid editable-property" data-name="{{name}}" data-type="{{type}}" />
           {{/edit}}
@@ -148,14 +148,14 @@ editables: space-separated list of editable field names (editable)
                 </li>
                 -->
             </ul>
-            <form id="addsearch_form" class="folder-item form-search form-inline form-horizontal" action="/search" method="post" name="addsearch_form">
+            <form id="addsearch_form" class="form-search form-inline form-horizontal" action="/search" method="post" name="addsearch_form">
                 <!--    <legend>Legend</legend>-->
                 <!--    <label>Label name</label>-->
                 <!--    <span class="help-block">Example block-level help text here.</span>-->
                 <!--    <label class="checkbox">-->
                 <!--      <input type="checkbox"> Check me out-->
                 <!--    </label>-->
-                <div class="btn-group">
+                <div class="folder-item btn-group">
                     <input name="text" type="text" class="btn input-large search-query" placeholder="Type something [Ctrl+Space]"> 
                     <button name="filter" type="submit" onclick= "filter_result();return false;" title="Look for something in current folder" class= "btn btn-info">Filter</button>
                     <button name="search" type="submit" onclick="search_for();return false;" title="Search items in whole database" class="btn">Search</button>
@@ -172,12 +172,7 @@ editables: space-separated list of editable field names (editable)
 
   <div class="container-fluid maincontainer">
 
-      <aside id="uploadzone"class="pull-right well autodim folder-item">
-          <label for="file" onclick="return alt_panel_toggle()" class="background_text" style="padding: 0; margin:0;">
-              <i id="aside_toggler_icon" class="icon-chevron-down" style="margin: 1ex 0 0"></i>
-          </label>
-
-          <div onclick="return true" id="up_panel" class="hidden animated slide">
+      <aside id="shelve"class="folder-item animated folded">
               <div class="row-fluid alt_title">Send file</div>
               <input type="file" class="btn row-fluid" name="file" id="file" title="<i class='icon-folder-open'></i> Select" />
               <button id="upload" class="btn row-fluid btn-primary"> <i class="icon-upload icon-white"></i> Upload!</button>
@@ -185,7 +180,6 @@ editables: space-separated list of editable field names (editable)
               <div class="row-fluid alt_title">Actions</div>
               <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-white icon-list-alt"></i>&nbsp;New note</button>
               <button name="add" onclick= "add_new_item()" class="btn btn-primary" style="width: 100%" title="Create a new note"><i class="icon-download icon-white"></i>&nbsp;Get as .zip</button>
-          </div>
 
       </aside>
 
