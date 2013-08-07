@@ -11,7 +11,16 @@
  * ###############################
  *
  * .. todo:: generalize item object finding (top/bottom), used in touch/click events ...
+ *
+ *
+ * When talking about the *DOM* Element representing an item, I'll use `.item`. If I write about the :ref:`JavaScript object <object_model>`, I'll just say item.
  */
+
+// Standard javascript objects overloading
+
+String.prototype.endswith = function(suffix) {
+    return this.indexOf(suffix, this.length - suffix.length) !== -1;
+};
 
 /*
  *
@@ -112,7 +121,7 @@ function editor_save() {
  *      
  *      :arg filter: regex used as filter for the main content, if not passed, ``#addsearch_form``\ 's ``input`` is used
  *          if `filter` starts with "type:", the the search is done against ``mime``` item's data, else ``searchable`` is used.
- *      :type filter: str
+ *      :type filter: String
  *
  */
 
@@ -243,7 +252,7 @@ var mimes = {};
  * .. function:: hr_size(size)
  *
  *      :arg size: a number of bytes (file/data weight)
- *      :type size: integer
+ *      :type size: Integer
  *      :returns: Human readable size
  *      :rtype: string
  *
@@ -268,31 +277,18 @@ function hr_size(size) {
 
 
 function alt_panel_toggle(force) {
-    var pan = $('#up_panel');
-    var current = !! pan.is(':hidden');
-    var delay = 500;
+    var pan = $('#shelve');
+    var current = !! pan.hasClass('folded');
+
     if (force === current)
         return;
     else if(force === undefined) {
         force = current;
     }
     if(force) {
-        $('#aside_toggler_icon')
-            .removeClass('icon-chevron-down')
-            .addClass('icon-chevron-up');
-        pan.parent().animate( {width: '120px'}, delay, function() {
-            pan.slideDown();
-            pan.removeClass('hidden');
-        });
+        pan.removeClass('folded')
     } else {
-        $('#aside_toggler_icon')
-            .addClass('icon-chevron-down')
-            .removeClass('icon-chevron-up');
-        pan.slideUp( function() {
-            pan.parent().animate({width: '1em'}, delay, function() {
-                pan.addClass('hidden');
-            });
-        });
+        pan.addClass('folded')
     }
     return false;
 };
@@ -303,10 +299,12 @@ function alt_panel_toggle(force) {
  *      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
  *
  *      :arg template: The name of the template to use.
- *                  .. rubric:: standard templates
  *
- *                  :file: file display
- *                  :list: list display, for folders most of the time
+ *                  .. Attention:: standard templates
+ *
+ *                      :file: file display
+ *                      :list: list display, for folders most of the time
+ *
  *      :arg item: data used in itemplate, `backlink` and `permalink` will automatically be added
  *
  *          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
@@ -314,6 +312,7 @@ function alt_panel_toggle(force) {
  */
 
 function get_view(template, item) {
+//    console.log('get view for', item);
     var elt = copy(item);
     elt.backlink = ui.doc_ref != '/';
     elt.permalink = ui.permalink;
@@ -344,6 +343,29 @@ var ui = new function() {
      */
     this.doc_ref = null;
     /*
+     * .. function:: ui.get_ref(subpath)
+     *
+     *      Returns URL for given object *subpath*
+     *
+     *      :arg subpath: *name* property of an item
+     *      :type subpath: String
+     */
+    this.get_ref = function(subpath) {
+        if (this.doc_ref === '/') {
+            if (subpath[0] === '/') {
+                return subpath;
+            } else {
+                return '/' + subpath;
+            }
+        } else {
+            if (subpath[0] === '/') {
+                return ui.doc_ref + subpath;
+            } else {
+                return ui.doc_ref + '/' + subpath;
+            }
+        }
+    };
+    /*
      * .. data:: ui.nav_hist
      *
      *      Stores data about navigation history, to recover selection for instance.
@@ -360,7 +382,7 @@ var ui = new function() {
     /*
      * .. function:: ui.view_item
      *
-     *      Display an item from its data (``mime`` property).
+     *      Display an item "fullscreen" (not in a list) from its data (``mime`` property).
      *      It will try to find a matching key in the :data:`mimes` dictionary.
      *      Example:
      *
@@ -370,10 +392,15 @@ var ui = new function() {
      *      :arg item: the item object
      */
     this.view_item = function(item) {
-        console.log('*****************************');
         var found = false;
 
         var choices = [item.mime];
+
+        if (ui.doc_ref.endswith(item.name)) {
+            item.cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.name.length);
+        } else {
+            item.cont = ui.doc_ref;
+        }
 
         var subchoices = item.mime.split('-');
         for(var n=subchoices.length-1; n>=1 ; n--) {
@@ -445,6 +472,7 @@ var ui = new function() {
             $('.pure-item').show();
             $('.filesize').each( function(i, x) {
                 var o=$(x);
+                console.log("o=",o);
                 if (!!! o.data('_fs_converted')) {
                     o.text(hr_size(eval(o.text())));
                 }
@@ -540,14 +568,18 @@ var ui = new function() {
 /*
  * Edition
  * #######
+ *
  * .. function:: save_form()
  *
  *      Saves the ``#question_popup .editable``
+ *
+ *      .. seealso:: :func:`ItemTool.popup`
+ *
  */
 
 function save_form() {
     var o = $('#question_popup .editable');
-    var object_path = ui.doc_ref + '/' + o.data('link');
+    var object_path = ui.get_ref(o.data('name'));
     var metadata = {};
     var metadata_list = [];
 
@@ -665,7 +697,7 @@ function view_path(path, opts) {
 //            console.log('object: /o/'+path, d);
             if (d.error) {
                 $.pnotify({
-                    title: 'Error displaying "'+d.link+'" content',
+                    title: 'Error displaying "'+d.name+'" content',
                     text: d.message
                 });
                 go_ready();
@@ -676,15 +708,17 @@ function view_path(path, opts) {
                     path = path.substr(1);
                 while(path.length > 1 && path.substr(-1) === '/')
                     path = path.substr(0, path.length-1)
-
-
                 d.path = ui.doc_ref = path;
+                if (ui.doc_ref.endswith('/')) {
+                    d._cont = ui.doc_ref;
+                } else {
+                    d._cont = ui.doc_ref + '/';
+                }
                 ui.permalink = get_permalink();
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
                 /* compute back ref & permalink */
                 
-                alt_panel_toggle(false); // fold panel
                 ui.view_item(d);
                 go_ready();
             }
@@ -710,13 +744,21 @@ function view_path(path, opts) {
 
 var ItemTool = new function() {
     /*
+     * .. function:: ItemTool.fixit(data)
+     *
+     *      "Fixes" an :ref:`object metadata <object_model>`, currently:
+     *
+     *      - missing **title** is set to *name*
+     *      - missing **searchable** is set to *title*
+     *      - missing **editables** is set to "name"
+     *      - fills **is_data** keyword (should come from *family* instead)
      */
     this.fixit = function (data) {
         if (!!!data.title) data.title = data.name;
         if (!!!data.searchable) data.searchable = data.title;
         if (!!!data.editables) data.editables = 'name';
+        data.is_data = (data.mime !== 'folder')
     };
-
 
     /*
      * .. function:: ItemTool.execute_evt_handler(e)
@@ -732,7 +774,7 @@ var ItemTool = new function() {
     this.execute_evt_handler = function(e) {
         console.log('exec evt handler');
         var elt = $(e.target).parent();
-        var link = elt.data('link');
+        var link = elt.data('name');
         if(!!!link) {
             $.pnotify({type: 'info', text: 'This is not a link!'});
         } else {
@@ -741,7 +783,7 @@ var ItemTool = new function() {
                 eval( link.substr(3) );
             } else {
                 ui.save_selected(elt.index());
-                view_path(ui.doc_ref+'/'+elt.data('link'));
+                view_path(ui.get_ref(elt.data('name')));
             }
         }
     };
@@ -771,47 +813,63 @@ var ItemTool = new function() {
          * .. todo:: update elt's `data` on save
          *
          */
-        var qp = $('#question_popup');
-        if(qp.length != 0) {
-            if (qp.css('display') === 'none') {
-                qp.remove();
-            } else {
-                return;
-            }
-        }
-        var actions = ['infos', 'download', 'preferences', 'delete'];
-        var data = copy(elt.data(), ['isoTransform', 'editable']);
-        var edited = [];
-        if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
-            for(var k in data) {
-                if (!!!k.match(/^isotope/)) {
-                    edited.push({name: k, type: 'text'});
+
+        $.get('/o' + ui.get_ref(elt.data('name')))
+           .done( function(data) {
+               if(data.error) {
+                   $.pnotify({
+                       type: 'error',
+                       title: data.name,
+                       text: data.message
+                   });
+                   return;
+               }
+               console.log('D=',data);
+            var qp = $('#question_popup');
+            if(qp.length != 0) {
+                if (qp.css('display') === 'none') {
+                    qp.remove();
+                } else {
+                    return;
                 }
-            };
-        } else {
-            var editables = data.editable.split(/ +/);
-            for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
-        }
-        var pop = ich.question({
-            'item': data,
-            'header': "Edition panel",
-            'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
-            'edit': edited,
-            'buttons': [
-                {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
-                {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
-            ]
-        });
-        pop.modal();
-        var edited = $('#question_popup .editable');
-        setTimeout(function() {
-            pop.find('.editable-property').each( function(i, o) {
-                var o = $(o);
-                var d = copy(o.data());
-                d.content = data[d.name];
-                o.append(ich['input_'+d.type](d));
+            }
+            var edited = [];
+            if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
+                for(var k in data) {
+                    if (!!!k.match(/^isotope/)) {
+                        edited.push({name: k, type: 'text'});
+                    }
+                };
+            } else {
+                var editables = data.editable.split(/ +/);
+                for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+            }
+            var pop = ich.question({
+                'item': data,
+                'header': "Edition panel",
+                'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
+                'edit': edited,
+                'buttons': [
+                    {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
+                    {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+                ]
             });
-        }, 200);
+            pop.modal();
+            var edited = $('#question_popup .editable');
+            setTimeout(function() {
+                pop.find('.editable-property').each( function(i, o) {
+                    var o = $(o);
+                    var d = copy(o.data());
+                    d.content = data[d.name];
+                    o.append(ich['input_'+d.type](d));
+                });
+            }, 200);
+
+        })
+        .fail(function(e) {
+            $.pnotify( {text: ''+e, type: 'error'}
+                );
+        });
     };
 
     /*
@@ -837,17 +895,48 @@ var ItemTool = new function() {
         });
         return o;
     };
+    /*
+     * .. function:: ItemTool.make_item(data)
+     *
+     *      Makes some ready to use DOM ``.item`` element from an object owning :ref:`standard properties <object_model>`
+     *      Will call :func:`~ItemTool.fixit` on the `data` and :func:`~ItemTool.prepare` on the `generic_item` template after rendering.
+     *
+     *      :arg data: :ref:`object_model`
+     *      :type data: Object
+     *
+     *      This object can then be inserted to main list with a single line:
+     *
+     *      .. code-block:: js
+     *
+     *          $('.items').isotope('insert', ItemTool.make_item(item_data));
+     */
+
+    this.make_item = function(data) {
+        ItemTool.fixit(data);
+        var dom = ich.view_generic_item(data);
+        ItemTool.prepare(dom);
+        return dom;
+
+    };
 
 return this;}();
 
 /*
+ *
+ * .. _compact_form:
+ *
+ * (compact form reverter)
+ * =======================
+ * 
  * .. function:: uncompress_itemlist(keys_values_array)
+ *
+ *      Uncompresses a list of items as returned by :py:func:`weye.root_objects.list_children` for instance.
  *
  *      :arg keys_values_array: tuple of *property names* and *list of values*. Ex:
  *
  *         .. code-block:: js
  *             
- *            [ ['name', 'age'], [ ['toto', 1], ['tata', 4], ['titi', 42] ] ]
+ *            { 'c': ['name', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
  *
  *      :returns: "flat" array of objects. Ex:
  *
@@ -873,13 +962,15 @@ function uncompress_itemlist(keys_values_array) {
 };
 
 /*
- * .. function:: finalize_item_list(o)
+ * .. xx: finalize_item_list is unused now (was used in search)
  *
- *
- *      Sets up isotope for those items, should be called once the content was updated
- *      Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
- *
- *      :arg o: DOM element containing ``.items`` elements
+   .. function:: finalize_item_list(o)
+  
+  
+        Sets up isotope for those items, should be called once the content was updated
+        Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
+  
+        :arg o: DOM element containing ``.items`` elements
  */
 function finalize_item_list(o) {
     o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows',
@@ -920,7 +1011,7 @@ function refocus(elt) {
 
 var load_plugin = function() {
     $('#contents').html('');
-    $.ajax({url:'/d'+ui.doc_ref+'/'+ui.plugin.js, dataType: 'text'})
+    $.ajax({url:'/d'+ui.get_ref(ui.plugin.js), dataType: 'text'})
     .done(function(d) {
         $('.folder-item').hide();
         $('.pure-item').hide();
@@ -952,11 +1043,10 @@ $(function() {
 
     var _p = $('#progress');
     $('#file').bootstrapFileInput();
-    $('#up_panel > a.file-input-wrapper').css('width', '94px');
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
-        progress:function(ev){ _p.html(((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
+        progress:function(ev){ _p.html(Math.ceil((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
         error:function(ev){ $.pnotify({title: "Can't upload", text: ''+ ev, type: 'error'}) },
         success:function(data){
             _p.html('100%');
@@ -966,9 +1056,9 @@ $(function() {
                 $.pnotify({title: 'Unable to upload some files', text: data.error, type: 'error'});
             }
             var items = $('.items');
-            for (var i=0 ; i<data.child.length ; i++) {
-                ItemTool.fixit( data.child[i] );
-            	items.isotope( 'insert', data.child[i] );
+            var child = uncompress_itemlist(data.children);
+            for (var i=0 ; i<child.length ; i++) {
+                items.isotope('insert', ItemTool.make_item(child[i]));
             }
             setTimeout( function() {
                 _p.html('');
@@ -1044,11 +1134,11 @@ $(function() {
  * .. function:: copy(obj)
  *
  *      :arg obj: Object to clone
- *      :type obj: object
+ *      :type obj: Object
  *      :arg blacklist: List of properties to ignore
  *      :type blacklist: Array of String
  *      :returns: a new object with the same properties
- *      :rtype: object
+ *      :rtype: Object
  */
 
 function copy(obj, blacklist) {
@@ -1085,4 +1175,23 @@ function get_permalink() {
     var plink = loc + '?view=' + ui.doc_ref;
     return plink;
 }
+
+
+/*
+ * ----
+ *
+ * JavaScript reference
+ * ====================
+ *
+ * `From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
+ *
+ * .. function:: Array\ of\ String
+ * .. function:: Object
+ * .. function:: String
+ * .. function:: Array
+ * .. function:: Integer
+ *
+ *
+ *
+ */
 

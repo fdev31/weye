@@ -1,3 +1,13 @@
+"""
+############
+Root objects
+############
+
+.. autofunction:: get_object_from_path
+
+.. autofunction:: list_children
+"""
+__all__ = ['get_object_from_path']
 import os
 import sys
 from bottle import json_dumps as dumps
@@ -63,6 +73,22 @@ def update_object(path, meta):
     open(meta_fpath, 'wb').write(dumps(infos).encode())
 
 def get_object_from_path(path):
+    """
+    returns metadata for an item from its path.
+
+    List of supported metadata:
+
+        - id
+        - size
+        - name
+        - descr
+        - mime
+
+    :arg path: the path of the item
+    :type path: str
+
+
+    """
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     meta_fpath = os.path.join(config.shared_db, path).rstrip('/') + config.special_extension
@@ -81,18 +107,14 @@ def get_object_from_path(path):
     # read infos (TODO later: in the database)
     if not infos:
         st = os.stat(fpath)
-        try:
-            cont, name = path.rsplit('/', 1)
-            cont += '/'
-        except ValueError:
-            cont = '/'
+        if '/' in path:
+            name = path.rsplit('/', 1)[1]
+        else:
             name = path
         infos = {'id': "%x-%x"%(st.st_ctime, st.st_ino),
                 'size': st.st_size,
                 'name': name,
-                'cont': cont,
-                'path': path,
-                'description': '',
+                'descr': '',
                 'mime': file_type}
     if not up_to_date:
         if not os.path.exists(meta_fpath):
@@ -109,6 +131,22 @@ def get_object_from_path(path):
 
 
 def list_children(path):
+    """ Returns a sorted list of children in :ref:`compact form <compact_form>` for the given path
+
+    Only returns ultra minimalistic metadata set:
+
+        - name
+        - mime
+
+    :arg path: the path of the folder
+    :type path: str
+
+    Format:
+
+    .. code-block:: js
+
+        {children: {'c': ['name', 'mime'], 'r': values}}
+    """
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     def is_listable(f):
@@ -123,5 +161,4 @@ def list_children(path):
             for f in os.listdir(fpath) if is_listable(f)]
     values.sort(key=lambda o: '!!!'+o[0]+o[1] if o[1] == 'folder' else o[0]+o[1])
     return {'children': {'c': ['name', 'mime'], 'r': values} }
-
 
