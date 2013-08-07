@@ -9,7 +9,23 @@ Developers index
     - `mustache <http://mustache.github.io/>`_
     - `vcs <https://pypi.python.org/pypi/vcs>`_
 
+.. rst-class:: html-toggle
+
+Public APIs
+###########
+
+You might be interested in the :ref:`function index <genindex>` as well.
+
+.. toctree::
+    :maxdepth: 2
+
+    dev/httpapi
+    dev/jsapi
+    dev/pyapi
+
+
 .. _object_model:
+
 
 Object model
 ============
@@ -71,34 +87,4 @@ When things are returned as collections (Array), to optimize transfers, the form
         ['Tata', 'guri', 120, [{'k': 'hair', 'v': 'red'}, {k:'nails',v:'blue'}]]
     ]}
 
-.. rst-class:: html-toggle
-
-Public APIs
-###########
-
-You might be interested in the :ref:`function index <genindex>` as well.
-
-.. toctree::
-    :maxdepth: 2
-
-    dev/httpapi
-    dev/jsapi
-    dev/pyapi
-
-----
-
-.. raw:: html
-
-    <div id="disqus_thread"></div>
-    <script type="text/javascript">
-    var disqus_shortname = 'nanoworkdocs';
-    (function() {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-    </script>
-    <noscript>Please enable JavaScript to view the
-    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
