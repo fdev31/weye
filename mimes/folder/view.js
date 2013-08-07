@@ -2,7 +2,6 @@ function display(item) {
     // fetch childrens
     $.get('/c'+item.path)
         .success(function(c) {
-            console.log(c);
             base_data = uncompress_itemlist(c.children);
             // render
             var is_an_app = false;

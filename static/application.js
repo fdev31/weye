@@ -709,9 +709,12 @@ function view_path(path, opts) {
                     path = path.substr(1);
                 while(path.length > 1 && path.substr(-1) === '/')
                     path = path.substr(0, path.length-1)
-
-
                 d.path = ui.doc_ref = path;
+                if (ui.doc_ref.endswith('/')) {
+                    d._cont = ui.doc_ref;
+                } else {
+                    d._cont = ui.doc_ref + '/';
+                }
                 ui.permalink = get_permalink();
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
@@ -755,7 +758,6 @@ var ItemTool = new function() {
         if (!!!data.searchable) data.searchable = data.title;
         if (!!!data.editables) data.editables = 'name';
     };
-
 
     /*
      * .. function:: ItemTool.execute_evt_handler(e)
