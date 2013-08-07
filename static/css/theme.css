@@ -5016,6 +5016,7 @@ a.brand {
 img.big_icon {
   width: 2.5em;
   height: 2.5em;
+  cursor: pointer;
 }
 img.small_icon {
   width: 2em;
@@ -5090,39 +5091,6 @@ img.small_icon {
     margin-left: -40%;
     padding: 1ex;
   }
-}
-.background_text {
-  color: rgba(0, 0, 0, 0.3);
-  text-shadow: 1px 1px 0 #fff;
-  font-variant: small-caps;
-  font-size: 30px;
-  width: 100%;
-  font-weight: bold;
-  text-align: center;
-}
-.alt_title {
-  font-variant: small-caps;
-  -webkit-border-top-right-radius: 30px;
-  -webkit-border-bottom-right-radius: 0px;
-  -webkit-border-bottom-left-radius: 3px;
-  -webkit-border-top-left-radius: 3px;
-  -moz-border-radius-topright: 30px;
-  -moz-border-radius-bottomright: 0px;
-  -moz-border-radius-bottomleft: 3px;
-  -moz-border-radius-topleft: 3px;
-  border-top-right-radius: 30px;
-  border-bottom-right-radius: 0px;
-  border-bottom-left-radius: 3px;
-  border-top-left-radius: 3px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  margin-bottom: -3px;
-  color: #555;
-  text-shadow: 1px 1px 1px #fff;
-  background: #777777;
-  padding-left: 1ex;
-  width: 66%;
 }
 .file-input-name {
   word-wrap: break-word;
@@ -5208,39 +5176,4 @@ a.file-input-wrapper.btn.row-fluid {
   -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
-}
-.my-form-control[disabled],
-.my-form-control[readonly],
-fieldset[disabled] .my-form-control {
-  cursor: not-allowed;
-  background-color: #eeeeee;
-}
-textarea.my-form-control {
-  height: auto;
-}
-/*
-Document   : jquery.pnotify.default.icons.css
-Created on : Nov 24, 2009, 2:58:21 PM
-Author     : Hunter Perrin
-Version    : 1.2.0
-Link       : http://pinesframework.org/pnotify/
-Description:
-	Pines Icon styling for Pines Notify.
-*/
-.ui-pnotify .picon {
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 17px;
-  height: 17px;
-}
-.ui-pnotify-title {
-  line-height: 17px;
-  min-height: 17px;
-}
-.ui-pnotify-history-container {
-  margin-right: 5em;
-  position: fixed;
-  text-align: center;
-  box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
 }
