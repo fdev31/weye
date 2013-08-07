@@ -24,8 +24,8 @@ To fully build Nanowork (``make all``) and be able to make changes, you will nee
 
 .. tip:: Just type ``make`` to know all possible targets, you can then :samp:`make {target}`
 
-Configuration file
-------------------
+Configuring
+===========
 
 Edit |nanoconf|, you'll find explanations below:
 
@@ -65,7 +65,7 @@ Edit |nanoconf|, you'll find explanations below:
             HTTP port to work on, if you run ``uwsgi`` with a proper configuration you may avoid giving the port number (ex: ``:8080``) on the URL to connect to the server.
 
 Running
--------
+=======
 
 .. parsed-literal::
 
