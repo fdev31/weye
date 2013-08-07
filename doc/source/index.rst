@@ -91,3 +91,21 @@ You can enjoy `the home page on http://127.0.0.1:8080/ <http://127.0.0.1:8080/>`
 
 Next step is to read the :doc:`installation` guide or go to the :doc:`developpers` pages.
 
+.. rubric:: Comments
+
+
+.. raw:: html
+
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+    var disqus_shortname = 'nanoworkdocs';
+    (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+    </script>
+    <noscript>Please enable JavaScript to view the
+    <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
