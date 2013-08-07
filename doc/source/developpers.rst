@@ -12,7 +12,7 @@ Developers index
 .. rst-class:: html-toggle
 
 Public APIs
-###########
+===========
 
 You might be interested in the :ref:`function index <genindex>` as well.
 
