@@ -251,3 +251,10 @@ texinfo_documents = [
 
 intersphinx_mapping = {'python': ('http://docs.python.org/3.3', None)}
 
+rst_epilog = """
+
+.. _uwsgi: http://projects.unbit.it/uwsgi/
+.. |nanoconf| replace:: *sample_config.ini*
+.. |nw| replace:: Nanowork
+
+"""

@@ -74,7 +74,7 @@ User Interface
 .. function:: hr_size(size)
 
      :arg size: a number of bytes (file/data weight)
-     :type size: integer
+     :type size: Integer
      :returns: Human readable size
      :rtype: string
 
@@ -232,6 +232,7 @@ Item related
      - missing **title** is set to *name*
      - missing **searchable** is set to *title*
      - missing **editables** is set to "name"
+     - fills **is_data** keyword (should come from *family* instead)
 
 .. function:: ItemTool.execute_evt_handler(e)
 
@@ -323,4 +324,19 @@ Misc
 .. function:: get_permalink
 
      Computes the current permalink, used by :func:`view_path` to update :data:`ui.permalink`
+
+----
+
+JavaScript reference
+====================
+
+`From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
+
+.. function:: Array\ of\ String
+.. function:: Object
+.. function:: String
+.. function:: Array
+.. function:: Integer
+
+
 
