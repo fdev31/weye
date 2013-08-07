@@ -752,11 +752,13 @@ var ItemTool = new function() {
      *      - missing **title** is set to *name*
      *      - missing **searchable** is set to *title*
      *      - missing **editables** is set to "name"
+     *      - fills **is_data** keyword (should come from *family* instead)
      */
     this.fixit = function (data) {
         if (!!!data.title) data.title = data.name;
         if (!!!data.searchable) data.searchable = data.title;
         if (!!!data.editables) data.editables = 'name';
+        data.is_data = (data.mime !== 'folder')
     };
 
     /*
