@@ -53,7 +53,7 @@ editables: space-separated list of editable field names (editable)
       <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
       <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
       <i class="show_on_hover small_icon icon-edit" onclick="ItemTool.popup($(this).parent());false;" />
-      <i class="show_on_hover small_icon icon-eye-open" onclick="window.location =  '/d' + ui.doc_ref + '/' + $(this).parent().data('link'); false;" />
+      {{#is_data}}<i class="show_on_hover small_icon icon-eye-open" onclick="window.location =  '/d' + ui.doc_ref + '/' + $(this).parent().data('link'); false;" />{{/is_data}}
     </div>
 </script>
 <script id="view_list" type="text/html">
