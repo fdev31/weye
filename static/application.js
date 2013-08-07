@@ -253,7 +253,7 @@ var mimes = {};
  * .. function:: hr_size(size)
  *
  *      :arg size: a number of bytes (file/data weight)
- *      :type size: integer
+ *      :type size: Integer
  *      :returns: Human readable size
  *      :rtype: string
  *
@@ -1179,15 +1179,20 @@ function get_permalink() {
 
 
 /*
-   .. _array_of_string:
-   .. _Object:
-   .. _String:
-   .. _Array:
-  
-   JavaScript reference
-   ====================
-  
-   `From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
-  
+ * ----
+ *
+ * JavaScript reference
+ * ====================
+ *
+ * `From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
+ *
+ * .. function:: Array\ of\ String
+ * .. function:: Object
+ * .. function:: String
+ * .. function:: Array
+ * .. function:: Integer
+ *
+ *
+ *
  */
 
