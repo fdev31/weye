@@ -3,8 +3,8 @@
 // -----------
 
 @import "elements.less";
-
-@import "variables.less";
+@import "bootstrap.less";
+@import "bootstrap-glyphicons.less";
 
 @BG_COLOR: rgb(237, 234, 245);
 
@@ -13,11 +13,10 @@ body {
     background-color: @BG_COLOR;
 }
 
-.ui-pnotify-history-container {
-    margin-right: 3em;
-    position: fixed;
-    .basicshadow(10px, 0.3);
+.jumbotron {
+    margin-top: 20px;
 }
+
 .brand {
     z-index: 1;
 }
@@ -76,7 +75,7 @@ iframe {
 
 .show_on_hover {
     opacity: 0;
-    .transition(opacity 1s linear);
+    .transition(1s linear);
 }
 
 .item {
@@ -86,17 +85,14 @@ iframe {
     margin: .3ex;
     padding-left: 1ex;
     cursor: pointer;
-    .transition(background .5s linear);
+    .transition(.5s linear);
     &:hover {
         background: white !important;
         color: black;
-        .transition(background .5s linear) !important;
-        .transition(black .5s linear) !important;
-
+        .transition(.5s linear) !important;
         .show_on_hover {
             opacity: 1;
         }
-
     }
     word-wrap: break-word;
     overflow: hidden;
@@ -204,14 +200,14 @@ img.small_icon {
 }
 
 #addsearch_form {
-    margin-bottom: 0;
+    margin-top: 1ex;
 }
 
-.navbar-inner {
+.navbar {
     .basicshadow(15px) !important;
 }
 
-@media (min-width: @navbarCollapseWidth) {
+@media (min-width: @screen-small) {
     .maincontainer {
         min-height: 800px;
     }
@@ -244,7 +240,7 @@ img.small_icon {
     margin-bottom: -3px;
     color: #555;
     text-shadow:1px 1px 1px #fff;
-    background: @navbarLinkColor;
+    background: @navbar-link-color;
     padding-left: 1ex;
     width: 66%;
 }
@@ -255,9 +251,8 @@ img.small_icon {
 #epiceditor {
     min-height: 40em;
 }
-
 #shelve.folded {
-    right: -31ex !important;
+    right: -29ex !important;
     .transition(1s);
 }
 #shelve {
@@ -279,9 +274,72 @@ img.small_icon {
         overflow: clip;
     }
     background-color: @BG_COLOR/2;
-    border: outset 1px @orange*2;
+    border: outset 1px #DDD;
 }
 
 a.file-input-wrapper.btn.row-fluid {
     width: 192px;
 }
+
+.my-form-control { // NO width: 100%;
+  display: block;
+  height: @input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
+  padding: @padding-base-vertical @padding-base-horizontal;
+  font-size: @font-size-base;
+  line-height: @line-height-base;
+  color: @gray;
+  vertical-align: middle;
+  background-color: @input-bg;
+  border: 1px solid @input-border;
+  border-radius: @input-border-radius;
+  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+  .transition(~"border-color ease-in-out .15s, box-shadow ease-in-out .15s");
+
+  // Customize the `:focus` state to imitate native WebKit styles.
+  .form-control-focus();
+
+  // Disabled and read-only inputs
+  // Note: HTML5 says that inputs under a fieldset > legend:first-child won't be
+  //   disabled if the fieldset is disabled. Due to implementation difficulty,
+  //   we don't honor that edge case; we style them as disabled anyway.
+  &[disabled],
+  &[readonly],
+  fieldset[disabled] & {
+    cursor: not-allowed;
+    background-color: @input-bg-disabled;
+  }
+
+  // Reset height for `textarea`s
+  textarea& {
+    height: auto;
+  }
+}
+
+/*
+Document   : jquery.pnotify.default.icons.css
+Created on : Nov 24, 2009, 2:58:21 PM
+Author     : Hunter Perrin
+Version    : 1.2.0
+Link       : http://pinesframework.org/pnotify/
+Description:
+	Pines Icon styling for Pines Notify.
+*/
+
+.ui-pnotify .picon {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 17px;
+    height: 17px;
+}
+.ui-pnotify-title {
+    line-height: 17px;
+    min-height: 17px;
+}
+.ui-pnotify-history-container {
+    margin-right: 5em;
+    position: fixed;
+    text-align: center;
+    .basicshadow(10px, 0.3);
+}
+

@@ -913,7 +913,7 @@ var ItemTool = new function() {
 
     this.make_item = function(data) {
         ItemTool.fixit(data);
-        var dom = ich.view_generic_item(data);
+        var dom = ich.view_list_item(data);
         ItemTool.prepare(dom);
         return dom;
 
