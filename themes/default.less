@@ -133,6 +133,7 @@ a.brand {
 img.big_icon {
     width: 2.5em;
     height: 2.5em;
+    cursor: pointer;
 }
 img.small_icon {
     width: 2em;
@@ -225,25 +226,6 @@ img.small_icon {
         padding: 1ex;
     }
 }
-.background_text {
-    color: rgba(0, 0, 0, 0.3);
-    text-shadow:1px 1px 0 #fff;
-    font-variant:small-caps;
-    font-size: 30px;
-    width: 100%;
-    font-weight: bold;
-    text-align: center;
-}
-.alt_title {
-    font-variant: small-caps;
-    .border-radius(30px, 0px, 3px, 3px);
-    margin-bottom: -3px;
-    color: #555;
-    text-shadow:1px 1px 1px #fff;
-    background: @navbar-link-color;
-    padding-left: 1ex;
-    width: 66%;
-}
 .file-input-name {
     word-wrap: break-word;
     display: block;
@@ -298,48 +280,6 @@ a.file-input-wrapper.btn.row-fluid {
   // Customize the `:focus` state to imitate native WebKit styles.
   .form-control-focus();
 
-  // Disabled and read-only inputs
-  // Note: HTML5 says that inputs under a fieldset > legend:first-child won't be
-  //   disabled if the fieldset is disabled. Due to implementation difficulty,
-  //   we don't honor that edge case; we style them as disabled anyway.
-  &[disabled],
-  &[readonly],
-  fieldset[disabled] & {
-    cursor: not-allowed;
-    background-color: @input-bg-disabled;
-  }
 
-  // Reset height for `textarea`s
-  textarea& {
-    height: auto;
-  }
-}
-
-/*
-Document   : jquery.pnotify.default.icons.css
-Created on : Nov 24, 2009, 2:58:21 PM
-Author     : Hunter Perrin
-Version    : 1.2.0
-Link       : http://pinesframework.org/pnotify/
-Description:
-	Pines Icon styling for Pines Notify.
-*/
-
-.ui-pnotify .picon {
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-position: center center;
-    width: 17px;
-    height: 17px;
-}
-.ui-pnotify-title {
-    line-height: 17px;
-    min-height: 17px;
-}
-.ui-pnotify-history-container {
-    margin-right: 5em;
-    position: fixed;
-    text-align: center;
-    .basicshadow(10px, 0.3);
 }
 
