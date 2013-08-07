@@ -315,6 +315,7 @@ img.small_icon {
   padding: 1ex;
   z-index: 5;
   background-color: #77757b;
+  border: outset 1px #ff9028;
 }
 #shelve button,
 #shelve .file-input-wrapper {
