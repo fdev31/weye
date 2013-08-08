@@ -813,6 +813,7 @@ var ItemTool = new function() {
                 view_path(ui.get_ref(link));
             }
         }
+        e.cancelBubble = true;
     };
 
     /*
@@ -825,6 +826,7 @@ var ItemTool = new function() {
 
     this.popup_evt_handler = function (e) {
         ItemTool.popup(ItemTool._find_event_target(e));
+        e.cancelBubble = true;
     };
     /*
      * .. function:: ItemTool.popup(elt)
