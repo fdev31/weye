@@ -36,7 +36,7 @@
         <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
         <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
         <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />
-        {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.doc_ref + '/' + $(this).parent().data('link'); false;" />{{/is_data}}
+        {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
         </div>
     </script>
     <!-- ------------------ item template: view list ---------------------------------- -->
