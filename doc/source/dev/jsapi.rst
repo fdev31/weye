@@ -9,6 +9,12 @@
 Javascript API (application.js)
 ###############################
 
+
+
+.. warning:: usage of ``name`` as link and ``title`` as name is very inconsistant
+
+     rename it & clean usage as soon as possible
+
 .. todo:: generalize item object finding (top/bottom), used in touch/click events ...
 
 
@@ -188,6 +194,9 @@ Edition
      Saves the ``#question_popup .editable``
 
      .. seealso:: :func:`ItemTool.popup`
+     .. warning:: FIXME
+
+             Currently not refreshing the item's parent display (in case name or mime is changed)
 
 
 Navigation

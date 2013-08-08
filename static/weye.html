@@ -34,9 +34,9 @@
             {{/data}}
         >
         <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
-        <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
-        <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />
-        {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
+        <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
+        <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
+        {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-download-alt" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
         </div>
     </script>
     <!-- ------------------ item template: view list ---------------------------------- -->
@@ -67,37 +67,43 @@
         <input
         data-orig-value='{{content}}'
         type="text"
-        class="{{^class}}input-xxlarge{{/class}}{{#class}}{{class}}{{/class}}"
+        class="form-control {{^class}}input-xxlarge{{/class}}{{#class}}{{class}}{{/class}}"
         placeholder="{{name}}"
         value="{{content}}"
         ></input>
     </script>
     <!-- ------------------ modal template: question ---------------------------------- -->
     <script id="question" type="text/html">
-        <div class="modal hide fade" id="question_popup">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h3>{{header}}</h3>
-            </div>
-            <h4><img class="big_icon" src="/static/mime/{{item.mime}}.svg"/> {{#item.title}}{{item.title}}{{/item.title}}{{^item.title}}{{item.name}}{{/item.title}}</h4>
-            <div class="editable" data-_cont="{{item._cont}}" data-name="{{item.name}}" data-mime="{{item.mime}}">
-            {{#edit}}
-                <div class="row editable-property" data-name="{{name}}" data-type="{{type}}" />
-            {{/edit}}
-            </div>
-            <div class="modal-body">
-                <p>{{{body}}}</p>
-            </div>
-            <div class="modal-footer">
-                {{#buttons}}
-                    {{#onclick}}
-                    <button onclick="{{onclick}}" class="btn {{class}}"> {{name}}</button>
-                    {{/onclick}}
-                    {{^onclick}}
-                    <a href="{{href}}" class="btn btn-primary"> {{name}}</a>
-                    {{/onclick}}
-                {{/buttons}}
-                <a href="#" data-dismiss="modal" class="btn btn-primary"> Close</a>
+        <div class="modal fade" id="question_popup">
+          <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title"><img class="big_icon" src="/static/mime/{{mime}}.svg"/> {{title}}</h4>
+                </div>
+<!-- Editable fields, quite ugly, should come to another template or be more generic -->
+                <div class="editable" data-_cont="{{item._cont}}" data-name="{{item.name}}" data-mime="{{item.mime}}">
+                {{#edit}}
+                    <div class="row editable-property" data-name="{{name}}" data-type="{{type}}" />
+                {{/edit}}
+                </div>
+<!-- /Editable -->
+                <div class="modal-body">
+                    <p>{{{body}}}</p>
+                    <p class="text-right pull-right text-muted">{{footnote}}</p>
+                </div>
+                <div class="modal-footer">
+                    {{#buttons}}
+                        {{#onclick}}
+                        <button onclick="{{onclick}}" class="btn {{class}}"> {{name}}</button>
+                        {{/onclick}}
+                        {{^onclick}}
+                        <a href="{{href}}" class="btn btn-primary"> {{name}}</a>
+                        {{/onclick}}
+                    {{/buttons}}
+                    <a href="#" data-dismiss="modal" class="btn btn-primary"> Close</a>
+                </div>
+              </div>
             </div>
         </div>
     </script>

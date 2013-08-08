@@ -10,6 +10,12 @@
  * Javascript API (application.js)
  * ###############################
  *
+ *
+ *
+ * .. warning:: usage of ``name`` as link and ``title`` as name is very inconsistant
+ *
+ *      rename it & clean usage as soon as possible
+ *
  * .. todo:: generalize item object finding (top/bottom), used in touch/click events ...
  *
  *
@@ -574,6 +580,9 @@ var ui = new function() {
  *      Saves the ``#question_popup .editable``
  *
  *      .. seealso:: :func:`ItemTool.popup`
+ *      .. warning:: FIXME
+ *
+ *              Currently not refreshing the item's parent display (in case name or mime is changed)
  *
  */
 
@@ -584,7 +593,7 @@ function save_form() {
     var metadata_list = [];
 
     var close_form = function() {
-        o.parent().modal('hide');
+        $('#question_popup').modal('hide');
         setTimeout( function() {
             o.parent().detach();
         }, 1000);
@@ -606,13 +615,12 @@ function save_form() {
         $.pnotify({text: 'No change'});
     } else {
         $.ajax('/o'+object_path, {dataType: 'json', data: {meta: JSON.stringify(metadata) }, type: 'PUT'})
-            .done( function(e) { $.pnotify({type: "success", text: "Saved"})
+            .done( function(e) { close_form(); $.pnotify({type: "success", text: "Saved"})
             })
         .fail( function(e) {
             $.pnotify({type: "error", text: ''+e});
         });
     }
-    close_form();
 };
 
 /*
@@ -846,8 +854,9 @@ var ItemTool = new function() {
             }
             var pop = ich.question({
                 'item': data,
-                'header': "Edition panel",
-                'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
+                'title': data.title || data.name,
+                'mime': data.mime,
+                'footnote': 'Changes may be effective after a refresh',
                 'edit': edited,
                 'buttons': [
                     {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},

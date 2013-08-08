@@ -111,7 +111,7 @@ def get_object_from_path(path):
             name = path.rsplit('/', 1)[1]
         else:
             name = path
-        infos = {'id': "%x-%x"%(st.st_ctime, st.st_ino),
+        infos = {'id': st.st_ino,
                 'size': st.st_size,
                 'name': name,
                 'descr': '',
@@ -157,7 +157,8 @@ def list_children(path):
         if not os.access(os.path.join(fpath, f), os.R_OK):
             return False
         return True
-    values = [ [f, guess_type(os.path.join(fpath, f))]
+
+    values = [ [f, get_object_from_path(os.path.join(fpath, f))['mime']]
             for f in os.listdir(fpath) if is_listable(f)]
     values.sort(key=lambda o: '!!!'+o[0]+o[1] if o[1] == 'folder' else o[0]+o[1])
     return {'children': {'c': ['name', 'mime'], 'r': values} }
