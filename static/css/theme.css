@@ -4854,7 +4854,7 @@ td.visible-print {
   content: "\e160";
 }
 body {
-  background-color: #edeaf5;
+  background-color: #ffffff;
 }
 .jumbotron {
   margin-top: 20px;
@@ -5136,7 +5136,7 @@ img.small_icon {
   background-clip: padding-box;
   padding: 1ex;
   z-index: 5;
-  background-color: #77757b;
+  background-color: #808080;
   border: outset 1px #DDD;
 }
 #shelve button,
@@ -5147,9 +5147,7 @@ img.small_icon {
 #shelve #up_panel {
   overflow: clip;
 }
-a.file-input-wrapper.btn.row-fluid {
-  width: 192px;
-}
+/* Fine tuning */
 .my-form-control {
   display: block;
   height: 34px;
@@ -5176,4 +5174,49 @@ a.file-input-wrapper.btn.row-fluid {
   -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+.ui-pnotify .picon {
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 17px;
+  height: 17px;
+}
+.ui-pnotify-title {
+  line-height: 17px;
+  min-height: 17px;
+}
+.ui-pnotify-history-container {
+  text-align: center;
+  box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
+}
+@media (max-width: 768px) {
+  #contents {
+    margin-left: 1ex !important;
+    margin-top: 2em;
+  }
+}
+@media (max-width: 992px) and (min-width: 768px) {
+  #contents {
+    margin-left: 1ex !important;
+  }
+}
+@media (min-width: 1200px) {
+  input.my-form-control {
+    width: 54ex;
+  }
+}
+@media (max-width: 1200px) {
+  .ui-pnotify-history-container {
+    right: auto !important;
+    left: 1ex !important;
+  }
+}
+@media (max-width: 992px) and (min-width: 768px) {
+  .navbar .container {
+    max-width: 100% !important;
+  }
+  .navbar #addsearch_form {
+    padding: 0;
+  }
 }

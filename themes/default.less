@@ -257,6 +257,8 @@ img.small_icon {
     border: outset 1px #DDD;
 }
 
+/* Fine tuning */
+
 .my-form-control { // NO width: 100%;
   display: block;
   height: @input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
@@ -294,6 +296,23 @@ img.small_icon {
     text-align: center;
     .basicshadow(10px, 0.3);
 }
+
+@media (max-width: @screen-small) {
+    #contents {
+        margin-left: 1ex !important;
+        margin-top: 2em;
+    }
+}
+@media (max-width: @screen-medium) and (min-width: @screen-small) {
+    #contents {
+        margin-left: 1ex !important;
+    }
+}
+@media (min-width: @screen-large) {
+    input.my-form-control {
+        width: 54ex;
+    }
+}
 @media (max-width: @screen-large) {
     .ui-pnotify-history-container {
         right: auto !important;
@@ -301,14 +320,13 @@ img.small_icon {
     }
 }
 
-@media (max-width: @screen-large) and (min-width: @screen-xsmall) {
+@media (max-width: @screen-medium) and (min-width: @screen-small) {
     .navbar {
         .container {
             max-width: 100% !important;
-            ul.navbar-nav > li > a {
-                padding-left: 2px;
-                padding-right: 2px;
-            }
+        }
+        #addsearch_form {
+            padding: 0;
         }
     }
 }
