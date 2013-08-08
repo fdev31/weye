@@ -271,7 +271,7 @@ Item related
 .. function:: ItemTool.prepare(o)
 
 
-     Currently, only finds ``.item_stuff`` within the element and associate touch bindings:
+     Prepares a DOM ``.item``, associating touch bindings:
 
      :tap: executes :func:`~ItemTool.execute_evt_handler`
      :hold: executes :func:`~ItemTool.popup_evt_handler`
@@ -317,6 +317,13 @@ Item related
 
 .. xx: finalize_item_list is unused now (was used in search)
 
+.. function:: finalize_item_list(o)
+
+
+     Sets up isotope for those items, should be called once the content was updated
+     Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
+
+     :arg o: DOM element containing ``.items`` elements
 
 Misc
 ####

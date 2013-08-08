@@ -403,9 +403,9 @@ var ui = new function() {
         var choices = [item.mime];
 
         if (ui.doc_ref.endswith(item.name)) {
-            item.cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.name.length);
+            item._cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.name.length);
         } else {
-            item.cont = ui.doc_ref;
+            item._cont = ui.doc_ref;
         }
 
         var subchoices = item.mime.split('-');
@@ -694,6 +694,7 @@ function view_path(path, opts) {
     var opts = opts || {};
     ui.flush_caches();
     var buttons = $('#addsearch_form');
+    console.log('xxxxxxxxxxx', ui.doc_ref);
     /* document viewer, give it a valid path */
     // TODO: plugin deactivate, possible for applications and mimes (as following:)
     $('audio').each( function() {this.pause(); this.src = "";} );
@@ -712,16 +713,26 @@ function view_path(path, opts) {
             } else {
                 // normal continuation
                 /* update current document reference */
-                while(path[1] === '/')
-                    path = path.substr(1);
-                while(path.length > 1 && path.substr(-1) === '/')
-                    path = path.substr(0, path.length-1)
+                if (path === '/') {
+                    d.path = d.name = '/';
+                } else {
+                    // strip start
+                    //while(path[1] === '/') path = path.substr(1);
+                    // strip end
+                    while(path.length > 1 && path.substr(-1) === '/') path = path.substr(0, path.length-1);
+                    // fullpath
+                    d.path = path;
+                }
+                ui.doc_ref = path;
+                /*
                 d.path = ui.doc_ref = path;
-                if (ui.doc_ref.endswith('/')) {
+                if (path.endswith('/')) {
                     d._cont = ui.doc_ref;
                 } else {
                     d._cont = ui.doc_ref + '/';
                 }
+                console.log('vvvvvvvvvvv', ui.doc_ref);
+                */
                 ui.permalink = get_permalink();
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
@@ -736,7 +747,7 @@ function view_path(path, opts) {
             $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
             go_ready();
         });
-    }, 3);
+    }, 1);
 };
 
 
@@ -764,8 +775,16 @@ var ItemTool = new function() {
     this.fixit = function (data) {
         if (!!!data.title) data.title = data.name;
         if (!!!data.searchable) data.searchable = data.title;
-        if (!!!data.editables) data.editables = 'name';
+        if (!!!data.editables) data.editables = 'mime descr';
         data.is_data = (data.mime !== 'folder')
+    };
+
+    this._find_event_target = function(e) {
+        var elt = $(e.target);
+        var link = elt.data('name');
+        if( !!! link ) 
+            elt = elt.parent();
+        return elt;
     };
 
     /*
@@ -780,9 +799,9 @@ var ItemTool = new function() {
      */
 
     this.execute_evt_handler = function(e) {
-        console.log('exec evt handler');
-        var elt = $(e.target).parent();
+        var elt = ItemTool._find_event_target(e);
         var link = elt.data('name');
+
         if(!!!link) {
             $.pnotify({type: 'info', text: 'This is not a link!'});
         } else {
@@ -791,7 +810,7 @@ var ItemTool = new function() {
                 eval( link.substr(3) );
             } else {
                 ui.save_selected(elt.index());
-                view_path(ui.get_ref(elt.data('name')));
+                view_path(ui.get_ref(link));
             }
         }
     };
@@ -805,7 +824,7 @@ var ItemTool = new function() {
      */
 
     this.popup_evt_handler = function (e) {
-        ItemTool.popup($(e.target));
+        ItemTool.popup(ItemTool._find_event_target(e));
     };
     /*
      * .. function:: ItemTool.popup(elt)
@@ -833,48 +852,50 @@ var ItemTool = new function() {
                    return;
                }
                console.log('D=',data);
-            var qp = $('#question_popup');
-            if(qp.length != 0) {
-                if (qp.css('display') === 'none') {
-                    qp.remove();
-                } else {
-                    return;
-                }
-            }
-            var edited = [];
-            if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
-                for(var k in data) {
-                    if (!!!k.match(/^isotope/)) {
-                        edited.push({name: k, type: 'text'});
+                var qp = $('#question_popup');
+                if(qp.length != 0) {
+                    if (qp.css('display') === 'none') {
+                        qp.remove();
+                    } else {
+                        return;
                     }
-                };
-            } else {
-                var editables = data.editable.split(/ +/);
-                for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
-            }
-            var pop = ich.question({
-                'item': data,
-                'title': data.title || data.name,
-                'mime': data.mime,
-                'footnote': 'Changes may be effective after a refresh',
-                'edit': edited,
-                'buttons': [
-                    {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
-                    {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
-                ]
-            });
-            pop.modal();
-            var edited = $('#question_popup .editable');
-            setTimeout(function() {
-                pop.find('.editable-property').each( function(i, o) {
-                    var o = $(o);
-                    var d = copy(o.data());
-                    d.content = data[d.name];
-                    o.append(ich['input_'+d.type](d));
+                }
+                var edited = [];
+                ItemTool.fixit(data);
+                if (data.editables === "")  {
+                    for(var k in data) {
+                        if (!!!k.match(/^isotope/)) {
+                            edited.push({name: k, type: 'text'});
+                        }
+                    };
+                } else {
+                    var editables = data.editables.split(/ +/);
+                    for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+                }
+                var pop = ich.question({
+                    'item': data,
+                    'title': data.title || data.name,
+                    'mime': data.mime,
+                    'footnote': 'Changes may be effective after a refresh',
+                    'edit': edited,
+                    'buttons': [
+                        {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
+                        {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+                    ]
                 });
-            }, 200);
+                pop.modal();
+                var edited = $('#question_popup .editable');
+                setTimeout(function() {
+                    pop.find('.editable-property').each( function(i, o) {
+                        var o = $(o);
+                        var d = copy(o.data());
+                        d.content = data[d.name];
+                        o.append(ich['input_'+d.type](d));
+                    });
+                }, 200);
 
-        })
+            }
+        )
         .fail(function(e) {
             $.pnotify( {text: ''+e, type: 'error'}
                 );
@@ -885,7 +906,7 @@ var ItemTool = new function() {
      * .. function:: ItemTool.prepare(o)
      *
      *
-     *      Currently, only finds ``.item_stuff`` within the element and associate touch bindings:
+     *      Prepares a DOM ``.item``, associating touch bindings to it's ``.item_touch`` property:
      *
      *      :tap: executes :func:`~ItemTool.execute_evt_handler`
      *      :hold: executes :func:`~ItemTool.popup_evt_handler`
@@ -894,14 +915,12 @@ var ItemTool = new function() {
      *      :arg o: Item (jQuery element) to prepare
      */
     this.prepare = function (o) {
-        o.find('.item_stuff').each( function(i, x) {
-            $(x).hammer()
-                .bind({
-                    tap: ItemTool.execute_evt_handler,
-                    hold: ItemTool.popup_evt_handler,
-                    swipe: ItemTool.popup_evt_handler
-                })
-        });
+        $(o).find('.item_touch').hammer()
+            .bind({
+                tap: ItemTool.execute_evt_handler,
+                hold: ItemTool.popup_evt_handler,
+                swipe: ItemTool.popup_evt_handler
+            });
         return o;
     };
     /*
@@ -973,13 +992,13 @@ function uncompress_itemlist(keys_values_array) {
 /*
  * .. xx: finalize_item_list is unused now (was used in search)
  *
-   .. function:: finalize_item_list(o)
-  
-  
-        Sets up isotope for those items, should be called once the content was updated
-        Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
-  
-        :arg o: DOM element containing ``.items`` elements
+ * .. function:: finalize_item_list(o)
+ *
+ *
+ *      Sets up isotope for those items, should be called once the content was updated
+ *      Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
+ *
+ *      :arg o: DOM element containing ``.items`` elements
  */
 function finalize_item_list(o) {
     o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows',
@@ -992,7 +1011,7 @@ function finalize_item_list(o) {
             }
         }
     });
-    ItemTool.prepare(o);
+    o.find('.items .item').each( function(i, x) { ItemTool.prepare(x) } );
     setTimeout( function() {
         ui.recover_selected();
     }, 1);
@@ -1101,7 +1120,7 @@ $(function() {
     });
     Mousetrap.bind('enter', function(e) {
         var items = ui.get_items();
-        $(items[ui.selected_item]).find('.item_stuff:first').trigger('tap');
+        $(items[ui.selected_item]).find('.item_touch:first').trigger('tap');
         return false;
     });
     Mousetrap.bind('backspace', function(e) {

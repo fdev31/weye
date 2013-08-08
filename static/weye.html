@@ -21,9 +21,9 @@
         {{#mime}}
             <header>
             <hgroup>
-            <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{_cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
-                </hgroup>
-                </header>
+                <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{_cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
+            </hgroup>
+            </header>
         {{/mime}}
     </script>
     <!-- ------------------ item (in list) template: view list item ---------------------------------- -->
@@ -33,8 +33,10 @@
             data-{{k}}="{{v}}"
             {{/data}}
         >
-        <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
-        <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
+        <span class="item_touch">
+            <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
+            <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
+        </span>
         <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
         {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-download-alt" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
         </div>
