@@ -257,10 +257,6 @@ img.small_icon {
     border: outset 1px #DDD;
 }
 
-a.file-input-wrapper.btn.row-fluid {
-    width: 192px;
-}
-
 .my-form-control { // NO width: 100%;
   display: block;
   height: @input-height-base; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
@@ -280,4 +276,39 @@ a.file-input-wrapper.btn.row-fluid {
 
 
 }
+.ui-pnotify .picon {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 17px;
+    height: 17px;
+}
+.ui-pnotify-title {
+    line-height: 17px;
+    min-height: 17px;
+}
 
+.ui-pnotify-history-container {
+//     margin-right: 5em;
+//     position: fixed;
+    text-align: center;
+    .basicshadow(10px, 0.3);
+}
+@media (max-width: @screen-large) {
+    .ui-pnotify-history-container {
+        right: auto !important;
+        left: 1ex !important;
+    }
+}
+
+@media (max-width: @screen-large) and (min-width: @screen-xsmall) {
+    .navbar {
+        .container {
+            max-width: 100% !important;
+            ul.navbar-nav > li > a {
+                padding-left: 2px;
+                padding-right: 2px;
+            }
+        }
+    }
+}
