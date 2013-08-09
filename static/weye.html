@@ -81,7 +81,7 @@
     <!-- ------------------ item template: view file ---------------------------------- -->
     <script id="view_file" type="text/html">
         {{>header}}
-        <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{path}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
+        <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{_cont}}{{name}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
     </script>
     <!-- ------------------ form template: input text ---------------------------------- -->
     <script id="input_text" type="text/html">

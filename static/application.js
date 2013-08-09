@@ -751,15 +751,11 @@ function view_path(path, opts) {
                     d.path = path;
                 }
                 ui.doc_ref = path;
-                /*
-                d.path = ui.doc_ref = path;
-                if (path.endswith('/')) {
+                if (ui.doc_ref.endswith('/')) {
                     d._cont = ui.doc_ref;
                 } else {
                     d._cont = ui.doc_ref + '/';
                 }
-                console.log('vvvvvvvvvvv', ui.doc_ref);
-                */
                 ui.permalink = get_permalink();
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
@@ -774,7 +770,7 @@ function view_path(path, opts) {
             $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
             go_ready();
         });
-    }, 1);
+    }, 3);
 };
 
 
