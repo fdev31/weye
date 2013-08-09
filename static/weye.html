@@ -41,7 +41,7 @@
                 <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
             </span>
             <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-download-alt" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
+            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
         </div>
 </div>
     </script>
@@ -57,7 +57,7 @@
                 <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
             </span>
             <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-download-alt" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
+            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
         </div>
 </div>
     </script>
@@ -167,16 +167,14 @@
 
 <!-- ------------------ S H E L V E ---------------------------------- -->
   <aside id="shelve"class="folder-item animated folded">
-          <div class="label pull-right label-default">Send file</div>
-<!--          <button id="upload" class="btn btn-warning btn-block"> <i class="glyphicon glyphicon-upload glyphicon-white"></i>&nbsp;Upload!</button>-->
-          <input type="file" class="btn btn-default btn-block" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;Add file"
+          <div class="label pull-right label-default">Add some file</div>
+          <input type="file" class="btn btn-default btn-block" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;Chose file..."
           onchange="ItemTool._uploader.send()";
           />
-<!--          <button id="upload" class="btn btn-warning btn-block"> <i class="glyphicon glyphicon-upload glyphicon-white"></i>&nbsp;Upload!</button>-->
           <div class="row"><span id="progress" class="progress">0%</span></div>
           <div class="label pull-right label-default">Actions</div>
           <button name="add" onclick= "add_new_item()" class="btn btn-block btn-default" style="width: 100%" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
-          <button name="add" onclick= "add_new_item()" class="btn btn-block btn-default" style="width: 100%" title="Create a new note"><i class="glyphicon glyphicon-download glyphicon-white"></i>&nbsp;Get as .zip</button>
+          <button name="add" onclick= "add_new_item()" class="btn btn-block btn-default" style="width: 100%" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
 
   </aside>
 
