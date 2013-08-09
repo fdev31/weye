@@ -322,6 +322,18 @@ function get_view(template, item) {
     var elt = copy(item);
     elt.backlink = ui.doc_ref != '/';
     elt.permalink = ui.permalink;
+    /*
+    if (!!! elt.item_template) {
+        elt.item_template = function(a, b) {
+                console.log(a, b);
+                return "xxx";
+            };
+    }
+    elt.item_template = 'view_list_' + elt.item_template;
+    */
+    elt.item_template = function() {
+        return ich[ui.current_item_template](this).html();
+    }
     return ich['view_'+template](elt);
 };
 
@@ -336,6 +348,12 @@ function get_view(template, item) {
  */
 
 var ui = new function() {
+    /*
+     * .. data:: ui.current_item_template
+     *
+     *      Active item template name (``view_list_item_small`` by default)
+     */
+    this.current_item_template = 'view_list_item_small';
     /*
      * .. data:: ui.permalink
      *
@@ -943,6 +961,7 @@ var ItemTool = new function() {
 
     this.make_item = function(data) {
         ItemTool.fixit(data);
+        // TODO: make template dynamic
         var dom = ich.view_list_item(data);
         ItemTool.prepare(dom);
         return dom;

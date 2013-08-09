@@ -27,18 +27,32 @@
         {{/mime}}
     </script>
     <!-- ------------------ item (in list) template: view list item ---------------------------------- -->
-    <script id="view_list_item" class="partial" type= "text/html">
+    <script id="view_list_item_small" class="partial" type= "text/html">
         <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{name}}" data-mime="{{mime}}"  data-name="{{name}}" data-editable="{{editable}}"
             {{#data}}
             data-{{k}}="{{v}}"
             {{/data}}
         >
-        <span class="item_touch">
-            <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
-            <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
-        </span>
-        <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
-        {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-download-alt" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
+            <span class="item_touch">
+                <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
+                <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
+            </span>
+            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
+            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-download-alt" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
+        </div>
+    </script>
+    <script id="view_list_item_big" class="partial" type= "text/html">
+        <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{name}}" data-mime="{{mime}}"  data-name="{{name}}" data-editable="{{editable}}"
+            {{#data}}
+            data-{{k}}="{{v}}"
+            {{/data}}
+        >
+            <span class="item_touch">
+                <img src="/static/mime/{{mime}}.svg" class="huge_icon item_caption item_stuff"/>
+                <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
+            </span>
+            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
+            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-download-alt" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
         </div>
     </script>
     <!-- ------------------ item template: view list ---------------------------------- -->
@@ -48,7 +62,7 @@
         <div class="items row">
             <br/>
             {{#child}}
-            {{>view_list_item}}
+            {{{view_list_item_small}}}
             {{/child}}
         </div>
         {{/have_child}}
