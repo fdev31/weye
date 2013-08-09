@@ -130,6 +130,12 @@ def get_object_from_path(path):
     return infos
 
 
+def _safe_mime(path):
+    try:
+        return get_object_from_path(path)['mime']
+    except KeyError:
+        return guess_type(path)
+
 def list_children(path):
     """ Returns a sorted list of children in :ref:`compact form <compact_form>` for the given path
 
@@ -158,7 +164,7 @@ def list_children(path):
             return False
         return True
 
-    values = [ [f, get_object_from_path(os.path.join(fpath, f))['mime']]
+    values = [ [f, _safe_mime(os.path.join(fpath, f))]
             for f in os.listdir(fpath) if is_listable(f)]
     values.sort(key=lambda o: '!!!'+o[0]+o[1] if o[1] == 'folder' else o[0]+o[1])
     return {'children': {'c': ['name', 'mime'], 'r': values} }
