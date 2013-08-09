@@ -227,6 +227,7 @@ Navigation
          :disable_history: (bool) Do not store change into history
 
 
+
 Item related
 ############
 
@@ -271,7 +272,7 @@ Item related
 .. function:: ItemTool.prepare(o)
 
 
-     Prepares a DOM ``.item``, associating touch bindings:
+     Prepares a DOM ``.item``, associating touch bindings to it's ``.item_touch`` property:
 
      :tap: executes :func:`~ItemTool.execute_evt_handler`
      :hold: executes :func:`~ItemTool.popup_evt_handler`

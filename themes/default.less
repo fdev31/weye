@@ -212,16 +212,25 @@ img.small_icon {
 
 @media (min-width: @screen-small) {
     .maincontainer {
-        min-height: 800px;
+//         min-height: 800px;
     }
-    #contents {
-        margin-top: 3em;
-        height: 100%;
-        z-index: 0;
-        .items {
-            z-index: 1;
-        }
-    }
+//     #contents {
+//         position: absolute;
+//         top: 3em;
+//         bottom: -5em;
+//         height: 100%;
+//         width: 100%;
+//         z-index: 0;
+//         .items {
+//             height: calc(100% - 20em);
+//             position: absolute;
+//             bottom: 1em;
+//             width: 100%;
+//             z-index: 1;
+//             overflow: scroll;
+//             height: 100%;
+//         }
+//     }
 }
 .file-input-name {
     word-wrap: break-word;
@@ -299,7 +308,13 @@ img.small_icon {
 @media (max-width: @screen-small) {
     #contents {
         margin-left: 1ex !important;
-        margin-top: 2em;
+        margin-top: 3em;
+    }
+    #addsearch_form {
+        width: 100%;
+        input.my-form-control {
+            width: auto;
+        }
     }
 }
 @media (max-width: @screen-medium) and (min-width: @screen-small) {
@@ -308,8 +323,11 @@ img.small_icon {
     }
 }
 @media (min-width: @screen-large) {
+    #addsearch_form {
+        width: 55%;
+    }
     input.my-form-control {
-        width: 54ex;
+        width: 50ex;
     }
 }
 @media (max-width: @screen-large) {

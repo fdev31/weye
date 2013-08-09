@@ -5078,17 +5078,7 @@ img.small_icon {
   box-shadow: 0 1px 15px 1px rgba(0, 0, 0, 0.7) !important;
 }
 @media (min-width: 768px) {
-  .maincontainer {
-    min-height: 800px;
-  }
-  #contents {
-    margin-top: 3em;
-    height: 100%;
-    z-index: 0;
-  }
-  #contents .items {
-    z-index: 1;
-  }
+  
 }
 .file-input-name {
   word-wrap: break-word;
@@ -5191,7 +5181,13 @@ img.small_icon {
 @media (max-width: 768px) {
   #contents {
     margin-left: 1ex !important;
-    margin-top: 2em;
+    margin-top: 3em;
+  }
+  #addsearch_form {
+    width: 100%;
+  }
+  #addsearch_form input.my-form-control {
+    width: auto;
   }
 }
 @media (max-width: 992px) and (min-width: 768px) {
@@ -5200,8 +5196,11 @@ img.small_icon {
   }
 }
 @media (min-width: 1200px) {
+  #addsearch_form {
+    width: 55%;
+  }
   input.my-form-control {
-    width: 54ex;
+    width: 50ex;
   }
 }
 @media (max-width: 1200px) {

@@ -798,11 +798,16 @@ var ItemTool = new function() {
     };
 
     this._find_event_target = function(e) {
-        var elt = $(e.target);
-        var link = elt.data('name');
-        if( !!! link ) 
-            elt = elt.parent();
-        return elt;
+        var st = $(e.target);
+        while (!!! st.hasClass('item') ) {
+            if(st.hasClass('items')) {
+                st = null;
+                break;
+            } else {
+                st = st.parent();
+            }
+        }
+        return st;
     };
 
     /*
