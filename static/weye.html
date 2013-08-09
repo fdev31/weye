@@ -18,6 +18,8 @@
         {{#backlink}}
             <button id="backlink" class="btn" onclick="go_back()"><i class="glyphicon glyphicon-arrow-left"/> Back</button>
         {{/backlink}}
+        <button class="folder-item" class="btn" onclick="ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></button>
+        <button class="folder-item" class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" /></button>
         {{#mime}}
             <header>
             <hgroup>
@@ -166,8 +168,11 @@
 <!-- ------------------ S H E L V E ---------------------------------- -->
   <aside id="shelve"class="folder-item animated folded">
           <div class="label pull-right label-default">Send file</div>
-          <input type="file" class="btn btn-default btn-block" name="file" id="file" title="<i class='glyphicon glyphicon-folder-open'></i>&nbsp;Select" />
-          <button id="upload" class="btn btn-warning btn-block"> <i class="glyphicon glyphicon-upload glyphicon-white"></i>&nbsp;Upload!</button>
+<!--          <button id="upload" class="btn btn-warning btn-block"> <i class="glyphicon glyphicon-upload glyphicon-white"></i>&nbsp;Upload!</button>-->
+          <input type="file" class="btn btn-default btn-block" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;Add file"
+          onchange="ItemTool._uploader.send()";
+          />
+<!--          <button id="upload" class="btn btn-warning btn-block"> <i class="glyphicon glyphicon-upload glyphicon-white"></i>&nbsp;Upload!</button>-->
           <div class="row"><span id="progress" class="progress">0%</span></div>
           <div class="label pull-right label-default">Actions</div>
           <button name="add" onclick= "add_new_item()" class="btn btn-block btn-default" style="width: 100%" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>

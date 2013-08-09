@@ -403,6 +403,9 @@ var ui = new function() {
     this.selected_item = -1;
     this._cached_filter = null;
     this.on_hold = true;
+    this.reload = function() {
+        ui.view_item(ui._cur_item);
+    }
     /*
      * .. function:: ui.view_item
      *
@@ -416,6 +419,7 @@ var ui = new function() {
      *      :arg item: the item object
      */
     this.view_item = function(item) {
+        ui._cur_item = item;
         var found = false;
 
         var choices = [item.mime];
@@ -574,7 +578,7 @@ var ui = new function() {
         ui.selected_item = idx;
         if(!!!ui.nav_hist[ui.doc_ref])
             ui.nav_hist[ui.doc_ref] = {};
-        ui.nav_hist[ui.doc_ref].selected = idx-1;
+        ui.nav_hist[ui.doc_ref].selected = idx;
     };
     /*
      * .. function:: ui.recover_selected
@@ -584,7 +588,12 @@ var ui = new function() {
     this.recover_selected = function() {
         /* set current selected item state from saved history information */
         ui.on_hold = false;
-        ui.select_idx(null, ui.nav_hist[ui.doc_ref]?ui.nav_hist[ui.doc_ref].selected:0);
+        if(!! ui.nav_hist[ui.doc_ref]) {
+            var idx = ui.nav_hist[ui.doc_ref].selected;
+        } else {
+            var idx = 0;
+        }
+        ui.select_idx(null, idx);
     };
     return this;
 }();
@@ -707,12 +716,12 @@ function go_ready() {
  */
 function view_path(path, opts) {
     if (path === ui.doc_ref) return;
-    console.log('view_path______________________', path, ui.doc_ref);
+//    console.log('view_path______________________', path, ui.doc_ref);
     go_busy();
     var opts = opts || {};
     ui.flush_caches();
     var buttons = $('#addsearch_form');
-    console.log('xxxxxxxxxxx', ui.doc_ref);
+//    console.log('xxxxxxxxxxx', ui.doc_ref);
     /* document viewer, give it a valid path */
     // TODO: plugin deactivate, possible for applications and mimes (as following:)
     $('audio').each( function() {this.pause(); this.src = "";} );
@@ -966,8 +975,7 @@ var ItemTool = new function() {
 
     this.make_item = function(data) {
         ItemTool.fixit(data);
-        // TODO: make template dynamic
-        var dom = ich.view_list_item(data);
+        var dom = ich[ui.current_item_template](data);
         ItemTool.prepare(dom);
         return dom;
 
@@ -1124,6 +1132,7 @@ $(function() {
     $('#upload').click(function(){
         up.send();
     });
+    ItemTool._uploader = up;
 
     // key binding
     window.addEventListener("popstate", function(e) {

@@ -4856,8 +4856,8 @@ td.visible-print {
 body {
   background-color: #ffffff;
 }
-.jumbotron {
-  margin-top: 20px;
+.maincontainer {
+  padding-top: 6ex;
 }
 .brand {
   z-index: 1;
