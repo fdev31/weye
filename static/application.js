@@ -1070,7 +1070,7 @@ function refocus(elt) {
 
     // Scroll to the middle of the viewport
     var my_scroll = elem_top - (viewport_height / 2);
-    document.documentElement.scrollTop = my_scroll;
+    $(window).scrollTop(my_scroll);
 };
 
 var load_plugin = function() {
