@@ -24,6 +24,7 @@ for n in */view.js ; do
     fi
 
     name=`dirname $n|head -n1`
+    mkdir -p "${PDIR}/js/$name/" 2>/dev/null
 
     echo $name | sed -E -e 's/^/    "/' -e 's/$/": {\n      display:/' >> $OUT
 

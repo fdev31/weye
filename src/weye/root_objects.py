@@ -92,41 +92,43 @@ def get_object_from_path(path):
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     meta_fpath = os.path.join(config.shared_db, path).rstrip('/') + config.special_extension
-    up_to_date = False
     infos = None
 
     try:
         infos = loads(open(meta_fpath, 'rb').read())
-        up_to_date = True
     except (OSError, IOError, FileNotFoundError):
         if not os.path.exists(fpath):
             return {'error': True, 'message': 'File not found', 'link': path} # or "choices" + "default", instead of link
         else:
             file_type = guess_type(fpath)
 
-    # read infos (TODO later: in the database)
+    # We have to create an item, we don't have infos yet !
     if not infos:
         st = os.stat(fpath)
         if '/' in path:
             name = path.rsplit('/', 1)[1]
         else:
             name = path
-        infos = {'id': "%x-%x"%(st.st_ctime, st.st_ino),
-                'size': st.st_size,
-                'name': name,
+        infos = {'size': st.st_size,
+                'link': name,
+                'title': name,
                 'descr': '',
                 'mime': file_type}
-    if not up_to_date:
-        if not os.path.exists(meta_fpath):
+
+        # create parent directory
+        parent = os.path.dirname( meta_fpath )
+        if not os.path.exists( parent ):
             try:
-                os.makedirs( os.path.dirname( meta_fpath ) )
+                os.makedirs( parent )
             except (OSError, FileExistsError):
                 pass
 
+        # save it
         try:
             open(meta_fpath, 'wb').write(dumps(infos).encode())
         except (OSError, IOError, PermissionError) as e:
             log.error('Unable to save metadata as %r: %r', meta_fpath, e)
+
     return infos
 
 
@@ -135,7 +137,9 @@ def list_children(path):
 
     Only returns ultra minimalistic metadata set:
 
-        - name
+        - link *(real name/id)*
+        - title
+        - descr
         - mime
 
     :arg path: the path of the folder
@@ -145,20 +149,27 @@ def list_children(path):
 
     .. code-block:: js
 
-        {children: {'c': ['name', 'mime'], 'r': values}}
+        {children: {'c': ['descr', 'mime', 'link', 'title'], 'r': values}}
     """
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
+
     def is_listable(f):
+        full_path = os.path.join(fpath, f)
         if f[0] == '.' and config.exclude_dot_files:
             return False
         if f.endswith(config.special_extension):
             return False
-        if not os.access(os.path.join(fpath, f), os.R_OK):
+        if not os.access(full_path, os.R_OK):
             return False
-        return True
-    values = [ [f, guess_type(os.path.join(fpath, f))]
-            for f in os.listdir(fpath) if is_listable(f)]
-    values.sort(key=lambda o: '!!!'+o[0]+o[1] if o[1] == 'folder' else o[0]+o[1])
-    return {'children': {'c': ['name', 'mime'], 'r': values} }
+        return full_path
+
+    values = []
+    fields = ('link', 'title', 'descr', 'mime')
+    for f in os.listdir(fpath):
+        cfp = is_listable(f)
+        if cfp:
+            o = get_object_from_path(cfp)
+            values.append( [ o[k] for k in fields ] )
+    return {'children': {'c': fields, 'r': values} }
 

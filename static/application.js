@@ -10,8 +10,6 @@
  * Javascript API (application.js)
  * ###############################
  *
- * .. todo:: generalize item object finding (top/bottom), used in touch/click events ...
- *
  *
  * When talking about the *DOM* Element representing an item, I'll use `.item`. If I write about the :ref:`JavaScript object <object_model>`, I'll just say item.
  */
@@ -316,6 +314,18 @@ function get_view(template, item) {
     var elt = copy(item);
     elt.backlink = ui.doc_ref != '/';
     elt.permalink = ui.permalink;
+    /*
+    if (!!! elt.item_template) {
+        elt.item_template = function(a, b) {
+                console.log(a, b);
+                return "xxx";
+            };
+    }
+    elt.item_template = 'view_list_' + elt.item_template;
+    */
+    elt.item_template = function() {
+        return ich[ui.current_item_template](this).html();
+    }
     return ich['view_'+template](elt);
 };
 
@@ -330,6 +340,12 @@ function get_view(template, item) {
  */
 
 var ui = new function() {
+    /*
+     * .. data:: ui.current_item_template
+     *
+     *      Active item template name (``view_list_item_small`` by default)
+     */
+    this.current_item_template = 'view_list_item_small';
     /*
      * .. data:: ui.permalink
      *
@@ -379,8 +395,11 @@ var ui = new function() {
     this.selected_item = -1;
     this._cached_filter = null;
     this.on_hold = true;
+    this.reload = function() {
+        ui.load_view(ui._cur_item);
+    }
     /*
-     * .. function:: ui.view_item
+     * .. function:: ui.load_view
      *
      *      Display an item "fullscreen" (not in a list) from its data (``mime`` property).
      *      It will try to find a matching key in the :data:`mimes` dictionary.
@@ -391,15 +410,16 @@ var ui = new function() {
      *
      *      :arg item: the item object
      */
-    this.view_item = function(item) {
+    this.load_view = function(item) {
+        ui._cur_item = item;
         var found = false;
 
         var choices = [item.mime];
 
-        if (ui.doc_ref.endswith(item.name)) {
-            item.cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.name.length);
+        if (ui.doc_ref.endswith(item.link)) {
+            item._cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.link.length);
         } else {
-            item.cont = ui.doc_ref;
+            item._cont = ui.doc_ref;
         }
 
         var subchoices = item.mime.split('-');
@@ -410,7 +430,7 @@ var ui = new function() {
 
         for (var n=0; (!!! found) && n < choices.length ; n++) {
             try {
-                console.log('try '+choices[n]);
+//                conole.log('try '+choices[n]);
                 found = mimes[ choices[n] ];
                 var dependencies = [];
                 var prefix = '/static/mime/js/' + found.name + '/';
@@ -428,14 +448,14 @@ var ui = new function() {
                 if (dependencies.length !== 0) {
                     var counter = 0;
                     for (var dep in dependencies) {
-                        console.log( dependencies[dep] );
+//                        console.log( dependencies[dep] );
                         toast(dependencies[dep], function() { counter += 1 ; if (counter === dependencies.length) found.display(item) } );
                     }
                 } else { // no deps
                     found.display(item);
                 }
             } catch(err) {
-                console.log(err);
+//                console.log(' attempt failed, next...', err);
             }
         }
         if(!!!found) {
@@ -472,7 +492,6 @@ var ui = new function() {
             $('.pure-item').show();
             $('.filesize').each( function(i, x) {
                 var o=$(x);
-                console.log("o=",o);
                 if (!!! o.data('_fs_converted')) {
                     o.text(hr_size(eval(o.text())));
                 }
@@ -507,11 +526,7 @@ var ui = new function() {
      *      Returns the list of active items (filter applied)
      */
     this.get_items = function() {
-        if ( $('.items > .item.filtered').length != 0 ) {
-            return $('.items > .item.filtered');
-        } else {
-            return $('.items > .item');
-        }
+        return $('.items').data('isotope').$filteredAtoms;
     };
     /*
      * .. function:: ui.select_idx
@@ -550,7 +565,7 @@ var ui = new function() {
         ui.selected_item = idx;
         if(!!!ui.nav_hist[ui.doc_ref])
             ui.nav_hist[ui.doc_ref] = {};
-        ui.nav_hist[ui.doc_ref].selected = idx-1;
+        ui.nav_hist[ui.doc_ref].selected = idx;
     };
     /*
      * .. function:: ui.recover_selected
@@ -560,7 +575,12 @@ var ui = new function() {
     this.recover_selected = function() {
         /* set current selected item state from saved history information */
         ui.on_hold = false;
-        ui.select_idx(null, ui.nav_hist[ui.doc_ref]?ui.nav_hist[ui.doc_ref].selected:0);
+        if(!! ui.nav_hist[ui.doc_ref]) {
+            var idx = ui.nav_hist[ui.doc_ref].selected;
+        } else {
+            var idx = 0;
+        }
+        ui.select_idx(null, idx);
     };
     return this;
 }();
@@ -574,17 +594,20 @@ var ui = new function() {
  *      Saves the ``#question_popup .editable``
  *
  *      .. seealso:: :func:`ItemTool.popup`
+ *      .. warning:: FIXME
+ *
+ *              Currently not refreshing the item's parent display (in case name or mime is changed)
  *
  */
 
 function save_form() {
     var o = $('#question_popup .editable');
-    var object_path = ui.get_ref(o.data('name'));
+    var object_path = ui.get_ref(o.data('link'));
     var metadata = {};
     var metadata_list = [];
 
     var close_form = function() {
-        o.parent().modal('hide');
+        $('#question_popup').modal('hide');
         setTimeout( function() {
             o.parent().detach();
         }, 1000);
@@ -606,13 +629,12 @@ function save_form() {
         $.pnotify({text: 'No change'});
     } else {
         $.ajax('/o'+object_path, {dataType: 'json', data: {meta: JSON.stringify(metadata) }, type: 'PUT'})
-            .done( function(e) { $.pnotify({type: "success", text: "Saved"})
+            .done( function(e) { close_form(); $.pnotify({type: "success", text: "Saved"})
             })
         .fail( function(e) {
             $.pnotify({type: "error", text: ''+e});
         });
     }
-    close_form();
 };
 
 /*
@@ -641,8 +663,7 @@ function fix_nav(link) {
  */
 function go_back() {
     var opts = opts || {};
-    console.log('go_back');
-    /* returns to parent item */
+//    console.log('go_back');
     var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
     if(!!plugin_cleanup) {
         try {
@@ -681,11 +702,12 @@ function go_ready() {
  */
 function view_path(path, opts) {
     if (path === ui.doc_ref) return;
-    console.log('view_path______________________', path, ui.doc_ref);
+//    console.log('view_path______________________', path, ui.doc_ref);
     go_busy();
     var opts = opts || {};
     ui.flush_caches();
     var buttons = $('#addsearch_form');
+//    console.log('xxxxxxxxxxx', ui.doc_ref);
     /* document viewer, give it a valid path */
     // TODO: plugin deactivate, possible for applications and mimes (as following:)
     $('audio').each( function() {this.pause(); this.src = "";} );
@@ -697,18 +719,23 @@ function view_path(path, opts) {
 //            console.log('object: /o/'+path, d);
             if (d.error) {
                 $.pnotify({
-                    title: 'Error displaying "'+d.name+'" content',
+                    title: 'Error displaying "'+d.link+'" content',
                     text: d.message
                 });
                 go_ready();
             } else {
                 // normal continuation
                 /* update current document reference */
-                while(path[1] === '/')
-                    path = path.substr(1);
-                while(path.length > 1 && path.substr(-1) === '/')
-                    path = path.substr(0, path.length-1)
-                d.path = ui.doc_ref = path;
+                if (path === '/') {
+                    d.path = '/';
+                } else {
+                    // strip start
+                    //while(path[1] === '/') path = path.substr(1);
+                    // strip end
+                    while(path.length > 1 && path.substr(-1) === '/') path = path.substr(0, path.length-1);
+                    d.path = path;
+                }
+                ui.doc_ref = path;
                 if (ui.doc_ref.endswith('/')) {
                     d._cont = ui.doc_ref;
                 } else {
@@ -719,7 +746,7 @@ function view_path(path, opts) {
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
                 /* compute back ref & permalink */
                 
-                ui.view_item(d);
+                ui.load_view(d);
                 go_ready();
             }
         }
@@ -748,16 +775,29 @@ var ItemTool = new function() {
      *
      *      "Fixes" an :ref:`object metadata <object_model>`, currently:
      *
-     *      - missing **title** is set to *name*
+     *      - missing **title** is set to *link*
      *      - missing **searchable** is set to *title*
-     *      - missing **editables** is set to "name"
+     *      - missing **editables** is set to "title mime descr"
      *      - fills **is_data** keyword (should come from *family* instead)
      */
     this.fixit = function (data) {
-        if (!!!data.title) data.title = data.name;
+        if (!!!data.title) data.title = data.link;
         if (!!!data.searchable) data.searchable = data.title;
-        if (!!!data.editables) data.editables = 'name';
+        if (!!!data.editables) data.editables = 'title mime descr';
         data.is_data = (data.mime !== 'folder')
+    };
+
+    this._find_event_target = function(e) {
+        var st = $(e.target);
+        while (!!! st.hasClass('item') ) {
+            if(st.hasClass('items')) {
+                st = null;
+                break;
+            } else {
+                st = st.parent();
+            }
+        }
+        return st;
     };
 
     /*
@@ -772,20 +812,21 @@ var ItemTool = new function() {
      */
 
     this.execute_evt_handler = function(e) {
-        console.log('exec evt handler');
-        var elt = $(e.target).parent();
-        var link = elt.data('name');
+        var elt = ItemTool._find_event_target(e);
+        var link = elt.data('link');
+
         if(!!!link) {
             $.pnotify({type: 'info', text: 'This is not a link!'});
         } else {
-            console.log(link);
+//            console.log('EXECUTE ' , link);
             if (!!link.match(/^js:/)) {
                 eval( link.substr(3) );
             } else {
                 ui.save_selected(elt.index());
-                view_path(ui.get_ref(elt.data('name')));
+                view_path(ui.get_ref(link));
             }
         }
+        e.cancelBubble = true;
     };
 
     /*
@@ -797,7 +838,8 @@ var ItemTool = new function() {
      */
 
     this.popup_evt_handler = function (e) {
-        ItemTool.popup($(e.target));
+        ItemTool.popup(ItemTool._find_event_target(e));
+        e.cancelBubble = true;
     };
     /*
      * .. function:: ItemTool.popup(elt)
@@ -814,7 +856,7 @@ var ItemTool = new function() {
          *
          */
 
-        $.get('/o' + ui.get_ref(elt.data('name')))
+        $.get('/o' + ui.get_ref(elt.data('link')))
            .done( function(data) {
                if(data.error) {
                    $.pnotify({
@@ -824,48 +866,51 @@ var ItemTool = new function() {
                    });
                    return;
                }
-               console.log('D=',data);
-            var qp = $('#question_popup');
-            if(qp.length != 0) {
-                if (qp.css('display') === 'none') {
-                    qp.remove();
-                } else {
-                    return;
-                }
-            }
-            var edited = [];
-            if (data.editable === undefined || data.editable === "" || data.editable === "*")  {
-                for(var k in data) {
-                    if (!!!k.match(/^isotope/)) {
-                        edited.push({name: k, type: 'text'});
+//               console.log('D=',data);
+                var qp = $('#question_popup');
+                if(qp.length != 0) {
+                    if (qp.css('display') === 'none') {
+                        qp.remove();
+                    } else {
+                        return;
                     }
-                };
-            } else {
-                var editables = data.editable.split(/ +/);
-                for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
-            }
-            var pop = ich.question({
-                'item': data,
-                'header': "Edition panel",
-                'body': '<em class="pull-right">Changes may be effective after a refresh</em>',
-                'edit': edited,
-                'buttons': [
-                    {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
-                    {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
-                ]
-            });
-            pop.modal();
-            var edited = $('#question_popup .editable');
-            setTimeout(function() {
-                pop.find('.editable-property').each( function(i, o) {
-                    var o = $(o);
-                    var d = copy(o.data());
-                    d.content = data[d.name];
-                    o.append(ich['input_'+d.type](d));
+                }
+                var edited = [];
+                ItemTool.fixit(data);
+                if (data.editables === "")  {
+                    for(var k in data) {
+                        if (!!!k.match(/^isotope/)) {
+                            edited.push({name: k, type: 'text'});
+                        }
+                    };
+                } else {
+                    var editables = data.editables.split(/ +/);
+                    for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+                }
+                var pop = ich.question({
+                    'item': data,
+                    'title': data.title || data.name,
+                    'mime': data.mime,
+                    'footnote': 'Changes may be effective after a refresh',
+                    'edit': edited,
+                    'buttons': [
+                        {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
+                        {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+                    ]
                 });
-            }, 200);
+                pop.modal();
+                var edited = $('#question_popup .editable');
+                setTimeout(function() {
+                    pop.find('.editable-property').each( function(i, o) {
+                        var o = $(o);
+                        var d = copy(o.data());
+                        d.content = data[d.name];
+                        o.append(ich['input_'+d.type](d));
+                    });
+                }, 200);
 
-        })
+            }
+        )
         .fail(function(e) {
             $.pnotify( {text: ''+e, type: 'error'}
                 );
@@ -876,7 +921,7 @@ var ItemTool = new function() {
      * .. function:: ItemTool.prepare(o)
      *
      *
-     *      Currently, only finds ``.item_stuff`` within the element and associate touch bindings:
+     *      Prepares a DOM ``.item``, associating touch bindings to it's ``.item_touch`` property:
      *
      *      :tap: executes :func:`~ItemTool.execute_evt_handler`
      *      :hold: executes :func:`~ItemTool.popup_evt_handler`
@@ -885,14 +930,12 @@ var ItemTool = new function() {
      *      :arg o: Item (jQuery element) to prepare
      */
     this.prepare = function (o) {
-        o.find('.item_stuff').each( function(i, x) {
-            $(x).hammer()
-                .bind({
-                    tap: ItemTool.execute_evt_handler,
-                    hold: ItemTool.popup_evt_handler,
-                    swipe: ItemTool.popup_evt_handler
-                })
-        });
+        $(o).find('.item_touch').hammer()
+            .bind({
+                tap: ItemTool.execute_evt_handler,
+                hold: ItemTool.popup_evt_handler,
+                swipe: ItemTool.popup_evt_handler
+            });
         return o;
     };
     /*
@@ -913,7 +956,7 @@ var ItemTool = new function() {
 
     this.make_item = function(data) {
         ItemTool.fixit(data);
-        var dom = ich.view_list_item(data);
+        var dom = ich[ui.current_item_template](data);
         ItemTool.prepare(dom);
         return dom;
 
@@ -936,13 +979,13 @@ return this;}();
  *
  *         .. code-block:: js
  *             
- *            { 'c': ['name', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
+ *            { 'c': ['link', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
  *
  *      :returns: "flat" array of objects. Ex:
  *
  *         .. code-block:: js
  *
- *            [ {'name': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
+ *            [ {'link': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
  */
 
 function uncompress_itemlist(keys_values_array) {
@@ -964,26 +1007,30 @@ function uncompress_itemlist(keys_values_array) {
 /*
  * .. xx: finalize_item_list is unused now (was used in search)
  *
-   .. function:: finalize_item_list(o)
-  
-  
-        Sets up isotope for those items, should be called once the content was updated
-        Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
-  
-        :arg o: DOM element containing ``.items`` elements
+ * .. function:: finalize_item_list(o)
+ *
+ *
+ *      Sets up isotope for those items, should be called once the content was updated
+ *      Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
+ *
+ *      :arg o: DOM element containing ``.items`` elements
  */
 function finalize_item_list(o) {
-    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows',
+    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
         getSortData : {
-            name : function ( $elem ) {
-                return $elem.data('name');
+            title: function ( e ) {
+                return e.data('title');
             },
-            type: function ( $elem ) {
-                return $elem.data('mime');
+            type: function ( e ) {
+                var m = e.data('mime');
+                if (m==='folder') {
+                    return '!!!!!!!!!!!!!!!!!!!!!'+e.data('title').toLocaleLowerCase();
+                }
+                return e.data('mime') + e.data('title').toLocaleLowerCase();
             }
         }
     });
-    ItemTool.prepare(o);
+    o.find('.items .item').each( function(i, x) { ItemTool.prepare(x) } );
     setTimeout( function() {
         ui.recover_selected();
     }, 1);
@@ -1006,7 +1053,7 @@ function refocus(elt) {
 
     // Scroll to the middle of the viewport
     var my_scroll = elem_top - (viewport_height / 2);
-    $(window).scrollTop(my_scroll);
+    document.documentElement.scrollTop = my_scroll;
 };
 
 var load_plugin = function() {
@@ -1070,6 +1117,7 @@ $(function() {
     $('#upload').click(function(){
         up.send();
     });
+    ItemTool._uploader = up;
 
     // key binding
     window.addEventListener("popstate", function(e) {
@@ -1085,14 +1133,16 @@ $(function() {
     });
     // navigation commands
     Mousetrap.bind('down', function(e) {
+        e.cancelBubble = true;
         return ui.select_next();
     });
     Mousetrap.bind('up', function(e) {
+        e.cancelBubble = true;
         return ui.select_prev();
     });
     Mousetrap.bind('enter', function(e) {
         var items = ui.get_items();
-        $(items[ui.selected_item]).find('.item_stuff:first').trigger('tap');
+        $(items[ui.selected_item]).find('.item_touch:first').trigger('tap');
         return false;
     });
     Mousetrap.bind('backspace', function(e) {
