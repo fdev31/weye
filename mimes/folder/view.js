@@ -7,7 +7,7 @@ function display(item) {
             var is_an_app = false;
             var app_indice = 'infos.js';
             base_data.forEach(function(o) {
-                if(o.name === app_indice)
+                if(o.link === app_indice)
                 is_an_app = true;
             })
 

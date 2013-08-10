@@ -11,14 +11,6 @@
  * ###############################
  *
  *
- *
- * .. warning:: usage of ``name`` as link and ``title`` as name is very inconsistant
- *
- *      rename it & clean usage as soon as possible
- *
- * .. todo:: generalize item object finding (top/bottom), used in touch/click events ...
- *
- *
  * When talking about the *DOM* Element representing an item, I'll use `.item`. If I write about the :ref:`JavaScript object <object_model>`, I'll just say item.
  */
 
@@ -404,10 +396,10 @@ var ui = new function() {
     this._cached_filter = null;
     this.on_hold = true;
     this.reload = function() {
-        ui.view_item(ui._cur_item);
+        ui.load_view(ui._cur_item);
     }
     /*
-     * .. function:: ui.view_item
+     * .. function:: ui.load_view
      *
      *      Display an item "fullscreen" (not in a list) from its data (``mime`` property).
      *      It will try to find a matching key in the :data:`mimes` dictionary.
@@ -418,14 +410,14 @@ var ui = new function() {
      *
      *      :arg item: the item object
      */
-    this.view_item = function(item) {
+    this.load_view = function(item) {
         ui._cur_item = item;
         var found = false;
 
         var choices = [item.mime];
 
-        if (ui.doc_ref.endswith(item.name)) {
-            item._cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.name.length);
+        if (ui.doc_ref.endswith(item.link)) {
+            item._cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.link.length);
         } else {
             item._cont = ui.doc_ref;
         }
@@ -438,7 +430,7 @@ var ui = new function() {
 
         for (var n=0; (!!! found) && n < choices.length ; n++) {
             try {
-                console.log('try '+choices[n]);
+//                conole.log('try '+choices[n]);
                 found = mimes[ choices[n] ];
                 var dependencies = [];
                 var prefix = '/static/mime/js/' + found.name + '/';
@@ -456,14 +448,14 @@ var ui = new function() {
                 if (dependencies.length !== 0) {
                     var counter = 0;
                     for (var dep in dependencies) {
-                        console.log( dependencies[dep] );
+//                        console.log( dependencies[dep] );
                         toast(dependencies[dep], function() { counter += 1 ; if (counter === dependencies.length) found.display(item) } );
                     }
                 } else { // no deps
                     found.display(item);
                 }
             } catch(err) {
-                console.log(err);
+//                console.log(' attempt failed, next...', err);
             }
         }
         if(!!!found) {
@@ -500,7 +492,6 @@ var ui = new function() {
             $('.pure-item').show();
             $('.filesize').each( function(i, x) {
                 var o=$(x);
-                console.log("o=",o);
                 if (!!! o.data('_fs_converted')) {
                     o.text(hr_size(eval(o.text())));
                 }
@@ -535,11 +526,7 @@ var ui = new function() {
      *      Returns the list of active items (filter applied)
      */
     this.get_items = function() {
-        if ( $('.items > .item.filtered').length != 0 ) {
-            return $('.items > .item.filtered');
-        } else {
-            return $('.items > .item');
-        }
+        return $('.items').data('isotope').$filteredAtoms;
     };
     /*
      * .. function:: ui.select_idx
@@ -615,7 +602,7 @@ var ui = new function() {
 
 function save_form() {
     var o = $('#question_popup .editable');
-    var object_path = ui.get_ref(o.data('name'));
+    var object_path = ui.get_ref(o.data('link'));
     var metadata = {};
     var metadata_list = [];
 
@@ -676,8 +663,7 @@ function fix_nav(link) {
  */
 function go_back() {
     var opts = opts || {};
-    console.log('go_back');
-    /* returns to parent item */
+//    console.log('go_back');
     var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
     if(!!plugin_cleanup) {
         try {
@@ -733,7 +719,7 @@ function view_path(path, opts) {
 //            console.log('object: /o/'+path, d);
             if (d.error) {
                 $.pnotify({
-                    title: 'Error displaying "'+d.name+'" content',
+                    title: 'Error displaying "'+d.link+'" content',
                     text: d.message
                 });
                 go_ready();
@@ -741,13 +727,12 @@ function view_path(path, opts) {
                 // normal continuation
                 /* update current document reference */
                 if (path === '/') {
-                    d.path = d.name = '/';
+                    d.path = '/';
                 } else {
                     // strip start
                     //while(path[1] === '/') path = path.substr(1);
                     // strip end
                     while(path.length > 1 && path.substr(-1) === '/') path = path.substr(0, path.length-1);
-                    // fullpath
                     d.path = path;
                 }
                 ui.doc_ref = path;
@@ -761,7 +746,7 @@ function view_path(path, opts) {
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
                 /* compute back ref & permalink */
                 
-                ui.view_item(d);
+                ui.load_view(d);
                 go_ready();
             }
         }
@@ -790,15 +775,15 @@ var ItemTool = new function() {
      *
      *      "Fixes" an :ref:`object metadata <object_model>`, currently:
      *
-     *      - missing **title** is set to *name*
+     *      - missing **title** is set to *link*
      *      - missing **searchable** is set to *title*
-     *      - missing **editables** is set to "name"
+     *      - missing **editables** is set to "title mime descr"
      *      - fills **is_data** keyword (should come from *family* instead)
      */
     this.fixit = function (data) {
-        if (!!!data.title) data.title = data.name;
+        if (!!!data.title) data.title = data.link;
         if (!!!data.searchable) data.searchable = data.title;
-        if (!!!data.editables) data.editables = 'mime descr';
+        if (!!!data.editables) data.editables = 'title mime descr';
         data.is_data = (data.mime !== 'folder')
     };
 
@@ -828,12 +813,12 @@ var ItemTool = new function() {
 
     this.execute_evt_handler = function(e) {
         var elt = ItemTool._find_event_target(e);
-        var link = elt.data('name');
+        var link = elt.data('link');
 
         if(!!!link) {
             $.pnotify({type: 'info', text: 'This is not a link!'});
         } else {
-            console.log(link);
+//            console.log('EXECUTE ' , link);
             if (!!link.match(/^js:/)) {
                 eval( link.substr(3) );
             } else {
@@ -871,7 +856,7 @@ var ItemTool = new function() {
          *
          */
 
-        $.get('/o' + ui.get_ref(elt.data('name')))
+        $.get('/o' + ui.get_ref(elt.data('link')))
            .done( function(data) {
                if(data.error) {
                    $.pnotify({
@@ -881,7 +866,7 @@ var ItemTool = new function() {
                    });
                    return;
                }
-               console.log('D=',data);
+//               console.log('D=',data);
                 var qp = $('#question_popup');
                 if(qp.length != 0) {
                     if (qp.css('display') === 'none') {
@@ -994,13 +979,13 @@ return this;}();
  *
  *         .. code-block:: js
  *             
- *            { 'c': ['name', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
+ *            { 'c': ['link', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
  *
  *      :returns: "flat" array of objects. Ex:
  *
  *         .. code-block:: js
  *
- *            [ {'name': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
+ *            [ {'link': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
  */
 
 function uncompress_itemlist(keys_values_array) {
@@ -1031,13 +1016,17 @@ function uncompress_itemlist(keys_values_array) {
  *      :arg o: DOM element containing ``.items`` elements
  */
 function finalize_item_list(o) {
-    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows',
+    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
         getSortData : {
-            name : function ( $elem ) {
-                return $elem.data('name');
+            title: function ( e ) {
+                return e.data('title');
             },
-            type: function ( $elem ) {
-                return $elem.data('mime');
+            type: function ( e ) {
+                var m = e.data('mime');
+                if (m==='folder') {
+                    return '!!!!!!!!!!!!!!!!!!!!!'+e.data('title').toLocaleLowerCase();
+                }
+                return e.data('mime') + e.data('title').toLocaleLowerCase();
             }
         }
     });
@@ -1064,7 +1053,7 @@ function refocus(elt) {
 
     // Scroll to the middle of the viewport
     var my_scroll = elem_top - (viewport_height / 2);
-    $(window).scrollTop(my_scroll);
+    document.documentElement.scrollTop = my_scroll;
 };
 
 var load_plugin = function() {
@@ -1144,9 +1133,11 @@ $(function() {
     });
     // navigation commands
     Mousetrap.bind('down', function(e) {
+        e.cancelBubble = true;
         return ui.select_next();
     });
     Mousetrap.bind('up', function(e) {
+        e.cancelBubble = true;
         return ui.select_prev();
     });
     Mousetrap.bind('enter', function(e) {

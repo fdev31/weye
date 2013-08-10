@@ -35,7 +35,7 @@ Mandatory
 
 :id: a unique id used for interractions with server
 :mime: Some mime type, but instead of slashes you have dashes
-:name: The exact file name of the item (used to browse & do queries)
+:link: The exact file name of the item (used to browse & do queries --- it is the ID)
 :size: The "weight" of the item, by default expect bytes (see :js:func:`hr_size`)
 
 :title: The full name of the item (will be set to `mime` if not set) --- *derived from name if not provided*

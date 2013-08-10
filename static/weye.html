@@ -23,7 +23,7 @@
         {{#mime}}
             <header>
             <hgroup>
-                <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{_cont}}</small>{{name}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
+                <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="big_icon"/> <small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
             </hgroup>
             </header>
         {{/mime}}
@@ -31,7 +31,7 @@
     <!-- ------------------ item (in list) template: view list item ---------------------------------- -->
     <script id="view_list_item_small" class="partial" type= "text/html">
 <div>
-        <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{name}}" data-mime="{{mime}}"  data-name="{{name}}" data-editable="{{editable}}"
+    <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}"
             {{#data}}
             data-{{k}}="{{v}}"
             {{/data}}
@@ -47,7 +47,7 @@
     </script>
     <script id="view_list_item_big" class="partial" type= "text/html">
 <div>
-        <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{name}}" data-mime="{{mime}}"  data-name="{{name}}" data-editable="{{editable}}"
+    <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}"
             {{#data}}
             data-{{k}}="{{v}}"
             {{/data}}
@@ -81,7 +81,7 @@
     <!-- ------------------ item template: view file ---------------------------------- -->
     <script id="view_file" type="text/html">
         {{>header}}
-        <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{_cont}}{{name}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
+        <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{_cont}}{{link}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
     </script>
     <!-- ------------------ form template: input text ---------------------------------- -->
     <script id="input_text" type="text/html">
@@ -104,7 +104,7 @@
                     <h4 class="modal-title"><img class="big_icon" src="/static/mime/{{mime}}.svg"/> {{title}}</h4>
                 </div>
 <!-- Editable fields, quite ugly, should come to another template or be more generic -->
-                <div class="editable" data-_cont="{{item._cont}}" data-name="{{item.name}}" data-mime="{{item.mime}}">
+                <div class="editable" data-_cont="{{item._cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
                 {{#edit}}
                     <div class="row editable-property" data-name="{{name}}" data-type="{{type}}" />
                 {{/edit}}
@@ -145,9 +145,9 @@
         <a class="navbar-brand" onclick="view_path('/')" href="#"><img style="height: 1em; vertical-align: -0.16em;" src="/static/img/logo.svg"/>&nbsp;Nanowork</a>
         <div class="nav-collapse collapse">
           <ul class="nav navbar-nav">
-              <li class="folder-item"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'name' });">By name</a></li>
-              <li class="folder-item"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'type' });">type</a></li>
-              <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'original-order' });">or natural</a></li>
+              <li class="folder-item"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'title' });">By name</a></li>
+              <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'type' });">or type</a></li>
+<!--              <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'original-order' });">or natural</a></li>-->
           </ul>
             <!-- -- form -- -->
           <form id="addsearch_form" class="col-6 form-inline pull-right">
