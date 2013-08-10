@@ -822,7 +822,6 @@ var ItemTool = new function() {
             if (!!link.match(/^js:/)) {
                 eval( link.substr(3) );
             } else {
-                ui.save_selected(elt.index());
                 view_path(ui.get_ref(link));
             }
         }
