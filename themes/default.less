@@ -63,17 +63,16 @@ iframe {
 .item.highlighted {
     background: #F8B744 !important;
     color: black;
-    .transition(background .1s linear) !important;
-    .transition(color .1s linear) !important;
+//     .transition(.1s linear) !important;
     &:hover {
         background: #FFE7A4 !important;
-        .transition(background 5s linear) !important;
+//         .transition(background 5s linear) !important;
     }
 }
 
 .show_on_hover {
     opacity: 0;
-    .transition(1s linear);
+//     .transition(0.2s linear);
 }
 
 .item {
@@ -85,7 +84,7 @@ iframe {
     cursor: pointer;
     .transition(.5s linear);
     &:hover {
-        background: white !important;
+        background: white;
         color: black;
         .transition(.5s linear) !important;
         .show_on_hover {

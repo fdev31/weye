@@ -5,9 +5,9 @@ help:
 	@echo "Targets:"
 	@echo ""
 	@echo " themes: build 'static/css/theme.css from 'themes/default.less' (requires lessc)"
-	@echo "  jsapi: extract reST text from 'static/application.js' and save it to 'doc/source/dev/'"
 	@echo "  mimes: compiles an minimize (jsmin) mime folder and install it to static/mimetypes.js"
 	@echo "    doc: Build Sphinx doc"
+	@echo "  jsapi: extract reST text from 'static/application.js' and save it to 'doc/source/dev/'"
 	@echo "    all: all at once"
 
 
