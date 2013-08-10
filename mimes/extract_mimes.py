@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# This script reads /etc/mimes.types on your system
+# to generate src/weye/mimedata.txt 's content (on stdout)
+# It outputs to stdout
 
 mime_ext = {}
 ext_mime = {}
