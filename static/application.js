@@ -619,6 +619,7 @@ function save_form() {
                 item = d.data();
                 $.extend(item, metadata);
                 d.html( ich[ui.current_item_template](item).children().children() );
+                ItemTool.prepare(d);
             }
         });
         setTimeout( function() {
