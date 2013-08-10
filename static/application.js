@@ -604,12 +604,23 @@ var ui = new function() {
 
 function save_form() {
     var o = $('#question_popup .editable');
-    var object_path = ui.get_ref(o.data('link'));
+    var link_name = o.data('link');
+    var object_path = ui.get_ref(link_name);
     var metadata = {};
     var metadata_list = [];
+    var full_item = {};
 
     var close_form = function() {
         $('#question_popup').modal('hide');
+        ui.get_items().each(function(x, item) {
+            var d=$(item);
+            console.log(d.data('link'), link_name);
+            if (d.data('link') === link_name) {
+                item = d.data();
+                $.extend(item, metadata);
+                d.html( ich[ui.current_item_template](item).children().children() );
+            }
+        });
         setTimeout( function() {
             o.parent().detach();
         }, 1000);
@@ -631,7 +642,9 @@ function save_form() {
         $.pnotify({text: 'No change'});
     } else {
         $.ajax('/o'+object_path, {dataType: 'json', data: {meta: JSON.stringify(metadata) }, type: 'PUT'})
-            .done( function(e) { close_form(); $.pnotify({type: "success", text: "Saved"})
+            .done( function(e) {
+                close_form();
+                $.pnotify({type: "success", text: "Saved"});
             })
         .fail( function(e) {
             $.pnotify({type: "error", text: ''+e});
