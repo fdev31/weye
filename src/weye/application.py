@@ -162,7 +162,7 @@ def cb():
         if ok:
             items.append( [f.filename, guess_type(fname)] )
 
-    yield bottle.json_dumps( {'error':errors or False, 'children': {'c':['name', 'mime'], 'r':items} } )
+    yield bottle.json_dumps( {'error':errors or False, 'children': {'c':['link', 'mime'], 'r':items} } )
 
 
 application = bottle.app()
