@@ -4934,7 +4934,7 @@ iframe {
   text-overflow: ellipsis;
 }
 .item:hover {
-  background: white;
+  background: #FFE7A4;
   color: black;
   -webkit-transition: all 0.5s linear ease-out !important;
   -moz-transition: all 0.5s linear ease-out !important;
@@ -5056,9 +5056,6 @@ img.small_icon {
 }
 .navbar {
   box-shadow: 0 1px 15px 1px rgba(0, 0, 0, 0.7) !important;
-}
-@media (min-width: 768px) {
-  
 }
 .file-input-name {
   word-wrap: break-word;
