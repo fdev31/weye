@@ -198,7 +198,7 @@ der application-x-x509-ca-cert
 dfac application-vnd.dreamfactory
 dgc application-x-dgc-compressed
 dic text-x-c
-diff text-plain
+diff text-x-diff
 dif video
 dir application-x-director
 dis application-vnd.mobius.dis

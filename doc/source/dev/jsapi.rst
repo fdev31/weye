@@ -9,6 +9,12 @@
 Javascript API (application.js)
 ###############################
 
+
+
+.. warning:: usage of ``name`` as link and ``title`` as name is very inconsistant
+
+     rename it & clean usage as soon as possible
+
 .. todo:: generalize item object finding (top/bottom), used in touch/click events ...
 
 
@@ -188,6 +194,9 @@ Edition
      Saves the ``#question_popup .editable``
 
      .. seealso:: :func:`ItemTool.popup`
+     .. warning:: FIXME
+
+             Currently not refreshing the item's parent display (in case name or mime is changed)
 
 
 Navigation
@@ -216,6 +225,7 @@ Navigation
          currently supported:
 
          :disable_history: (bool) Do not store change into history
+
 
 
 Item related
@@ -262,7 +272,7 @@ Item related
 .. function:: ItemTool.prepare(o)
 
 
-     Currently, only finds ``.item_stuff`` within the element and associate touch bindings:
+     Prepares a DOM ``.item``, associating touch bindings to it's ``.item_touch`` property:
 
      :tap: executes :func:`~ItemTool.execute_evt_handler`
      :hold: executes :func:`~ItemTool.popup_evt_handler`
@@ -308,6 +318,13 @@ Item related
 
 .. xx: finalize_item_list is unused now (was used in search)
 
+.. function:: finalize_item_list(o)
+
+
+     Sets up isotope for those items, should be called once the content was updated
+     Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
+
+     :arg o: DOM element containing ``.items`` elements
 
 Misc
 ####

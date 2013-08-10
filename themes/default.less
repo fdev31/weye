@@ -6,15 +6,13 @@
 @import "bootstrap.less";
 @import "bootstrap-glyphicons.less";
 
-@BG_COLOR: rgb(237, 234, 245);
-
 
 body {
-    background-color: @BG_COLOR;
+    background-color: @body-bg;
 }
 
-.jumbotron {
-    margin-top: 20px;
+.maincontainer {
+    padding-top: 6ex;
 }
 
 .brand {
@@ -65,17 +63,16 @@ iframe {
 .item.highlighted {
     background: #F8B744 !important;
     color: black;
-    .transition(background .1s linear) !important;
-    .transition(color .1s linear) !important;
+//     .transition(.1s linear) !important;
     &:hover {
         background: #FFE7A4 !important;
-        .transition(background 5s linear) !important;
+//         .transition(background 5s linear) !important;
     }
 }
 
 .show_on_hover {
     opacity: 0;
-    .transition(1s linear);
+//     .transition(0.2s linear);
 }
 
 .item {
@@ -87,7 +84,7 @@ iframe {
     cursor: pointer;
     .transition(.5s linear);
     &:hover {
-        background: white !important;
+        background: white;
         color: black;
         .transition(.5s linear) !important;
         .show_on_hover {
@@ -130,10 +127,13 @@ a.brand {
     .transition-duration(1s);
     color: black;
 }
+img.huge_icon {
+    width: 5em;
+    height: 5em;
+}
 img.big_icon {
     width: 2.5em;
     height: 2.5em;
-    cursor: pointer;
 }
 img.small_icon {
     width: 2em;
@@ -208,24 +208,6 @@ img.small_icon {
     .basicshadow(15px) !important;
 }
 
-@media (min-width: @screen-small) {
-    .maincontainer {
-        min-height: 800px;
-    }
-    #contents {
-        margin-top: 3em;
-        height: 100%;
-        z-index: 0;
-        .items {
-            z-index: 1;
-        }
-    }
-    #question_popup.modal {
-        width: 80%;
-        margin-left: -40%;
-        padding: 1ex;
-    }
-}
 .file-input-name {
     word-wrap: break-word;
     display: block;
@@ -255,13 +237,11 @@ img.small_icon {
     #up_panel {
         overflow: clip;
     }
-    background-color: @BG_COLOR/2;
+    background-color: @body-bg/2;
     border: outset 1px #DDD;
 }
 
-a.file-input-wrapper.btn.row-fluid {
-    width: 192px;
-}
+/* Fine tuning */
 
 .my-form-control { // NO width: 100%;
   display: block;
@@ -282,4 +262,64 @@ a.file-input-wrapper.btn.row-fluid {
 
 
 }
+.ui-pnotify .picon {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center center;
+    width: 17px;
+    height: 17px;
+}
+.ui-pnotify-title {
+    line-height: 17px;
+    min-height: 17px;
+}
 
+.ui-pnotify-history-container {
+//     margin-right: 5em;
+//     position: fixed;
+    text-align: center;
+    .basicshadow(10px, 0.3);
+}
+
+@media (max-width: @screen-small) {
+    #contents {
+        margin-left: 1ex !important;
+        margin-top: 3em;
+    }
+    #addsearch_form {
+        width: 100%;
+        input.my-form-control {
+            width: auto;
+        }
+    }
+}
+@media (max-width: @screen-medium) and (min-width: @screen-small) {
+    #contents {
+        margin-left: 1ex !important;
+    }
+}
+@media (min-width: @screen-large) {
+    #addsearch_form {
+        width: 55%;
+    }
+    input.my-form-control {
+        width: 50ex;
+    }
+}
+@media (max-width: @screen-large) {
+    .ui-pnotify-history-container {
+        right: auto !important;
+        left: 1ex !important;
+    }
+}
+
+@media (max-width: @screen-medium) and (min-width: @screen-small) {
+    .navbar {
+        .container {
+            max-width: 100% !important;
+        }
+        #addsearch_form {
+            padding: 0;
+        }
+    }
+}

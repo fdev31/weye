@@ -7,7 +7,7 @@ function display(item) {
             var is_an_app = false;
             var app_indice = 'infos.js';
             base_data.forEach(function(o) {
-                if(o.name === app_indice)
+                if(o.link === app_indice)
                 is_an_app = true;
             })
 
@@ -35,6 +35,7 @@ function display(item) {
                 item.permalink = ui.permalink;
                 base_data.forEach(ItemTool.fixit);
                 item.child = base_data;
+                item.item_template = 'view_list_item_small';
                 // render & make those items funky
                 finalize_item_list( $('#contents').html( get_view('list', item) ) );
                 // Current document is a folder
