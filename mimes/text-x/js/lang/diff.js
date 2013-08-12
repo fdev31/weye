@@ -15,10 +15,10 @@ Rainbow.extend('diff', [
         },
         {
             name: 'added',
-            pattern: /\+ .*/g
+            pattern:RegExp('^[+].*', 'gm')
         },
         {
             name: 'removed',
-            pattern: /- .*/g
+            pattern: RegExp('^[-].*', 'gm')
         },
     ], true);
