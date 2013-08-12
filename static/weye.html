@@ -60,19 +60,12 @@
     <!-- ------------------ item template: view list ---------------------------------- -->
     <script id="view_list" type="text/html">
         {{>header}}
-        {{#have_child}}
         <hr/>
         <div class="items row">
             {{#child}}
             {{{item_template}}}
             {{/child}}
         </div>
-        {{/have_child}}
-        {{^have_child}}
-        <div>
-            No item.
-        </div>
-        {{/have_child}}
     </script>
     <!-- ------------------ item template: view file ---------------------------------- -->
     <script id="view_file" type="text/html">

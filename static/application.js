@@ -178,7 +178,6 @@ function search_for() {
             ich.view_list({
                 mime: 'application-x-executable',
                 path: '/',
-                have_child: true,
                 child: data,
                 backlink: false,
                 permalink: '/'
@@ -718,9 +717,8 @@ function go_ready() {
  *
  */
 function view_path(path, opts) {
-    console.log('  >> VIEW PATH', path, opts);
-    if (path === ui.doc_ref) return;
 //    console.log('view_path______________________', path, ui.doc_ref);
+    if (path === ui.doc_ref) return;
     go_busy();
     var opts = opts || {};
     ui.flush_caches();

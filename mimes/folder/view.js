@@ -40,6 +40,9 @@ function display(item) {
                 finalize_item_list( $('#contents').html( get_view('list', item) ) );
                 // Current document is a folder
                 ui.set_context('folder');
+                if( 0 === item.child.length) {
+                    $.pnotify({type: 'info', title: 'Attention', text: 'No item in this folder.', delay: 1000});
+                }
             }
         });
 };
