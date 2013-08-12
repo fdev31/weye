@@ -18,7 +18,7 @@
         {{#mime}}
             <header>
             <hgroup>
-                <h2 class="item_title"><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
+                <h2 class="item_title"><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
             </hgroup>
             <hgroup>
 
@@ -165,18 +165,18 @@
 
 <!-- ------------------ C O N T E N T ---------------------------------- -->
 
-<button id="backlink" class="btn" onclick="go_back()"><i class="glyphicon glyphicon-arrow-left" ></i>Back</button>
-        <div class="btn-group folder-item">
-            <button class="btn" onclick="ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></button>
-                <button class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></button>
-        </div>
 
+    <form class="form-inline pull-left">
+        <button id="backlink" class="btn" onclick="go_back(); return false;"><i class="glyphicon glyphicon-arrow-left" ></i>&nbsp;Back</button>
 
-<form class="form-inline pull-right folder-item">
-    <div class="row"><span id="progress" class="progress">0%</span></div>
+        <input type="file" class="btn btn-default folder-item" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;<span id='file_caption'>Add file...</span>" onchange="ItemTool._uploader.send()" />
+    </form>
 
-    <input type="file" class="btn btn-default" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;Add file..." onchange="ItemTool._uploader.send()" />
-</form>
+    <div class="btn-group folder-item pull-right">
+        <button class="btn" onclick="ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></button>
+            <button class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></button>
+    </div>
+
 <br />
 <br />
 <div class="row" id="contents"></div>

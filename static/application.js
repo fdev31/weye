@@ -318,9 +318,9 @@ var ui = new function() {
     /*
      * .. data:: ui.current_item_template
      *
-     *      Active item template name (``view_list_item_small`` by default)
+     *      Active item template name (``view_list_item_big`` by default)
      */
-    this.current_item_template = 'view_list_item_small';
+    this.current_item_template = 'view_list_item_big';
     /*
      * .. data:: ui.permalink
      *
@@ -1077,16 +1077,15 @@ $(function() {
     $('#addsearch_form').submit(function() {return false});
 
     // handle upload stuff
-    var _p = $('#progress');
     $('#file').bootstrapFileInput();
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
-        progress:function(ev){ _p.html(Math.ceil((ev.loaded/ev.total)*100)+'%'); _p.css('width',_p.html()); },
+        progress:function(ev){ $('#file_caption').text('Uploaded ' + Math.ceil((ev.loaded/ev.total)*100)+'%'); },
         error:function(ev){ $.pnotify({title: "Can't upload", text: ''+ ev, type: 'error'}) },
         success:function(data){
-            _p.html('100%');
-            _p.css('width',_p.html());
+            // Reset file caption
+            $('#file_caption').text('Add file...');
             var data = JSON.parse(data);
             if (data.error) {
                 $.pnotify({title: 'Unable to upload some files', text: data.error, type: 'error'});
@@ -1097,8 +1096,14 @@ $(function() {
                 items.isotope('insert', ItemTool.make_item(child[i]));
             }
             setTimeout( function() {
-                _p.html('');
-                _p.css('width', 0);
+                if (child.length === 0) {
+                    $.pnotify({type: 'warning', title: "Upload", text: "No file were uploaded"});
+                } else {
+                    for (var i=0; i<child.length; i++) {
+                        $.pnotify({type: "success", title: "Uploaded", text: child[i].link, delay: 1500});
+                    }
+                }
+                $('div.maincontainer .file-input-name').html('');
             }, 5);
         }
     });
