@@ -15,17 +15,27 @@
     <!-- dynamic headers-->
     <!-- ------------------ base template: headers ---------------------------------- -->
     <script id="header" type="text/html">
-        {{#backlink}}
-            <button id="backlink" class="btn" onclick="go_back()"><i class="glyphicon glyphicon-arrow-left"/> Back</button>
-        {{/backlink}}
-        <button class="folder-item" class="btn" onclick="ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></button>
-        <button class="folder-item" class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" /></button>
         {{#mime}}
             <header>
             <hgroup>
-                <h2><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
+                <h2 class="item_title"><img onclick="return alt_panel_toggle()" src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
             </hgroup>
+            <hgroup>
+
+                <a id="download_link" class="btn btn-large btn-primary pure-item" title="Click to download" href="/d{{_cont}}{{link}}">
+                <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;
+                Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
+            </a>
+
+          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
+
+          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
+
+</div>
+            </hgroup>
+
             </header>
+<hr class="header_sep" />
         {{/mime}}
     </script>
     <!-- ------------------ item (in list) template: view list item ---------------------------------- -->
@@ -36,8 +46,8 @@
                 <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
                 <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
             </span>
-            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
+            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;"></i>&nbsp;
+            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" ></i>{{/is_data}}
         </div>
 </div>
     </script>
@@ -52,15 +62,14 @@
                 <img src="/static/mime/{{mime}}.svg" class="huge_icon item_caption item_stuff"/>
                 <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
             </span>
-            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" />&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" />{{/is_data}}
+            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" ></i>&nbsp;
+            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" ></i>{{/is_data}}
         </div>
 </div>
     </script>
     <!-- ------------------ item template: view list ---------------------------------- -->
     <script id="view_list" type="text/html">
         {{>header}}
-        <hr/>
         <div class="items row">
             {{#child}}
             {{{item_template}}}
@@ -69,12 +78,7 @@
     </script>
     <!-- ------------------ item template: view file ---------------------------------- -->
     <script id="view_file" type="text/html">
-        {{>header}}
-        <div class="btn-toolbar" id="main_buttons">
-            <a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{_cont}}{{link}}">
-                Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
-            </a></div>
-    <hr/>
+    {{>header}}
     </script>
     <!-- ------------------ form template: input text ---------------------------------- -->
     <script id="input_text" type="text/html">
@@ -125,6 +129,7 @@
     <!-- END templates -->
   </head>
   <body>
+
 <!-- ------------------ N A V B A R ---------------------------------- -->
    <div class="navbar navbar-fixed-top">
       <div class="container">
@@ -158,20 +163,22 @@
 
   <div class="container maincontainer">
 
-<!-- ------------------ S H E L V E ---------------------------------- -->
-  <aside id="shelve"class="folder-item animated folded">
-          <div class="label pull-right label-default">Add some file</div>
-          <input type="file" class="btn btn-default btn-block" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;Chose file..."
-          onchange="ItemTool._uploader.send()";
-          />
-          <div class="row"><span id="progress" class="progress">0%</span></div>
-          <div class="label pull-right label-default">Actions</div>
-          <button name="add" onclick= "add_new_item()" class="btn btn-block btn-default" style="width: 100%" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
-          <button name="add" onclick= "add_new_item()" class="btn btn-block btn-default" style="width: 100%" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
-
-  </aside>
-
 <!-- ------------------ C O N T E N T ---------------------------------- -->
+
+<button id="backlink" class="btn" onclick="go_back()"><i class="glyphicon glyphicon-arrow-left" ></i>Back</button>
+        <div class="btn-group folder-item">
+            <button class="btn" onclick="ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></button>
+                <button class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></button>
+        </div>
+
+
+<form class="form-inline pull-right folder-item">
+    <div class="row"><span id="progress" class="progress">0%</span></div>
+
+    <input type="file" class="btn btn-default" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;Add file..." onchange="ItemTool._uploader.send()" />
+</form>
+<br />
+<br />
 <div class="row" id="contents"></div>
 
 <!-- ------------------ S C R I P TS ---------------------------------- -->

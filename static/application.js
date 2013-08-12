@@ -267,30 +267,6 @@ function hr_size(size) {
 };
 
 /*
- * .. function:: alt_panel_toggle
- *
- *      Display or hide the right panel (with upload form & actions)
- */
-
-
-function alt_panel_toggle(force) {
-    var pan = $('#shelve');
-    var current = !! pan.hasClass('folded');
-
-    if (force === current)
-        return;
-    else if(force === undefined) {
-        force = current;
-    }
-    if(force) {
-        pan.removeClass('folded')
-    } else {
-        pan.addClass('folded')
-    }
-    return false;
-};
-
-/*
  * .. function:: get_view(template, item)
  *
  *      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
@@ -487,6 +463,7 @@ var ui = new function() {
             $('.folder-item').show();
             $('.pure-item').hide();
         } else if(ctx == 'item') {
+
             $('.folder-item').hide();
             $('.pure-item').show();
             $('.filesize').each( function(i, x) {
@@ -496,6 +473,7 @@ var ui = new function() {
                 }
                 o.data('_fs_converted', 1);
             });
+
         } else {
             $('.folder-item').hide();
             $('.pure-item').hide();
@@ -1096,14 +1074,9 @@ var base_data = {};
 
 $(function() {
     // prevent default action
-    $('#addsearch_form').submit(function() {return false})
-
-    // load page
-  
-    view_path(document.location.href.split(/\?view=/)[1] || '/');
+    $('#addsearch_form').submit(function() {return false});
 
     // handle upload stuff
-
     var _p = $('#progress');
     $('#file').bootstrapFileInput();
     var up = new uploader($('#file').get(0), {
@@ -1129,11 +1102,13 @@ $(function() {
             }, 5);
         }
     });
-
-    $('#upload').click(function(){
-        up.send();
-    });
     ItemTool._uploader = up;
+    // #file changed ! need to re-parse the DOM:
+    $('#file').attr('title', 'Upload some file');
+
+    // load page
+  
+    view_path(document.location.href.split(/\?view=/)[1] || '/');
 
     // key binding
     window.addEventListener("popstate", function(e) {

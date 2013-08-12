@@ -100,20 +100,6 @@ iframe {
     background: #ffa;
 }
 
-.autodim {
-    .qq-upload-button {
-        color: #666;
-        cursor: pointer;
-        text-align: center;
-        .transition-duration(1s);
-        font-size: 130%;
-        font-weight: bold;
-        &:hover {
-            color: white;
-            background: #122;
-        }
-    }
-}
 .dragged {
     background: #555 !important;
     color:  #ffe !important;
@@ -223,32 +209,6 @@ img.small_icon {
     margin-left: 100% !important;
     .transition(300ms);
 }
-#shelve.folded {
-    right: -29ex !important;
-    .transition(1s);
-}
-#shelve {
-    position: fixed;
-    margin: auto;
-    top: 8em;
-    right: 1em;
-    width: 30ex;
-    .transition(1s);
-    .basicshadow(10px, 0.3);
-    .border-radius(3px, 3px, 3px, 3px);
-    padding: 1ex;
-    button , .file-input-wrapper {
-        .basicshadow(8px, 0.3);
-        margin-top: 1ex;
-    }
-    z-index: 5;
-    #up_panel {
-        overflow: clip;
-    }
-    background-color: @body-bg/2;
-    border: outset 1px #DDD;
-}
-
 /* Fine tuning */
 
 .my-form-control { // NO width: 100%;
@@ -330,4 +290,11 @@ img.small_icon {
             padding: 0;
         }
     }
+}
+hr.header_sep {
+    margin: 2px;
+    padding: 2px;
+}
+h2.item_title {
+    margin-top: .5ex;
 }
