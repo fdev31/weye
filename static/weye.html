@@ -31,11 +31,7 @@
     <!-- ------------------ item (in list) template: view list item ---------------------------------- -->
     <script id="view_list_item_small" class="partial" type= "text/html">
 <div>
-    <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}"
-            {{#data}}
-            data-{{k}}="{{v}}"
-            {{/data}}
-        >
+    <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
             <span class="item_touch">
                 <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
                 <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
@@ -81,7 +77,11 @@
     <!-- ------------------ item template: view file ---------------------------------- -->
     <script id="view_file" type="text/html">
         {{>header}}
-        <div class="btn-toolbar" id="main_buttons"><a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{_cont}}{{link}}"> Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a></div><hr/>
+        <div class="btn-toolbar" id="main_buttons">
+            <a id="download_link" class="btn btn-large btn-primary" title="Click to download" href="/d{{_cont}}{{link}}">
+                Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
+            </a></div>
+    <hr/>
     </script>
     <!-- ------------------ form template: input text ---------------------------------- -->
     <script id="input_text" type="text/html">

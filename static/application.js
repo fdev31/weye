@@ -718,6 +718,7 @@ function go_ready() {
  *
  */
 function view_path(path, opts) {
+    console.log('  >> VIEW PATH', path, opts);
     if (path === ui.doc_ref) return;
 //    console.log('view_path______________________', path, ui.doc_ref);
     go_busy();

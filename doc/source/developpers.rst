@@ -22,6 +22,7 @@ You might be interested in the :ref:`function index <genindex>` as well.
     dev/httpapi
     dev/jsapi
     dev/pyapi
+    dev/templating
 
 
 .. _object_model:
