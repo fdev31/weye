@@ -5088,8 +5088,7 @@ img.small_icon {
 }
 @media (max-width: 768px) {
   #contents {
-    margin-left: 1ex !important;
-    margin-top: 3em;
+    margin-left: 3px !important;
   }
   #addsearch_form {
     width: 100%;
@@ -5110,14 +5109,17 @@ img.small_icon {
   input.my-form-control {
     width: 50ex;
   }
+  #contents {
+    margin-top: 6ex;
+  }
 }
 @media (max-width: 1200px) {
   .ui-pnotify-history-container {
     right: auto !important;
     left: 1ex !important;
   }
-  .contents {
-    margin-top: 0;
+  #contents {
+    margin-top: 1ex;
   }
 }
 @media (max-width: 992px) and (min-width: 768px) {
@@ -5134,4 +5136,5 @@ hr.header_sep {
 }
 h2.item_title {
   margin-top: .5ex;
+  clear: left;
 }

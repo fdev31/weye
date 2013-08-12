@@ -18,7 +18,7 @@
         {{#mime}}
             <header>
             <hgroup>
-                <h2 class="item_title"><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a></h2>
+                <h2 class="item_title"><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h2>
             </hgroup>
             <hgroup>
 
@@ -174,11 +174,8 @@
 
     <div class="btn-group folder-item pull-right">
         <button class="btn" onclick="ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></button>
-            <button class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></button>
+        <button class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></button>
     </div>
-
-<br />
-<br />
 <div class="row" id="contents"></div>
 
 <!-- ------------------ S C R I P TS ---------------------------------- -->
