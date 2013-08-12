@@ -89,7 +89,7 @@ def get_object_from_path(path):
 
 
     """
-    path = path.rstrip('/').lstrip('/')
+    path = path.rstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     meta_fpath = os.path.join(config.shared_db, path).rstrip('/') + config.special_extension
     infos = None
