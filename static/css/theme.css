@@ -4868,7 +4868,7 @@ iframe {
   color: black;
 }
 .item.highlighted:hover {
-  background: #ffff88 !important;
+  background: #ffffcc !important;
 }
 .show_on_hover {
   opacity: 0;
@@ -4903,7 +4903,7 @@ iframe {
   text-overflow: ellipsis;
 }
 .item:hover {
-  background: #ffff88;
+  background: #ffffcc;
   color: black;
   -webkit-transition: all 0.5s linear ease-out !important;
   -moz-transition: all 0.5s linear ease-out !important;
