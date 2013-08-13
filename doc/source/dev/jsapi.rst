@@ -345,15 +345,19 @@ Misc
 
 They are made from ``'#?view=' + ui.doc_ref``
 
+.. seealso:: :js:data:`ui.doc_ref`
+
 
 ----
+
+.. rst-class:: html-toggle
 
 JavaScript reference
 ====================
 
 `From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
 
-.. function:: Array\ of\ String
+
 .. function:: Object
 .. function:: String
 .. function:: Array
