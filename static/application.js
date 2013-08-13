@@ -1043,7 +1043,29 @@ function uncompress_itemlist(keys_values_array) {
  *
  */
 function finalize_item_list(o) {
-    o.find('.items .item').each( function(i, x) { ItemTool.prepare(x) } );
+    var o = $(o);
+    var items;
+
+    if (o.hasClass('items')) {
+        items = o;
+    } else {
+        items = o.find('.items');
+    }
+    items.find('.item').each( function(i, x) { ItemTool.prepare(x) } );
+    items.isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
+        getSortData : {
+            title: function ( e ) {
+                return e.data('title');
+            },
+            type: function ( e ) {
+                var m = e.data('mime');
+                if (m==='folder') {
+                    return '!!!!!!!!!!!!!!!!!!!!!'+e.data('title').toLocaleLowerCase();
+                }
+                return e.data('mime') + '!' + e.data('title').toLocaleLowerCase();
+            }
+        }
+    });
     setTimeout( function() {
         ui.recover_selected();
     }, 1);
