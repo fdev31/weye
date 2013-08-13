@@ -175,8 +175,8 @@
     </form>
 
     <div class="btn-group folder-item pull-right">
-        <button class="btn" onclick="ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></button>
-        <button class="btn" onclick="ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></button>
+        <a title="View as icons" class="disabled view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></a>
+        <a title="View as list" class="view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ;ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></a>
     </div>
 <div class="row" id="contents"></div>
 
