@@ -6,10 +6,10 @@
 @import "bootstrap.less";
 @import "bootstrap-glyphicons.less";
 
-@orange: #F8B744;
-@orange_light: @orange * 2.0;
+@primary: #F8B744;
+@primary_light: @primary * #020303;
 
-// @secondary: #3276b1;
+@secondary: #3276b1;
 
 // defs:
 
@@ -38,11 +38,11 @@ iframe {
      margin-bottom: 1ex;
 }
 .item.highlighted {
-    background: @orange !important;
+    background: @primary !important;
     color: black;
 //     .transition(.1s linear) !important;
     &:hover {
-        background: @orange_light !important;
+        background: @primary_light !important;
 //         .transition(background 5s linear) !important;
     }
 }
@@ -59,7 +59,7 @@ iframe {
     cursor: pointer;
     .transition(.5s linear);
     &:hover {
-        background: @orange_light;
+        background: @primary_light;
         color: black;
         .transition(.5s linear) !important;
         .show_on_hover {
@@ -96,7 +96,7 @@ hr.header_sep {
 .item_title {
     margin-top: .5ex;
     clear: left;
-    color: @orange;
+    color: @primary;
 }
 .file-input-name {
     word-wrap: break-word;
