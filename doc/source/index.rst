@@ -89,7 +89,11 @@ This technique is using :mod:`python:wsgiref`, discouraged for production:
 
 You can enjoy `the home page on http://127.0.0.1:8080/ <http://127.0.0.1:8080/>`_ in theory ;)
 
-Next step is to read the :doc:`installation` guide or go to the :doc:`developpers` pages.
+.. note:: Next step is to read the :doc:`installation` guide
+
+.. attention:: Developpers
+
+   You may want to visit the :doc:`developpers` pages as well... :)
 
 .. rubric:: Comments
 

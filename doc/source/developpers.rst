@@ -92,7 +92,7 @@ When things are returned as collections (Array), to optimize transfers, the form
     ]}
 
 
-.. _data: http://api.jquery.com/data/
 
+.. _data: http://api.jquery.com/data/
 .. |data| replace:: jQuery's data_
 
