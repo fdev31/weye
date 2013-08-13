@@ -585,11 +585,8 @@ var ui = new function() {
         ui.on_hold = false;
         if(!! ui.nav_hist[ui.doc_ref]) {
             var idx = ui.nav_hist[ui.doc_ref].selected;
-        } else {
-            var idx = 0;
+            ui.select_idx(null, idx);
         }
-        ui.select_idx(null, idx);
-//        console.log('sel 4', ui.doc_ref,'=', idx);
     };
     return this;
 }();
