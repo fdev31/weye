@@ -4941,6 +4941,9 @@ hr.header_sep {
   margin-top: .5ex;
   clear: left;
   color: #f8b744;
+  text-shadow: 1px 1px 5px #555;
+  font-variant: small-caps;
+  font-weight: bold;
 }
 .file-input-name {
   word-wrap: break-word;
