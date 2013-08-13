@@ -118,7 +118,7 @@ function editor_save() {
  *      Filter the ``.item``\s on display, updates the :data:`current_filter` with the applied text pattern.
  *      
  *      :arg filter: regex used as filter for the main content, if not passed, ``#addsearch_form``\ 's ``input`` is used
- *          if `filter` starts with "type:", the the search is done against ``mime``` item's data, else ``searchable`` is used.
+ *          if `filter` starts with "type:", the the search is done against ``mime`` item's data ``(item.data('mime')``, else ``searchable`` is used.
  *      :type filter: String
  *
  */
@@ -271,6 +271,7 @@ function hr_size(size) {
  *
  *      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
  *
+ *      :type template: String
  *      :arg template: The name of the template to use.
  *
  *                  .. Attention:: standard templates
@@ -278,9 +279,25 @@ function hr_size(size) {
  *                      :file: file display
  *                      :list: list display, for folders most of the time
  *
+ *      :type template: Object
  *      :arg item: data used in itemplate, `backlink` and `permalink` will automatically be added
  *
  *          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
+ *
+ *      Example:
+ *
+ *      .. code-block:: js
+ *
+ *         var v=get_view('list', {mime: 'text-x-vcard', child: list_of_children})
+ *         $('#contents').html(v)
+ *         finalize_item_list(v);
+ *
+ *      .. seealso:: 
+ *
+ *         - :func:`ItemTool.fixit`
+ *         - :func:`ItemTool.prepare`
+ *         - :func:`finalize_item_list`
+ *         - :doc:`templating`
  *
  */
 
@@ -503,7 +520,16 @@ var ui = new function() {
      *      Returns the list of active items (filter applied)
      */
     this.get_items = function() {
-        return $('.items').data('isotope').$filteredAtoms;
+        var it = $('.items').data('isotope');
+        if (!! it) {
+            return it.$filteredAtoms;
+        } else {
+            if ( $('.items > .item.filtered').length != 0 ) {
+                return $('.items > .item.filtered');
+            } else {
+                return $('.items > .item');
+            }
+        }
     };
     /*
      * .. function:: ui.select_idx
@@ -573,9 +599,6 @@ var ui = new function() {
  *      Saves the ``#question_popup .editable``
  *
  *      .. seealso:: :func:`ItemTool.popup`
- *      .. warning:: FIXME
- *
- *              Currently not refreshing the item's parent display (in case name or mime is changed)
  *
  */
 
@@ -735,16 +758,21 @@ function view_path(path, opts) {
                 } else {
                     d._cont = ui.doc_ref + '/';
                 }
-                ui.permalink = get_permalink();
+
+                // compute permalink
+                // TODO: check if same as doc ref
+                var loc = '' + window.location;
+                if (loc.search('[?]view=')) {
+                    loc = loc.substring(0, loc.search('[?]view='))
+                }
+                ui.permalink = loc + '?view=' + ui.doc_ref;
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
-                /* compute back ref & permalink */
                 
                 ui.load_view(d);
                 go_ready();
             }
-        }
-    )
+        })
         .error(function() {
             $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
             go_ready();
@@ -962,9 +990,8 @@ return this;}();
  *
  * .. _compact_form:
  *
- * (compact form reverter)
- * =======================
- * 
+ * .. index:: compact_form
+ *
  * .. function:: uncompress_itemlist(keys_values_array)
  *
  *      Uncompresses a list of items as returned by :py:func:`weye.root_objects.list_children` for instance.
@@ -999,8 +1026,6 @@ function uncompress_itemlist(keys_values_array) {
 };
 
 /*
- * .. xx: finalize_item_list is unused now (was used in search)
- *
  * .. function:: finalize_item_list(o)
  *
  *
@@ -1010,20 +1035,6 @@ function uncompress_itemlist(keys_values_array) {
  *      :arg o: DOM element containing ``.items`` elements
  */
 function finalize_item_list(o) {
-    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
-        getSortData : {
-            title: function ( e ) {
-                return e.data('title');
-            },
-            type: function ( e ) {
-                var m = e.data('mime');
-                if (m==='folder') {
-                    return '!!!!!!!!!!!!!!!!!!!!!'+e.data('title').toLocaleLowerCase();
-                }
-                return e.data('mime') + e.data('title').toLocaleLowerCase();
-            }
-        }
-    });
     o.find('.items .item').each( function(i, x) { ItemTool.prepare(x) } );
     setTimeout( function() {
         ui.recover_selected();
@@ -1185,6 +1196,11 @@ $(function() {
  *      :type blacklist: Array of String
  *      :returns: a new object with the same properties
  *      :rtype: Object
+ *
+ * .. rubric:: permalinks
+ *
+ * They are made from ``'#?view=' + ui.doc_ref``
+ *
  */
 
 function copy(obj, blacklist) {
@@ -1206,21 +1222,6 @@ function copy(obj, blacklist) {
     }
     return o;
 };
-
-/*
- * .. function:: get_permalink
- *
- *      Computes the current permalink, used by :func:`view_path` to update :data:`ui.permalink`
- */
-function get_permalink() {
-    // TODO: check if different from ui.doc_ref
-    var loc = '' + window.location;
-    if (loc.search('[?]view=')) {
-        loc = loc.substring(0, loc.search('[?]view='))
-    }
-    var plink = loc + '?view=' + ui.doc_ref;
-    return plink;
-}
 
 
 /*

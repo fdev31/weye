@@ -10,14 +10,6 @@ Javascript API (application.js)
 ###############################
 
 
-
-.. warning:: usage of ``name`` as link and ``title`` as name is very inconsistant
-
-     rename it & clean usage as soon as possible
-
-.. todo:: generalize item object finding (top/bottom), used in touch/click events ...
-
-
 When talking about the *DOM* Element representing an item, I'll use `.item`. If I write about the :ref:`JavaScript object <object_model>`, I'll just say item.
 
 
@@ -57,7 +49,7 @@ Filtering
      Filter the ``.item``\s on display, updates the :data:`current_filter` with the applied text pattern.
      
      :arg filter: regex used as filter for the main content, if not passed, ``#addsearch_form``\ 's ``input`` is used
-         if `filter` starts with "type:", the the search is done against ``mime``` item's data, else ``searchable`` is used.
+         if `filter` starts with "type:", the the search is done against ``mime`` item's data ``(item.data('mime')``, else ``searchable`` is used.
      :type filter: String
 
 
@@ -85,14 +77,11 @@ User Interface
      :rtype: string
 
 
-.. function:: alt_panel_toggle
-
-     Display or hide the right panel (with upload form & actions)
-
 .. function:: get_view(template, item)
 
      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
 
+     :type template: String
      :arg template: The name of the template to use.
 
                  .. Attention:: standard templates
@@ -100,9 +89,26 @@ User Interface
                      :file: file display
                      :list: list display, for folders most of the time
 
+     :type template: Object
      :arg item: data used in itemplate, `backlink` and `permalink` will automatically be added
 
          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
+
+     Example:
+
+     .. code-block:: js
+
+        var v=get_view('list', {mime: 'text-x-vcard', child: list_of_children})
+        $('#contents').html(v)
+        finalize_item_list(v);
+
+     .. seealso:: 
+
+        - :func:`ItemTool.fixit`
+        - :func:`ItemTool.prepare`
+        - :func:`finalize_item_list`
+        - :doc:`templating`
+
 
 
 .. class:: ui
@@ -110,6 +116,10 @@ User Interface
     Main UI object, used for navigation logic and state
 
      .. note:: This is in fact an object/singleton, you should not instanciate it
+
+.. data:: ui.current_item_template
+
+     Active item template name (``view_list_item_big`` by default)
 
 .. data:: ui.permalink
 
@@ -134,7 +144,7 @@ User Interface
 
      Selected item's index
 
-.. function:: ui.view_item
+.. function:: ui.load_view
 
      Display an item "fullscreen" (not in a list) from its data (``mime`` property).
      It will try to find a matching key in the :data:`mimes` dictionary.
@@ -194,9 +204,6 @@ Edition
      Saves the ``#question_popup .editable``
 
      .. seealso:: :func:`ItemTool.popup`
-     .. warning:: FIXME
-
-             Currently not refreshing the item's parent display (in case name or mime is changed)
 
 
 Navigation
@@ -227,7 +234,6 @@ Navigation
          :disable_history: (bool) Do not store change into history
 
 
-
 Item related
 ############
 
@@ -239,9 +245,9 @@ Item related
 
      "Fixes" an :ref:`object metadata <object_model>`, currently:
 
-     - missing **title** is set to *name*
+     - missing **title** is set to *link*
      - missing **searchable** is set to *title*
-     - missing **editables** is set to "name"
+     - missing **editables** is set to "title mime descr"
      - fills **is_data** keyword (should come from *family* instead)
 
 .. function:: ItemTool.execute_evt_handler(e)
@@ -297,8 +303,7 @@ Item related
 
 .. _compact_form:
 
-(compact form reverter)
-=======================
+.. index:: compact_form
 
 .. function:: uncompress_itemlist(keys_values_array)
 
@@ -308,15 +313,13 @@ Item related
 
         .. code-block:: js
             
-           { 'c': ['name', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
+           { 'c': ['link', 'age'], 'r': [ ['toto', 1], ['tata', 4], ['titi', 42] ] }
 
      :returns: "flat" array of objects. Ex:
 
         .. code-block:: js
 
-           [ {'name': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
-
-.. xx: finalize_item_list is unused now (was used in search)
+           [ {'link': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
 
 .. function:: finalize_item_list(o)
 
@@ -338,9 +341,10 @@ Misc
      :returns: a new object with the same properties
      :rtype: Object
 
-.. function:: get_permalink
+.. rubric:: permalinks
 
-     Computes the current permalink, used by :func:`view_path` to update :data:`ui.permalink`
+They are made from ``'#?view=' + ui.doc_ref``
+
 
 ----
 
