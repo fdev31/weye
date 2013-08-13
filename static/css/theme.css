@@ -4863,6 +4863,11 @@ iframe {
   background: rgba(255, 255, 255, 0.9);
   margin-bottom: 1ex;
 }
+.view_mode_btn {
+  font-size: 150%;
+  padding: .3ex;
+  margin: 2px;
+}
 .item.highlighted {
   background: #f8b744 !important;
   color: black;
