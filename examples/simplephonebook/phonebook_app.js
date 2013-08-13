@@ -2,13 +2,7 @@
 $.ajax({url: '/d'+ui.doc_ref+'/phone_data.js', dataType: 'json'})
 .done(function(d) {
     var c=$('#contents');
-    c.html( ich.view_list({
-        permalink: ui.permalink,
-        backlink: true,
-        mime: 'text-x-vcard', // TBD, like "application-x-adressbook" ? // allow mountpoints for images
-        cont: '',
-        have_child: true,
-        child: d.map( function(e) {
+    var v=get_view('list', {mime: 'text-x-vcard', child: d.map( function(e) {
             var phones = [];
             var phones_cls = '';
             for(var k in e.phones) {
@@ -20,12 +14,12 @@ $.ajax({url: '/d'+ui.doc_ref+'/phone_data.js', dataType: 'json'})
                 editables: 'name '+phones_cls,
                 searchable: e.name+' '+e.nickname+' '+e.phones.fixe,
                 title: e.name + " " + e.surname + " (aka "+ e.nickname + ")" + ' -- ' + e.phones.fixe,
-                name: "js:alert('"+e.email+"');",
+                link: "js:alert('"+e.email+"');",
                 mime: 'text-x-credits'
             }
-        } )
-
-    }));
+        })}
+    );
+    c.html(v);
     finalize_item_list(c);
     $('#addsearch_form button[name=search]').addClass('hidden');
     $('#addsearch_form').show();
