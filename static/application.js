@@ -134,6 +134,7 @@ function filter_result(filter) {
     } else {
         current_filter = $('#addsearch_form input[name=text]').val() ;
     }
+    // bind the match function
     if (current_filter.match(RegExp('^type:'))) {
         var t = new RegExp(current_filter.toLocaleLowerCase().split(':')[1].trim());
         var match_func = function(elt) {
@@ -432,7 +433,9 @@ var ui = new function() {
                     var counter = 0;
                     for (var dep in dependencies) {
 //                        console.log( dependencies[dep] );
-                        toast(dependencies[dep], function() { counter += 1 ; if (counter === dependencies.length) found.display(item) } );
+                        toast(dependencies[dep], function() {
+                            if (counter++ === dependencies.length) found.display(item)
+                        } );
                     }
                 } else { // no deps
                     found.display(item);
@@ -857,66 +860,72 @@ var ItemTool = new function() {
          * .. todo:: update elt's `data` on save
          *
          */
-
-        $.get('/o' + ui.get_ref(elt.data('link')))
-           .done( function(data) {
-               if(data.error) {
-                   $.pnotify({
-                       type: 'error',
-                       title: data.name,
-                       text: data.message
-                   });
-                   return;
-               }
-//               console.log('D=',data);
-                var qp = $('#question_popup');
-                if(qp.length != 0) {
-                    if (qp.css('display') === 'none') {
-                        qp.remove();
-                    } else {
-                        return;
-                    }
-                }
-                var edited = [];
-                ItemTool.fixit(data);
-                if (data.editables === "")  {
-                    for(var k in data) {
-                        if (!!!k.match(/^isotope/)) {
-                            edited.push({name: k, type: 'text'});
-                        }
-                    };
+        var make_form = function(data) {
+            var qp = $('#question_popup');
+            if(qp.length != 0) {
+                if (qp.css('display') === 'none') {
+                    qp.remove();
                 } else {
-                    var editables = data.editables.split(/ +/);
-                    for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+                    return;
                 }
-                var pop = ich.question({
-                    'item': data,
-                    'title': data.title || data.name,
-                    'mime': data.mime,
-                    'footnote': 'Changes may be effective after a refresh',
-                    'edit': edited,
-                    'buttons': [
-                        {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
-                        {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
-                    ]
-                });
-                pop.modal();
-                var edited = $('#question_popup .editable');
-                setTimeout(function() {
-                    pop.find('.editable-property').each( function(i, o) {
-                        var o = $(o);
-                        var d = copy(o.data());
-                        d.content = data[d.name];
-                        o.append(ich['input_'+d.type](d));
-                    });
-                }, 200);
-
             }
-        )
-        .fail(function(e) {
-            $.pnotify( {text: ''+e, type: 'error'}
-                );
-        });
+            var edited = [];
+            ItemTool.fixit(data);
+            if (data.editables === "")  {
+                for(var k in data) {
+                    if (!!!k.match(/^isotope/)) {
+                        edited.push({name: k, type: 'text'});
+                    }
+                };
+            } else {
+                var editables = data.editables.split(/ +/);
+                // TODO: input type thing
+                for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+            }
+            var pop = ich.question({
+                'item': data,
+                'title': data.title || data.name,
+                'mime': data.mime,
+                'footnote': 'Changes may be effective after a refresh',
+                'edit': edited,
+                'buttons': [
+                    {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
+                    {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+                ]
+            });
+            pop.modal();
+            var edited = $('#question_popup .editable');
+            setTimeout(function() {
+                pop.find('.editable-property').each( function(i, o) {
+                    var o = $(o);
+                    var d = copy(o.data());
+                    d.content = data[d.name];
+                    o.append(ich['input_'+d.type](d));
+                });
+            }, 200);
+
+        }
+        if(elt.data('link').startswith('js:')) {
+            make_form(elt.data());
+        } else {
+            $.get('/o' + ui.get_ref(elt.data('link')))
+               .done( function(data) {
+                   if(data.error) {
+                       $.pnotify({
+                           type: 'error',
+                           title: data.name,
+                           text: data.message
+                       });
+                       return;
+                   }
+                }
+            )
+            .fail(function(e) {
+                $.pnotify( {text: ''+e, type: 'error'}
+                    );
+            });
+            make_form();
+        }
     };
 
     /*

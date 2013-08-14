@@ -39,20 +39,20 @@ Mandatory
 :link: The exact file name of the item (used to browse & do queries --- it is the ID)
 :size: The "weight" of the item, by default expect bytes (see :js:func:`hr_size`)
 
-:title: The full name of the item (will be set to `mime` if not set) --- *derived from name if not provided*
+:title: The full name of the item as displayed (will be set to `mime` if not set) --- *derived from `link` if not provided*
 :editables: space-separated list of editable fields --- *all properties by default (same as "\*")*
 
 Bad example *(lacks some properties, but should work)*
 
 .. code-block:: js
 
-    {id: 43, mime: "text/plain", name: "Fun stuff"}
+    {id: 43, mime: "text/plain", title: "Fun stuff"}
 
 Recommended
 -----------
 
 :family: An additional family --- *Not used yet*
-:searchable: A pattern that will be used in filter, in place of `title` --- *defaults to "name"*
+:searchable: space-separated list of searchable fields--- *defaults to "title type descr"*
 
 Additional
 ----------
@@ -82,7 +82,7 @@ When things are returned as collections (Array), to optimize transfers, the form
 
 .. code-block:: js
 
-    {'c': ['name', 'mime', 'size', 'data'],
+    {'c': ['title', 'mime', 'size', 'data'],
     'r': [
         ['Toto', 'guy', 150, [{'k': 'hair', 'v': 'blond'}]],
         ['Tata', 'guri', 120, [{'k': 'hair', 'v': 'red'}, {k:'nails',v:'blue'}]]
