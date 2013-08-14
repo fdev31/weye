@@ -10,8 +10,11 @@
  * Javascript API (application.js)
  * ###############################
  *
+ * .. note:: DOM Element vs JavaScript Object
  *
- * When talking about the *DOM* Element representing an item, I'll use `.item`. If I write about the :ref:`JavaScript object <object_model>`, I'll just say item.
+ *    When talking about the **DOM Element** representing an item, I'll use |domitem|
+ *    --- otherwise, for **JavaScript** or **Python** data sets, I'll write: |jsitem|.
+ *
  */
 
 // Standard javascript objects overloading
@@ -118,10 +121,10 @@ function editor_save() {
  *
  * .. function:: filter_result
  *
- *      Filter the ``.item``\s on display, updates the :data:`current_filter` with the applied text pattern.
+ *      Filter the |domitem|\ s on display, updates the :data:`current_filter` with the applied text pattern.
  *      
  *      :arg filter: regex used as filter for the main content, if not passed, ``#addsearch_form``\ 's ``input`` is used
- *          if `filter` starts with "type:", the the search is done against ``mime``` item's data, else ``searchable`` is used.
+ *          if `filter` starts with "type:", the the search is done against ``mime`` |domitem|\ 's data ( ``item.data('mime')`` ), else ``'searchable'`` is used.
  *      :type filter: String
  *
  */
@@ -227,7 +230,7 @@ function add_new_item() {
  *
  * .. function:: show_help
  *      
- *      Displays help as notification items
+ *      Displays help as notification popups
  *
  */
 
@@ -278,8 +281,9 @@ function hr_size(size) {
 /*
  * .. function:: get_view(template, item)
  *
- *      Returns jQuery element matching `template` using data from `item` object, following the :ref:`object_model`
+ *      Returns jQuery element matching `template` using data from `item` |jsitem|\ , following the :ref:`object_model`
  *
+ *      :type template: String
  *      :arg template: The name of the template to use.
  *
  *                  .. Attention:: standard templates
@@ -287,9 +291,25 @@ function hr_size(size) {
  *                      :file: file display
  *                      :list: list display, for folders most of the time
  *
- *      :arg item: data used in itemplate, `backlink` and `permalink` will automatically be added
+ *      :type template: Object
+ *      :arg item: data used in template, `backlink` and `permalink` will automatically be added
  *
  *          .. hint::  If the template is not standard, you should load it using `ich.addTemplate(name, mustacheTemplateString) <http://icanhazjs.com/#methods>`_.
+ *
+ *      Example:
+ *
+ *      .. code-block:: js
+ *
+ *         var v=get_view('list', {mime: 'text-x-vcard', child: list_of_children})
+ *         $('#contents').html(v)
+ *         finalize_item_list(v);
+ *
+ *      .. seealso:: 
+ *
+ *         - :func:`ItemTool.fixit`
+ *         - :func:`ItemTool.prepare`
+ *         - :func:`finalize_item_list`
+ *         - :doc:`templating`
  *
  */
 
@@ -320,7 +340,7 @@ function get_view(template, item) {
  *     Main UI object, used for navigation logic and state
  *
  *      .. note:: This is in fact an object/singleton, you should not instanciate it
-        .. todo:: create a method to update an item from its name
+        .. todo:: create a method to update an |domitem| from its name , see save_form
  */
 
 var ui = new function() {
@@ -347,7 +367,7 @@ var ui = new function() {
      *
      *      Returns URL for given object *subpath*
      *
-     *      :arg subpath: *name* property of an item
+     *      :arg subpath: *name* property of an item ( |jsitem| or |domitem|\ 's data_ )
      *      :type subpath: String
      */
     this.get_ref = function(subpath) {
@@ -385,14 +405,15 @@ var ui = new function() {
     /*
      * .. function:: ui.load_view
      *
-     *      Display an item "fullscreen" (not in a list) from its data (``mime`` property).
+     *      Display an |jsitem| "fullscreen" (not in a list) from its data (``mime`` property).
      *      It will try to find a matching key in the :data:`mimes` dictionary.
+     *
      *      Example:
      *
      *      If mime is "text-html"
      *          The tested values will be (in this order): **text-html**, **text**, **default**
      *
-     *      :arg item: the item object
+     *      :arg item: the |jsitem|
      */
     this.load_view = function(item) {
         ui._cur_item = item;
@@ -502,7 +523,7 @@ var ui = new function() {
     /*
      * .. function:: ui.select_prev
      *
-     *      Selects the previous item
+     *      Selects the previous |domitem|
      */
     this.select_prev = function() {
         if (ui.selected_item > 0)
@@ -512,16 +533,25 @@ var ui = new function() {
     /*
      * .. function ui.get_items
      *
-     *      Returns the list of active items (filter applied)
+     *      Returns the list of active |domitem|\ s (filter applied)
      */
     this.get_items = function() {
-        return $('.items').data('isotope').$filteredAtoms;
+        var it = $('.items').data('isotope');
+        if (!! it) {
+            return it.$filteredAtoms;
+        } else {
+            if ( $('.items > .item.filtered').length != 0 ) {
+                return $('.items > .item.filtered');
+            } else {
+                return $('.items > .item');
+            }
+        }
     };
     /*
      * .. function:: ui.select_idx
      *
      *      changes selection from old_idx to new_idx
-     *      if new_idx == -1, then selects the last item
+     *      if new_idx == -1, then selects the last |domitem|
      *
      *      Calls :func:`ui.save_selected` when finished.
      */
@@ -567,11 +597,8 @@ var ui = new function() {
         ui.on_hold = false;
         if(!! ui.nav_hist[ui.doc_ref]) {
             var idx = ui.nav_hist[ui.doc_ref].selected;
-        } else {
-            var idx = 0;
+            ui.select_idx(null, idx);
         }
-        ui.select_idx(null, idx);
-//        console.log('sel 4', ui.doc_ref,'=', idx);
     };
     return this;
 }();
@@ -585,9 +612,6 @@ var ui = new function() {
  *      Saves the ``#question_popup .editable``
  *
  *      .. seealso:: :func:`ItemTool.popup`
- *      .. warning:: FIXME
- *
- *              Currently not refreshing the item's parent display (in case name or mime is changed)
  *
  */
 
@@ -746,16 +770,21 @@ function view_path(path, opts) {
                 } else {
                     d._cont = ui.doc_ref + '/';
                 }
-                ui.permalink = get_permalink();
+
+                // compute permalink
+                // TODO: check if same as doc ref
+                var loc = '' + window.location;
+                if (loc.search('[?]view=')) {
+                    loc = loc.substring(0, loc.search('[?]view='))
+                }
+                ui.permalink = loc + '?view=' + ui.doc_ref;
                 if (!!!opts.disable_history)
                     history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
-                /* compute back ref & permalink */
                 
                 ui.load_view(d);
                 go_ready();
             }
-        }
-    )
+        })
         .error(function() {
             $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
             go_ready();
@@ -849,9 +878,9 @@ var ItemTool = new function() {
     /*
      * .. function:: ItemTool.popup(elt)
      *
-     *      Show an edition popup for the item
+     *      Show an edition popup to edit some |domitem|
      *
-     *      :arg elt: DOM element
+     *      :arg elt: the |domitem| to edit
      */
 
     this.popup = function (elt) {
@@ -932,7 +961,7 @@ var ItemTool = new function() {
      * .. function:: ItemTool.prepare(o)
      *
      *
-     *      Prepares a DOM ``.item``, associating touch bindings to it's ``.item_touch`` property:
+     *      Prepares a |domitem|\ , associating touch bindings to it's ``.item_touch`` property:
      *
      *      :tap: executes :func:`~ItemTool.execute_evt_handler`
      *      :hold: executes :func:`~ItemTool.popup_evt_handler`
@@ -952,7 +981,7 @@ var ItemTool = new function() {
     /*
      * .. function:: ItemTool.make_item(data)
      *
-     *      Makes some ready to use DOM ``.item`` element from an object owning :ref:`standard properties <object_model>`
+     *      Makes a ready to use |domitem| from an |jsitem| owning :ref:`standard properties <object_model>`
      *      Will call :func:`~ItemTool.fixit` on the `data` and :func:`~ItemTool.prepare` on the `generic_item` template after rendering.
      *
      *      :arg data: :ref:`object_model`
@@ -979,12 +1008,11 @@ return this;}();
  *
  * .. _compact_form:
  *
- * (compact form reverter)
- * =======================
- * 
+ * .. index:: compact_form
+ *
  * .. function:: uncompress_itemlist(keys_values_array)
  *
- *      Uncompresses a list of items as returned by :py:func:`weye.root_objects.list_children` for instance.
+ *      Uncompresses a list of "compact" |jsitem|\ s as returned by :py:func:`weye.root_objects.list_children` for instance.
  *
  *      :arg keys_values_array: tuple of *property names* and *list of values*. Ex:
  *
@@ -1016,18 +1044,32 @@ function uncompress_itemlist(keys_values_array) {
 };
 
 /*
- * .. xx: finalize_item_list is unused now (was used in search)
- *
  * .. function:: finalize_item_list(o)
  *
  *
- *      Sets up isotope for those items, should be called once the content was updated
+ *      Sets up |isotope| for those items, should be called once the content was updated
  *      Also calls :func:`ItemTool.prepare` and :func:`ui.recover_selected` .
  *
- *      :arg o: DOM element containing ``.items`` elements
+ *      :arg o: DOM element containing some ``.items`` Elements
+ *
+ *      Example usage::
+ *
+ *      .. code-block:: js
+ *
+ *         finalize_item_list( $('#contents').html( get_view('list', template_data) ) );
+ *
  */
 function finalize_item_list(o) {
-    o.find('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
+    var o = $(o);
+    var items;
+
+    if (o.hasClass('items')) {
+        items = o;
+    } else {
+        items = o.find('.items');
+    }
+    items.find('.item').each( function(i, x) { ItemTool.prepare(x) } );
+    items.isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
         getSortData : {
             title: function ( e ) {
                 return e.data('title');
@@ -1037,11 +1079,10 @@ function finalize_item_list(o) {
                 if (m==='folder') {
                     return '!!!!!!!!!!!!!!!!!!!!!'+e.data('title').toLocaleLowerCase();
                 }
-                return e.data('mime') + e.data('title').toLocaleLowerCase();
+                return e.data('mime') + '!' + e.data('title').toLocaleLowerCase();
             }
         }
     });
-    o.find('.items .item').each( function(i, x) { ItemTool.prepare(x) } );
     setTimeout( function() {
         ui.recover_selected();
     }, 1);
@@ -1202,6 +1243,13 @@ $(function() {
  *      :type blacklist: Array of String
  *      :returns: a new object with the same properties
  *      :rtype: Object
+ *
+ * .. rubric:: permalinks
+ *
+ * They are made from ``'#?view=' + ui.doc_ref``
+ *
+ * .. seealso:: :js:data:`ui.doc_ref`
+ *
  */
 
 function copy(obj, blacklist) {
@@ -1224,37 +1272,29 @@ function copy(obj, blacklist) {
     return o;
 };
 
-/*
- * .. function:: get_permalink
- *
- *      Computes the current permalink, used by :func:`view_path` to update :data:`ui.permalink`
- */
-function get_permalink() {
-    // TODO: check if different from ui.doc_ref
-    var loc = '' + window.location;
-    if (loc.search('[?]view=')) {
-        loc = loc.substring(0, loc.search('[?]view='))
-    }
-    var plink = loc + '?view=' + ui.doc_ref;
-    return plink;
-}
-
 
 /*
  * ----
+ *
+ * .. rst-class:: html-toggle
  *
  * JavaScript reference
  * ====================
  *
  * `From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
  *
- * .. function:: Array\ of\ String
+ *
  * .. function:: Object
  * .. function:: String
  * .. function:: Array
  * .. function:: Integer
  *
+ * .. _isotope: http://isotope.metafizzy.co/
+ * .. _data: http://api.jquery.com/data/
  *
+ * .. |isotope| replace:: `Isotope <isotope>`
+ * .. |domitem| replace:: *DOM* ``.item``
+ * .. |jsitem| replace:: *(Object/dict)* Item
  *
  */
 

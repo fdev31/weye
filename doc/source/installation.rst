@@ -80,3 +80,52 @@ Custom configurations
 
 You will find a ready to use **WSGI** object under ``weye.application:application``.
 
+
+Generated files
+###############
+
+:file:`static/mime/js/` and :file:`static/mimetypes.js`
+=======================================================
+
+.. hint:: You can rebuild those files using ``make mimes``
+
+- :samp:`mimes/{type}/js/` folders are copied to :samp:`static/mime/js/{type}/`
+- Subfolders of :file:`mimes` are parsed and compiled into :file:`static/mimetypes.js`
+
+  :view.js: contains ``function display(item) {}`` definition, executed with item's informations on ready
+  :style.css:  *[optional]* a *CSS* file with additional definitions
+  :dependencies.js:  *[optional]* contains files to load (relative to :file:`js` folder), currently only *js* files will be loaded automatically.
+
+                    Example:
+
+                    .. code-block:: js
+
+                        [
+                        "rainbow.min.js",
+                        "foobar.js"
+                        ]
+
+
+
+
+
+
+:file:`static/css/theme.css`
+============================
+
+.. hint:: You can rebuild those files using ``make themes``
+
+The :file:`themes/default.less` file is compiled using *LESS* and the copied to ``theme.css``.
+
+:file:`doc/source/dev/jsapi.rst`
+================================
+
+.. hint:: You can rebuild those files using ``make jsapi``
+
+Built from the docstrings in :file:`static/application.js` 
+
+:file:`doc/build/html/index.html`
+=================================
+
+.. hint:: You can rebuild those files using ``make doc``
+

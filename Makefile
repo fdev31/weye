@@ -1,4 +1,4 @@
-.PHONY: themes jsapi doc mimes
+.PHONY: themes jsapi doc mimes theme
 
 help:
 	@echo ""
@@ -16,6 +16,7 @@ SFX=' ####################'
 SFX=' '
 JS=doc/source/dev/jsapi.rst
 
+theme:
 themes:
 	@ echo "${PFX} BUILDING THEMES ${SFX}"
 	cd themes && make

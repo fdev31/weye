@@ -6,23 +6,12 @@
 @import "bootstrap.less";
 @import "bootstrap-glyphicons.less";
 
+@primary: #F8B744;
+@primary_light: @primary * #020303;
 
-body {
-    background-color: @body-bg;
-}
+@secondary: #3276b1;
 
-.maincontainer {
-    padding-top: 7ex;
-}
-
-.brand {
-    z-index: 1;
-}
-
-iframe {
-     background: rgba(255,255,255,0.9);
-     margin-bottom: 1ex;
-}
+// defs:
 
 .horizgradient(@col1: #000000, @col2: #FFFFFF) {
     background:-o-linear-gradient(top,@col1,@col2);
@@ -35,26 +24,37 @@ iframe {
     box-shadow: 0 1px @val 1px rgba(0, 0, 0, @opa);
 }
 
-.listtitle {
-    color: #BAB;
-    margin-right: 1ex;
-    font-size: 100%;
+// style:
+
+body {
+    background-color: @body-bg;
+}
+
+.maincontainer {
+    padding-top: 7ex;
+}
+iframe {
+     background: rgba(255,255,255,0.9);
+     margin-bottom: 1ex;
+}
+.view_mode_btn {
+    font-size: 150%;
+    padding: .3ex;
+    margin: 2px;
 }
 .item.highlighted {
-    background: #F8B744 !important;
+    background: @primary !important;
     color: black;
 //     .transition(.1s linear) !important;
     &:hover {
-        background: #FFE7A4 !important;
+        background: @primary_light !important;
 //         .transition(background 5s linear) !important;
     }
 }
-
 .show_on_hover {
     opacity: 0;
 //     .transition(0.2s linear);
 }
-
 .item {
     list-style-type: none;
 //    background: #ccf;
@@ -64,7 +64,7 @@ iframe {
     cursor: pointer;
     .transition(.5s linear);
     &:hover {
-        background: #FFE7A4;
+        background: @primary_light;
         color: black;
         .transition(.5s linear) !important;
         .show_on_hover {
@@ -75,24 +75,7 @@ iframe {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-.other {
-    background: #ffa;
-}
-
-.dragged {
-    background: #555 !important;
-    color:  #ffe !important;
-}
-a.brand {
-    .transition-duration(1s);
-    .border-radius(15px, 15px, 15px, 15px);
-}
-.hot {
-    background-color: #ecc !important;
-    .transition-duration(1s);
-    color: black;
-}
+/* icons */
 img.huge_icon {
     width: 5em;
     height: 5em;
@@ -105,75 +88,24 @@ img.small_icon {
     width: 2em;
     height: 2em;
 }
-
-.animClass {
-  -webkit-transform: translate3d(0, 0, 0);
-  -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000;
-}
-
-// Tweak your current theme here, or comment-out the predefined theme from settings
-// and start fresh below.
-
-// isotope
-/**** Isotope Filtering ****/
-
-.isotope-item {
-  z-index: 2;
-}
-
-.isotope-hidden.isotope-item {
-  pointer-events: none;
-  z-index: 1;
-}
-
-/**** Isotope CSS3 transitions ****/
-
-.isotope,
-.isotope .isotope-item {
-  -webkit-transition-duration: 0.8s;
-     -moz-transition-duration: 0.8s;
-      -ms-transition-duration: 0.8s;
-       -o-transition-duration: 0.8s;
-          transition-duration: 0.8s;
-}
-
-.isotope {
-  -webkit-transition-property: height, width;
-     -moz-transition-property: height, width;
-      -ms-transition-property: height, width;
-       -o-transition-property: height, width;
-          transition-property: height, width;
-}
-
-.isotope .isotope-item {
-  -webkit-transition-property: -webkit-transform, opacity;
-     -moz-transition-property:    -moz-transform, opacity;
-      -ms-transition-property:     -ms-transform, opacity;
-       -o-transition-property:      -o-transform, opacity;
-          transition-property:         transform, opacity;
-}
-
-/**** disabling Isotope CSS3 transitions ****/
-
-.isotope.no-transition,
-.isotope.no-transition .isotope-item,
-.isotope .isotope-item.no-transition {
-  -webkit-transition-duration: 0s;
-     -moz-transition-duration: 0s;
-      -ms-transition-duration: 0s;
-       -o-transition-duration: 0s;
-          transition-duration: 0s;
-}
-
 #addsearch_form {
     margin-top: 1ex;
 }
-
 .navbar {
     .basicshadow(15px) !important;
 }
-
+hr.header_sep {
+    margin: 2px;
+    padding: 2px;
+}
+.item_title {
+    margin-top: .5ex;
+    clear: left;
+    color: @primary;
+    text-shadow: 1px 1px 5px #555;
+    font-variant: small-caps;
+    font-weight: bold;
+}
 .file-input-name {
     word-wrap: break-word;
     display: block;
@@ -210,6 +142,9 @@ img.small_icon {
 
 
 }
+
+/* notification thing */
+
 .ui-pnotify .picon {
     background-color: transparent;
     background-repeat: no-repeat;
@@ -228,6 +163,8 @@ img.small_icon {
     text-align: center;
     .basicshadow(10px, 0.3);
 }
+
+/* media queries */
 
 @media (max-width: @screen-small) {
     #contents {
@@ -276,11 +213,59 @@ img.small_icon {
         }
     }
 }
-hr.header_sep {
-    margin: 2px;
-    padding: 2px;
+/* ISOTOPE */
+
+.animClass {
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
 }
-h2.item_title {
-    margin-top: .5ex;
-    clear: left;
+// Tweak your current theme here, or comment-out the predefined theme from settings
+// and start fresh below.
+
+// isotope
+/**** Isotope Filtering ****/
+.isotope-item {
+  z-index: 2;
 }
+.isotope-hidden.isotope-item {
+  pointer-events: none;
+  z-index: 1;
+}
+/**** Isotope CSS3 transitions ****/
+.isotope,
+.isotope .isotope-item {
+  -webkit-transition-duration: 0.8s;
+     -moz-transition-duration: 0.8s;
+      -ms-transition-duration: 0.8s;
+       -o-transition-duration: 0.8s;
+          transition-duration: 0.8s;
+}
+
+.isotope {
+  -webkit-transition-property: height, width;
+     -moz-transition-property: height, width;
+      -ms-transition-property: height, width;
+       -o-transition-property: height, width;
+          transition-property: height, width;
+}
+
+.isotope .isotope-item {
+  -webkit-transition-property: -webkit-transform, opacity;
+     -moz-transition-property:    -moz-transform, opacity;
+      -ms-transition-property:     -ms-transform, opacity;
+       -o-transition-property:      -o-transform, opacity;
+          transition-property:         transform, opacity;
+}
+
+/**** disabling Isotope CSS3 transitions ****/
+.isotope.no-transition,
+.isotope.no-transition .isotope-item,
+.isotope .isotope-item.no-transition {
+  -webkit-transition-duration: 0s;
+     -moz-transition-duration: 0s;
+      -ms-transition-duration: 0s;
+       -o-transition-duration: 0s;
+          transition-duration: 0s;
+}
+
