@@ -947,13 +947,13 @@ var ItemTool = new function() {
                        });
                        return;
                    }
+                   make_form(data);
                 }
             )
             .fail(function(e) {
                 $.pnotify( {text: ''+e, type: 'error'}
                     );
             });
-            make_form();
         }
     };
 
