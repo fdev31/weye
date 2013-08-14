@@ -19,6 +19,9 @@
 String.prototype.endswith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
+String.prototype.startswith = function(prefix) {
+    return !! this.match(RegExp('^'+prefix));
+};
 
 /*
  *
@@ -138,9 +141,14 @@ function filter_result(filter) {
         }
     } else {
         var re = new RegExp( current_filter.toLocaleLowerCase() );
+        var i;
         var match_func = function(elt) {
-            var v = !!elt.data('searchable').toLocaleLowerCase().match(re);
-            return v;
+            var searchables = elt.data('searchable').split(/ +/);
+            for (i=0 ; i<searchables.length ; i++) {
+                if (elt.data(searchables[i]).toLocaleLowerCase().match(re))
+                    return true;
+            }
+            return false;
         };
     }
     $('.item').each(
@@ -429,6 +437,7 @@ var ui = new function() {
                 } else { // no deps
                     found.display(item);
                 }
+                break;
             } catch(err) {
 //                console.log(' attempt failed, next...', err);
             }
@@ -591,7 +600,6 @@ function save_form() {
         $('#question_popup').modal('hide');
         ui.get_items().each(function(x, item) {
             var d=$(item);
-            console.log(d.data('link'), link_name);
             if (d.data('link') === link_name) {
                 item = d.data();
                 $.extend(item, metadata);
@@ -770,13 +778,13 @@ var ItemTool = new function() {
      *      "Fixes" an :ref:`object metadata <object_model>`, currently:
      *
      *      - missing **title** is set to *link*
-     *      - missing **searchable** is set to *title*
+     *      - missing **searchable** is set to "title"
      *      - missing **editables** is set to "title mime descr"
      *      - fills **is_data** keyword (should come from *family* instead)
      */
     this.fixit = function (data) {
         if (!!!data.title) data.title = data.link;
-        if (!!!data.searchable) data.searchable = data.title;
+        if (!!!data.searchable) data.searchable = "title";
         if (!!!data.editables) data.editables = 'title mime descr';
         data.is_data = (data.mime !== 'folder')
     };

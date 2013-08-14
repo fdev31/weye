@@ -1,0 +1,2 @@
+- make "editables" per mime type instead of per item
+- allow some to override the save form mechanism (per mime type)

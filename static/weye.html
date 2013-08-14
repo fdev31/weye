@@ -41,7 +41,7 @@
     <!-- ------------------ item (in list) template: view list item ---------------------------------- -->
     <script id="view_list_item_small" class="partial" type= "text/html">
 <div>
-    <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
+    <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editables="{{editables}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
             <span class="item_touch">
                 <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
                 <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
@@ -53,7 +53,7 @@
     </script>
     <script id="view_list_item_big" class="partial" type= "text/html">
 <div>
-    <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}"
+    <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editables="{{editables}}"
             {{#data}}
             data-{{k}}="{{v}}"
             {{/data}}
