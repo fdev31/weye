@@ -31,6 +31,9 @@ You might be interested in the :ref:`function index <genindex>` as well.
 Object model
 ============
 
+Objects are as much native as possible (``Object`` in JavaScript and ``dict`` in Python). They are stored in a tree, the separator is slash -- ``/`` -- as usual.
+When rendered, objects are keeping their data using |data|, so information can be retrieved directly from the view. Keep in mind it is metadata, like links or tags, it shouldn't contain a huge data set, except for text (since it can be handled in the web page natively).
+
 Mandatory
 ---------
 
@@ -62,7 +65,7 @@ Additional
 :descr: The (short) description of the item
 :classes: Additional (html) classes for this item
 
-.. _custom_data:
+.. _customdata:
 
 Custom
 ------
@@ -73,12 +76,12 @@ When returning/interpreting the item (in templates), non-standard metadata are p
 
     [ {'k': 'property-name', 'v': 'property-value'}, {'k': 'another prop', 'v': other_val} ]
 
-On the JavaScript object, this data can be accessed via jQuery's `data <http://api.jquery.com/data/>`_ method.
+On the JavaScript object, this data can be accessed via |data| method.
 
 JSON model
 ==========
 
-When things are returned as collections (Array), to optimize transfers, the format is :js:func:`as follows<uncompress_itemlist>`, it shows some :ref:`custom data <custom_data>` as well:
+When things are returned as collections (Array), to optimize transfers, the format is :js:func:`as follows<uncompress_itemlist>`, it shows some :ref:`custom data <customdata>` as well:
 
 .. code-block:: js
 
@@ -88,4 +91,8 @@ When things are returned as collections (Array), to optimize transfers, the form
         ['Tata', 'guri', 120, [{'k': 'hair', 'v': 'red'}, {k:'nails',v:'blue'}]]
     ]}
 
+
+
+.. _data: http://api.jquery.com/data/
+.. |data| replace:: jQuery's data_
 

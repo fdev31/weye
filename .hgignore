@@ -1,0 +1,10 @@
+syntax: glob
+static/mime/*.svg
+static/mime/js/**
+**/__pycache__/**
+doc/build/**
+**.swp
+examples/phonebook/infos.js
+
+syntax: regexp
+.*[.]py[oc]
