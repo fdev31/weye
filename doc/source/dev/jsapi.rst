@@ -254,6 +254,13 @@ Item related
      - missing **editables** is set to "title mime descr"
      - fills **is_data** keyword (should come from *family* instead)
 
+
+.. function:: ItemTool.from_link(link)
+
+     Returns the |domitem| of a link in current :data:`ui.doc_ref`
+
+     :arg String link: the object name ( |jsitem|\ 's `link` property)
+
 .. function:: ItemTool.execute_evt_handler(e)
 
      Takes event's parent target ``data('link')`` and execute it:
