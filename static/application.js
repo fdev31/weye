@@ -615,6 +615,22 @@ var ui = new function() {
  *
  */
 
+var close_form = function() {
+    $('#question_popup').modal('hide');
+    ui.get_items().each(function(x, item) {
+        var d=$(item);
+        if (d.data('link') === link_name) {
+            item = d.data();
+            $.extend(item, metadata);
+            d.html( ich[ui.current_item_template](item).children().children() );
+            ItemTool.prepare(d);
+        }
+    });
+    setTimeout( function() {
+        o.parent().detach();
+    }, 1000);
+}
+
 function save_form() {
     var o = $('#question_popup .editable');
     var link_name = o.data('link');
@@ -623,21 +639,6 @@ function save_form() {
     var metadata_list = [];
     var full_item = {};
 
-    var close_form = function() {
-        $('#question_popup').modal('hide');
-        ui.get_items().each(function(x, item) {
-            var d=$(item);
-            if (d.data('link') === link_name) {
-                item = d.data();
-                $.extend(item, metadata);
-                d.html( ich[ui.current_item_template](item).children().children() );
-                ItemTool.prepare(d);
-            }
-        });
-        setTimeout( function() {
-            o.parent().detach();
-        }, 1000);
-    }
 
     o.find('.editable-property').each( function(x, property) {
         var property = $(property);
@@ -833,6 +834,18 @@ var ItemTool = new function() {
         }
         return st;
     };
+    /*
+     *
+     * .. function:: ItemTool.from_link(link)
+     *
+     *      Returns the |domitem| of a link in current :data:`ui.doc_ref`
+     *
+     *      :arg String link: the object name ( |jsitem|\ 's `link` property)
+     */
+
+    this.from_link = function(link) {
+        return $('.items .item[data-link="'+link+'"]');
+    }
 
     /*
      * .. function:: ItemTool.execute_evt_handler(e)
@@ -1297,4 +1310,18 @@ function copy(obj, blacklist) {
  * .. |jsitem| replace:: *(Object/dict)* Item
  *
  */
+
+function delete_item() {
+    var o = $('#question_popup .editable');
+    var link_name = o.data('link');
+    var object_path = ui.get_ref(link_name);
+    $.ajax('/o'+object_path, {type: 'DELETE'})
+        .done(function(d) {
+            if (d.error) {
+                console.log('ERR', d); // TODO: generic error handler
+            }
+            close_form();
+            $('.items').isotope('remove', ItemTool.from_link(link_name) );
+        })
+};
 

@@ -14,9 +14,9 @@ def helpanddie():
 
 if '-h' in sys.argv or '--help' in sys.argv:
     helpanddie()
-elif len(sys.argv) == 2:
+if len(sys.argv) == 2:
     weye.configuration.import_conf(sys.argv[1])
-elif len(sys.argv) != 1:
+else:
     helpanddie()
 
 application.catchall = False
