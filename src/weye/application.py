@@ -114,7 +114,7 @@ def cb(path='/'):
 def cb(path='/'):
     path = _fix_path(path)
     fpath = os.path.join(config.shared_root, path)
-    if config.no_overwrite and os.path.exists(fpath):
+    if not config.allow_overwrite and os.path.exists(fpath):
         return {'error': "You are not allowed to overwrite this file"}
     log.debug('~ Deleting %r', path)
     # TODO: session + permission mgmt
@@ -144,7 +144,7 @@ def cb(path):
     path = _fix_path(path)
     text = bottle.request.POST['text']
     fpath = os.path.join(config.shared_root, path)
-    if config.no_overwrite and os.path.exists(fpath):
+    if not config.allow_overwrite and os.path.exists(fpath):
         return {'error': "You are not allowed to overwrite this file"}
     try:
         f = open(fpath, 'w')
@@ -161,6 +161,7 @@ def cb(path):
 def cb():
     log.debug('~ Uploading!')
     bottle.response.set_header('Content-Type', 'application/json')
+    yield
     prefix = os.path.join(config.shared_root, bottle.request.POST['prefix'].lstrip('/'))
     if prefix[-1] != '/':
         prefix += '/'
@@ -168,16 +169,12 @@ def cb():
     errors = []
     for f in bottle.request.files.values():
         fname = prefix+f.filename
-        ok = False
         for t, d in root_objects.save_object_to_path(fname, f.file.read):
             if t == 'err':
                 errors.append(d)
             elif t == 'new':
                 items.append( [d, guess_type(d)] )
-            else:
-                ok = True
             yield
-
     yield bottle.json_dumps( {'error':errors or False, 'children': {'c':['link', 'mime'], 'r':items} } )
 
 

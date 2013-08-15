@@ -53,7 +53,7 @@ def delete_object(path):
         shutil.rmtree(path)
     else:
         os.unlink(path)
-    os.unlink( os.path.join(config.database, path) + config.special_extension )
+    os.unlink( os.path.join(config.shared_db, path) + config.special_extension )
 
 def save_object_to_path(path, read_func):
     """ Saves an object, providing a read function
@@ -67,15 +67,18 @@ def save_object_to_path(path, read_func):
     path = path.rstrip('/').lstrip('/')
 
     if os.path.exists(path):
-        if config.no_overwrite:
+        if not config.allow_overwrite:
             can_write = False
             yield ('err', 'File "%s" exists!'%os.path.basename(path))
         else:
             base, ext = os.path.splitext(path)
             bkp = '%s-old-%s.%s'%(base, time.asctime(), ext)
-            yield ('new', bkp)
+            yield ('new', os.path.basename(bkp))
             os.rename(path, bkp)
-            os.unlink( os.path.join(config.database, path) + config.special_extension )
+            try:
+                os.unlink( os.path.join(config.shared_db, path) + config.special_extension )
+            except Exception as e:
+                log.warning('EE: %s'%e)
     else:
         yield ('new', os.path.basename(path))
     if can_write:
