@@ -145,15 +145,6 @@ def cb(path):
         ret = {'ok': True}
     return ret
 
-# PUSH / Add a note (text)
-# TODO: add filename support (read from search box)
-#@bottle.post('/push')
-#def cb():
-#    bottle.response.set_header('Content-Type', 'application/json')
-#    log.debug("add")
-#    fname = root_objects.add_new_object(bottle.request.POST['text'].encode('utf-8'))
-#    return '{"href": %s}'%dumps('/o/'+fname)
-
 # UPLOAD FILE / alias / ADD ONLY
 # TODO: add versionning support (+ allow overwriting)
 @bottle.route('/upload', method='POST')

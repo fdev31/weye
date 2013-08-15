@@ -3,9 +3,25 @@
 Root objects
 ############
 
+Read an object's metadata
+#########################
+
 .. autofunction:: get_object_from_path
 
+Update an object's metadata
+###########################
+
+.. autofunction:: update_object
+
+List object's children
+######################
+
 .. autofunction:: list_children
+
+Add new object
+##############
+
+.. autofunction:: save_object_to_path
 """
 __all__ = ['get_object_from_path']
 import os
@@ -15,7 +31,6 @@ from bottle import json_loads as loads
 import itertools
 from .utils import guess_type
 from .configuration import config
-from .search_engine import ObjAdder
 import logging
 
 log = logging.getLogger('root_objects')
@@ -24,29 +39,6 @@ if sys.version_info[:2] < (3,3):
     FileNotFoundError = IOError
     PermissionError = IOError
     FileExistsError = IOError
-
-def add_new_object(content, type=None, filename=None):
-    """
-    content: body (str)
-    type: unused
-    filename: filename (if None, it's automatic)
-    """
-    if not filename:
-        c = itertools.count()
-        while True:
-            filename = os.path.join(config.shared_root, 'weyefile_%d.txt'%next(c))
-            if not os.path.exists(filename):
-                break
-    else:
-        filename = os.path.join(config.shared_root, filename)
-
-    name = filename.rsplit('/', 1)[-1]
-
-    with ObjAdder() as add:
-        add(path=name, tags='text note', txtcontent=content.decode('utf-8'), mime='text-plain', description='')
-    open(filename, 'wb').write(content)
-    log.info("Created %r", filename)
-    return name
 
 def save_object_to_path(path, read_func):
     if os.path.exists(path):
@@ -130,7 +122,6 @@ def get_object_from_path(path):
             log.error('Unable to save metadata as %r: %r', meta_fpath, e)
 
     return infos
-
 
 def list_children(path):
     """ Returns a sorted list of children in :ref:`compact form <compact_form>` for the given path
