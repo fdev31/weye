@@ -250,7 +250,7 @@ Item related
      "Fixes" an :ref:`object metadata <object_model>`, currently:
 
      - missing **title** is set to *link*
-     - missing **searchable** is set to *title*
+     - missing **searchable** is set to "title"
      - missing **editables** is set to "title mime descr"
      - fills **is_data** keyword (should come from *family* instead)
 

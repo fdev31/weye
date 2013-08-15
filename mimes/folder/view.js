@@ -18,7 +18,8 @@ function display(item) {
                         ui.plugin = d;
                         if(!!d.templates) {
                             for(var key in d.templates) {
-                                ich.addTemplate(key, d.templates[key]);
+                                if(!!! ich[key] )
+                                    ich.addTemplate(key, d.templates[key]);
                             };
                         }
                         load_plugin();
