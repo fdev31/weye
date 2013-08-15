@@ -10,6 +10,12 @@ Templating
     :.folder-item: *class* in DOM element will show this item only if it's a folder
     :.pure-item: *class* in DOM element will show this item only if it's NOT a folder
     
+Global layout
+#############
+
+.. image:: gui_schema.svg
+    :width: 80%
+    :align: center
 
 Main templates
 ##############
