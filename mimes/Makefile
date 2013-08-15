@@ -6,7 +6,7 @@ JSMIN=jsmin
 all: build test
 
 build:
-	 ./compile.sh ${OUT}
+	 ./compile.py ${OUT}
 
 ${OUT}: build
 
