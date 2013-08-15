@@ -110,6 +110,258 @@ function editor_save() {
         });
 };
 
+/* 
+ * High-level API
+ * ##############
+ *
+ * The nanowork context
+ *
+ * .. class:: n_w
+ *
+ */
+
+var n_w = {};
+
+/*
+ *    .. function:: n_w.level_up
+ *
+ *       Back to upper level.
+ *
+ *       :arg opts: Available options:
+ *
+ *          :disable_history: passed to :func:`n_w.view_path`
+ *
+ *       Leaves the current navigation level and reach the parent calling :func:`n_w.view_path`
+ */
+
+n_w.level_up = function(opts) {
+    var opts = opts || {};
+    var bref = ui.doc_ref.match(RegExp('(.*)/[^/]+$'));
+    if(!!plugin_cleanup) {
+        try {
+            plugin_cleanup();
+        } catch (e) {
+            $.pnotify({type: 'error', title: 'plugin failed to cleanup', text: ''+e});
+        }
+    }
+    ui.flush_caches();
+    if (!!bref) {
+        bref = bref[1] || '/';
+        $('.items').addClass('slided_right');
+        n_w.view_path(bref, {'history': !!! opts.disable_history});
+    }
+};
+
+/*
+ * .. function:: n_w.view_path(path, opts)
+ *
+ *      Updates current context to display the object pointed by *path*
+ *
+ *      :arg path: URL/path of the ressource to display
+ *      :arg opts: Modifications of the standard behavior,
+ *          currently supported:
+ *
+ *          :disable_history: (bool) Do not store change into history
+ *
+ */
+
+n_w.view_path = function(path, opts) {
+//    console.log('view_path______________________', path, ui.doc_ref);
+    if (path === ui.doc_ref) return;
+    go_busy();
+    var opts = opts || {};
+    ui.flush_caches();
+    var buttons = $('#addsearch_form');
+    /* document viewer, give it a valid path */
+    // TODO: plugin deactivate, possible for applications and mimes (as following:)
+    $('audio').each( function() {this.pause(); this.src = "";} );
+    setTimeout( function() {
+        $.get('/o'+path)
+        .success(function(d) {
+            buttons.find('button').removeClass('hidden');
+            if (d.error) {
+                $.pnotify({
+                    title: 'Error displaying "'+d.link+'" content',
+                    text: d.message
+                });
+                go_ready();
+            } else {
+                // normal continuation
+                /* update current document reference */
+                if (path === '/') {
+                    d.path = '/';
+                } else {
+                    // strip start
+                    //while(path[1] === '/') path = path.substr(1);
+                    // strip end
+                    while(path.length > 1 && path.substr(-1) === '/') path = path.substr(0, path.length-1);
+                    d.path = path;
+                }
+                ui.doc_ref = path;
+                if (ui.doc_ref.endswith('/')) {
+                    d._cont = ui.doc_ref;
+                } else {
+                    d._cont = ui.doc_ref + '/';
+                }
+
+                // compute permalink
+                // TODO: check if same as doc ref
+                var loc = '' + window.location;
+                if (loc.search('[?]view=')) {
+                    loc = loc.substring(0, loc.search('[?]view='))
+                }
+                ui.permalink = loc + '?view=' + ui.doc_ref;
+                if (!!!opts.disable_history)
+                    history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
+                
+                n_w.load_view(d);
+                go_ready();
+            }
+        })
+        .error(function() {
+            $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
+            go_ready();
+        });
+    }, 3);
+};
+/*
+ * .. function:: n_w.load_view
+ *
+ *      Display an |jsitem| (or a :class:`Resource`) "fullscreen" (not in a list) from its data (``mime`` property).
+ *      It will try to find a matching key in the :data:`mimes` dictionary.
+ *
+ *      Example:
+ *
+ *      If mime is "text-html"
+ *          The tested values will be (in this order): **text-html**, **text**, **default**
+ *
+ *      :arg item: the |jsitem|
+ */
+n_w.load_view = function(item) {
+    ui._cur_item = item;
+    var found = false;
+
+    var choices = [item.mime];
+
+    if (ui.doc_ref.endswith(item.link)) {
+        item._cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.link.length);
+    } else {
+        item._cont = ui.doc_ref;
+    }
+
+    var subchoices = item.mime.split('-');
+    for(var n=subchoices.length-1; n>=1 ; n--) {
+        choices.push( subchoices.slice(0, n).join('-') );
+    }
+    choices.push('default');
+
+    for (var n=0; (!!! found) && n < choices.length ; n++) {
+        try {
+//                conole.log('try '+choices[n]);
+            found = mimes[ choices[n] ];
+            var dependencies = [];
+            var prefix = '/static/mime/js/' + found.name + '/';
+            if( !! found.stylesheet )
+                dependencies.push( prefix + 'style.css' );
+            if (found.dependencies) {
+                found.dependencies.forEach( function(x) {
+                    if ( x.match(/^[/]/) ) {
+                        dependencies.push( x ) 
+                    } else {
+                        dependencies.push( prefix + x );
+                    }
+                })
+            }
+            if (dependencies.length !== 0) {
+                var counter = 0;
+                for (var dep in dependencies) {
+//                        console.log( dependencies[dep] );
+                    toast(dependencies[dep], function() {
+                        if (counter++ === dependencies.length) found.display(item)
+                    } );
+                }
+            } else { // no deps
+                found.display(item);
+            }
+            break;
+        } catch(err) {
+//                console.log(' attempt failed, next...', err);
+        }
+    }
+    if(!!!found) {
+        $.pnotify({'type': 'error', 'title': 'Type association', 'text': 'failed loading one of: '+choices});
+    }
+};
+
+/*
+ *    .. function:: n_w.get_item
+ *
+ *       Returns current page's :class:`Resource`
+ *
+ */
+
+n_w.get_item = function() {
+    return new Resource(ui._cur_item.link, ui._cur_item.mime, ui._cur_item._cont)
+}
+
+/*
+ *
+ *    .. function:: n_w.get_child
+ *
+ *       Returns currently edited or selected children's :class:`Resource`
+ *
+ */
+
+n_w.get_child = function() {
+    var d = $('#question_popup .editable').data();
+    if(!! d) return new Resource(d.link, d.mime, d._cont);
+
+    d = $('.items .item.highlighted').data();
+    if(!! d) return new Resource(d.link, d.mime, ui.doc_ref);
+}
+
+/*
+ *
+ *
+ * .. class:: Resource
+ *
+ *    .. data:: Resource.link
+ *    .. data:: Resource.mime
+ *    .. function:: Resource.edit
+ *    .. function:: Resource.view
+ *    .. function:: Resource.del
+ *    .. function:: Resource.get_dom
+ * 
+ */
+
+var Resource = function(link, mime, container) {
+    if (typeof(link) == 'string') {
+        this.link = link;
+        this.mime = mime;
+        this._cont = container;
+        if (!! opts)
+            for(var k in opts)
+                this[k] = opts[k];
+    } else {
+        for(var k in link)
+            this[k] = link[k];
+    }
+    return this;
+};
+Resource.prototype.edit = function() {
+    ItemTool.popup( ItemTool.from_ref(this.link) );
+};
+Resource.prototype.view = function() {
+    n_w.load_view( ui.get_ref( this.link ) );
+};
+Resource.prototype.del = function() {
+    delete_item(this.link);
+};
+Resource.prototype.get_dom = function() {
+    return ItemTool.from_link(this.link);
+};
+
+
 
 /*
  * Filtering
@@ -400,76 +652,8 @@ var ui = new function() {
     this._cached_filter = null;
     this.on_hold = true;
     this.reload = function() {
-        ui.load_view(ui._cur_item);
+        n_w.load_view(ui._cur_item);
     }
-    /*
-     * .. function:: ui.load_view
-     *
-     *      Display an |jsitem| "fullscreen" (not in a list) from its data (``mime`` property).
-     *      It will try to find a matching key in the :data:`mimes` dictionary.
-     *
-     *      Example:
-     *
-     *      If mime is "text-html"
-     *          The tested values will be (in this order): **text-html**, **text**, **default**
-     *
-     *      :arg item: the |jsitem|
-     */
-    this.load_view = function(item) {
-        ui._cur_item = item;
-        var found = false;
-
-        var choices = [item.mime];
-
-        if (ui.doc_ref.endswith(item.link)) {
-            item._cont = ui.doc_ref.substr(0, ui.doc_ref.length - item.link.length);
-        } else {
-            item._cont = ui.doc_ref;
-        }
-
-        var subchoices = item.mime.split('-');
-        for(var n=subchoices.length-1; n>=1 ; n--) {
-            choices.push( subchoices.slice(0, n).join('-') );
-        }
-        choices.push('default');
-
-        for (var n=0; (!!! found) && n < choices.length ; n++) {
-            try {
-//                conole.log('try '+choices[n]);
-                found = mimes[ choices[n] ];
-                var dependencies = [];
-                var prefix = '/static/mime/js/' + found.name + '/';
-                if( !! found.stylesheet )
-                    dependencies.push( prefix + 'style.css' );
-                if (found.dependencies) {
-                    found.dependencies.forEach( function(x) {
-                        if ( x.match(/^[/]/) ) {
-                            dependencies.push( x ) 
-                        } else {
-                            dependencies.push( prefix + x );
-                        }
-                    })
-                }
-                if (dependencies.length !== 0) {
-                    var counter = 0;
-                    for (var dep in dependencies) {
-//                        console.log( dependencies[dep] );
-                        toast(dependencies[dep], function() {
-                            if (counter++ === dependencies.length) found.display(item)
-                        } );
-                    }
-                } else { // no deps
-                    found.display(item);
-                }
-                break;
-            } catch(err) {
-//                console.log(' attempt failed, next...', err);
-            }
-        }
-        if(!!!found) {
-            $.pnotify({'type': 'error', 'title': 'Type association', 'text': 'failed loading one of: '+choices});
-        }
-    };
     /*
      * .. function ui.flush_caches
      *
@@ -687,7 +871,7 @@ function fix_nav(link) {
 /*
  * .. function:: go_back
  *
- *     Leaves the current navigation level and reach the parent calling :func:`view_path`
+ *     Leaves the current navigation level and reach the parent calling :func:`n_w.view_path`
  */
 function go_back() {
     var opts = opts || {};
@@ -704,7 +888,7 @@ function go_back() {
     if (!!bref) {
         bref = bref[1] || '/';
         $('.items').addClass('slided_right');
-        view_path(bref, {'history': !!! opts.disable_history});
+        n_w.view_path(bref, {'history': !!! opts.disable_history});
     }
 };
 
@@ -715,81 +899,6 @@ function go_busy() {
 
 function go_ready() {
 //    $('a.brand').removeClass('hot');
-};
-
-/*
- * .. function:: view_path(path, opts)
- *
- *      Updates current context to display the object pointed by *path*
- *
- *      :arg path: URL/path of the ressource to display
- *      :arg opts: Modifications of the standard behavior,
- *          currently supported:
- *
- *          :disable_history: (bool) Do not store change into history
- *
- */
-function view_path(path, opts) {
-//    console.log('view_path______________________', path, ui.doc_ref);
-    if (path === ui.doc_ref) return;
-    go_busy();
-    var opts = opts || {};
-    ui.flush_caches();
-    var buttons = $('#addsearch_form');
-//    console.log('xxxxxxxxxxx', ui.doc_ref);
-    /* document viewer, give it a valid path */
-    // TODO: plugin deactivate, possible for applications and mimes (as following:)
-    $('audio').each( function() {this.pause(); this.src = "";} );
-//    $('.row-fluid').fadeOut('fast');
-    setTimeout( function() {
-        $.get('/o'+path)
-        .success(function(d) {
-            buttons.find('button').removeClass('hidden');
-//            console.log('object: /o/'+path, d);
-            if (d.error) {
-                $.pnotify({
-                    title: 'Error displaying "'+d.link+'" content',
-                    text: d.message
-                });
-                go_ready();
-            } else {
-                // normal continuation
-                /* update current document reference */
-                if (path === '/') {
-                    d.path = '/';
-                } else {
-                    // strip start
-                    //while(path[1] === '/') path = path.substr(1);
-                    // strip end
-                    while(path.length > 1 && path.substr(-1) === '/') path = path.substr(0, path.length-1);
-                    d.path = path;
-                }
-                ui.doc_ref = path;
-                if (ui.doc_ref.endswith('/')) {
-                    d._cont = ui.doc_ref;
-                } else {
-                    d._cont = ui.doc_ref + '/';
-                }
-
-                // compute permalink
-                // TODO: check if same as doc ref
-                var loc = '' + window.location;
-                if (loc.search('[?]view=')) {
-                    loc = loc.substring(0, loc.search('[?]view='))
-                }
-                ui.permalink = loc + '?view=' + ui.doc_ref;
-                if (!!!opts.disable_history)
-                    history.pushState({'view': ''+ui.doc_ref}, "Staring at "+ui.doc_ref, '/#?view='+ui.doc_ref);
-                
-                ui.load_view(d);
-                go_ready();
-            }
-        })
-        .error(function() {
-            $.pnotify({ title: 'Error loading "'+path+'"', text: "Server not responding."});
-            go_ready();
-        });
-    }, 3);
 };
 
 
@@ -852,7 +961,7 @@ var ItemTool = new function() {
      *      Takes event's parent target ``data('link')`` and execute it:
      *
      *          - eval code if starts with "js"
-     *          - else, calls :func:`view_path` for the link
+     *          - else, calls :func:`n_w.view_path` for the link
      *
      *      :arg e: event
      */
@@ -869,7 +978,7 @@ var ItemTool = new function() {
                 eval( link.substr(3) );
             } else {
                 $('.items').addClass('slided_left');
-                view_path(ui.get_ref(link));
+                n_w.view_path(ui.get_ref(link));
             }
         }
         e.cancelBubble = true;
@@ -931,9 +1040,10 @@ var ItemTool = new function() {
                 'edit': edited,
                 'buttons': [
                     {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
-                    {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+                    {'name': 'Delete', 'onclick': 'delete_item($("#question_popup .editable").data("link"));false;', 'class': 'btn-warning'}
                 ]
             });
+            p
             pop.modal();
             var edited = $('#question_popup .editable');
             setTimeout(function() {
@@ -1183,11 +1293,11 @@ $(function() {
 
     // load page
   
-    view_path(document.location.href.split(/\?view=/)[1] || '/');
+    n_w.view_path(document.location.href.split(/\?view=/)[1] || '/');
 
     // key binding
     window.addEventListener("popstate", function(e) {
-        if(!!e.state) view_path(e.state.view, {disable_history: true})
+        if(!!e.state) n_w.view_path(e.state.view, {disable_history: true})
         return false;
     });
 
@@ -1310,9 +1420,7 @@ function copy(obj, blacklist) {
  *
  */
 
-function delete_item() {
-    var o = $('#question_popup .editable');
-    var link_name = o.data('link');
+function delete_item(link_name) {
     var object_path = ui.get_ref(link_name);
     $.ajax('/o'+object_path, {type: 'DELETE'})
         .done(function(d) {
