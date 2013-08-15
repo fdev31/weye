@@ -69,7 +69,7 @@ def _import_conf(filename=None, encoding=None):
             except Exception as e:
                 print("warning %s: %s"%(filename, e))
 
-        bool_values = 'check_security read_only exclude_dot_files'.split()
+        bool_values = 'check_security no_overwrite read_only exclude_dot_files'.split()
 
         for k in 'file_encoding debug shared_root'.split():
             val = rd(k)
@@ -96,10 +96,10 @@ def _import_conf(filename=None, encoding=None):
         config.shared_root = config.shared_root.rstrip(os.path.sep) # path for shared files
         config.shared_db = os.path.join(config.shared_root, '.weye_db') # path for shared files database
 
-        try:
-            os.mkdir(config.shared_db)
-        except (OSError, IOError):
-            pass
+    try:
+        os.mkdir(config.database)
+    except (OSError, IOError):
+        pass
 
 import_conf()
 

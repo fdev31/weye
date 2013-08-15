@@ -19,6 +19,34 @@ from weye.search_engine import search
 from weye import root_objects
 log = logging.getLogger('application')
 
+# ensure mimes icons are expanded (optimization to avoid huge archives)
+_mimes_path1 = os.path.abspath( os.path.join( config.static_root, 'mime') )
+sys.path.insert(0, _mimes_path1)
+_mimes_path2 = os.path.abspath( os.path.join( config.static_root, os.path.pardir, 'mimes') )
+sys.path.insert(0, _mimes_path2)
+try:
+    mimesjs = os.path.join( config.static_root, 'mimetypes.js')
+    if not os.path.exists(mimesjs):
+        # mime icons
+        from clean_dups import expand
+        cwd = os.getcwd()
+        os.chdir( _mimes_path1 )
+        expand()
+        os.chdir(cwd)
+        # mime data (.js + css)
+        import mime_compiler
+        os.chdir( _mimes_path2 )
+        mime_compiler.main()
+        os.chdir(cwd)
+        open(mimesjs, 'w').write(
+            open( os.path.join(config.static_root, os.path.pardir, 'mimes', 'mimes.js') ).read()
+        )
+        # cleanup
+        del(sys.path[0], sys.path[1], expand, _mimes_path1, _mimes_path2)
+    del(mimesjs)
+except Exception as e:
+    print("Failed to generate mimes: %r"%e)
+
 __all__ = ['root_cb']
 
 try:
@@ -34,20 +62,6 @@ def root_cb():
     """ Default route (aka ``/`` or *root* ), displays :file:`static/weye.html` """
     return bottle.static_file('weye.html', config.static_root)
 
-
-# ensure mimes icons are expanded (optimization to avoid huge archives)
-_mimes_path = os.path.abspath( os.path.join( config.static_root, 'mime') )
-sys.path.insert(0, _mimes_path)
-try:
-    from clean_dups import expand
-    cwd = os.getcwd()
-    os.chdir( _mimes_path )
-    expand()
-    #subprocess.call([sys.executable, 'clean_dups.py', 'expand'])
-    os.chdir(cwd)
-    del(sys.path[0], expand, _mimes_path)
-except Exception as e:
-    print("Failed to expand mimes: %r"%e)
 
 # TODO: search
 @bottle.post('/search')
@@ -95,6 +109,18 @@ def cb(path='/'):
     return {}
 #    return root_objects.get_object_from_path(path)
 
+# UNLINK AN OBJECT
+@bottle.route('/o/<path:path>', method='DELETE')
+def cb(path='/'):
+    path = _fix_path(path)
+    fpath = os.path.join(config.shared_root, path)
+    if config.no_overwrite and os.path.exists(fpath):
+        return {'error': "You are not allowed to overwrite this file"}
+    log.debug('~ Deleting %r', path)
+    # TODO: session + permission mgmt
+    root_objects.delete_object(fpath)
+    return {}
+
 # CHILDREN / CONTENT
 @bottle.route('/c/')
 @bottle.route('/c/<path:path>')
@@ -130,17 +156,7 @@ def cb(path):
         ret = {'ok': True}
     return ret
 
-# PUSH / Add a note (text)
-# TODO: add filename support (read from search box)
-#@bottle.post('/push')
-#def cb():
-#    bottle.response.set_header('Content-Type', 'application/json')
-#    log.debug("add")
-#    fname = root_objects.add_new_object(bottle.request.POST['text'].encode('utf-8'))
-#    return '{"href": %s}'%dumps('/o/'+fname)
-
-# UPLOAD FILE / alias / ADD ONLY
-# TODO: add versionning support (+ allow overwriting)
+# UPLOAD FILE / UPDATES AS WELL
 @bottle.route('/upload', method='POST')
 def cb():
     log.debug('~ Uploading!')
@@ -153,14 +169,14 @@ def cb():
     for f in bottle.request.files.values():
         fname = prefix+f.filename
         ok = False
-        for x in root_objects.save_object_to_path(fname, f.file.read):
-            if x and x is not True:
-                errors.append(x)
+        for t, d in root_objects.save_object_to_path(fname, f.file.read):
+            if t == 'err':
+                errors.append(d)
+            elif t == 'new':
+                items.append( [d, guess_type(d)] )
             else:
                 ok = True
             yield
-        if ok:
-            items.append( [f.filename, guess_type(fname)] )
 
     yield bottle.json_dumps( {'error':errors or False, 'children': {'c':['link', 'mime'], 'r':items} } )
 
