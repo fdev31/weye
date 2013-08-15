@@ -19,6 +19,34 @@ from weye.search_engine import search
 from weye import root_objects
 log = logging.getLogger('application')
 
+# ensure mimes icons are expanded (optimization to avoid huge archives)
+_mimes_path1 = os.path.abspath( os.path.join( config.static_root, 'mime') )
+sys.path.insert(0, _mimes_path1)
+_mimes_path2 = os.path.abspath( os.path.join( config.static_root, os.path.pardir, 'mimes') )
+sys.path.insert(0, _mimes_path2)
+try:
+    mimesjs = os.path.join( config.static_root, 'mimetypes.js')
+    if not os.path.exists(mimesjs):
+        # mime icons
+        from clean_dups import expand
+        cwd = os.getcwd()
+        os.chdir( _mimes_path1 )
+        expand()
+        os.chdir(cwd)
+        # mime data (.js + css)
+        import mime_compiler
+        os.chdir( _mimes_path2 )
+        mime_compiler.main()
+        os.chdir(cwd)
+        open(mimesjs, 'w').write(
+            open( os.path.join(config.static_root, os.path.pardir, 'mimes', 'mimes.js') ).read()
+        )
+        # cleanup
+        del(sys.path[0], sys.path[1], expand, _mimes_path1, _mimes_path2)
+    del(mimesjs)
+except Exception as e:
+    print("Failed to generate mimes: %r"%e)
+
 __all__ = ['root_cb']
 
 try:
@@ -35,19 +63,6 @@ def root_cb():
     return bottle.static_file('weye.html', config.static_root)
 
 
-# ensure mimes icons are expanded (optimization to avoid huge archives)
-_mimes_path = os.path.abspath( os.path.join( config.static_root, 'mime') )
-sys.path.insert(0, _mimes_path)
-try:
-    from clean_dups import expand
-    cwd = os.getcwd()
-    os.chdir( _mimes_path )
-    expand()
-    #subprocess.call([sys.executable, 'clean_dups.py', 'expand'])
-    os.chdir(cwd)
-    del(sys.path[0], expand, _mimes_path)
-except Exception as e:
-    print("Failed to expand mimes: %r"%e)
 
 # TODO: search
 @bottle.post('/search')
