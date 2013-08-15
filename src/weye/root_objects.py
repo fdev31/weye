@@ -22,12 +22,20 @@ Add new object
 ##############
 
 .. autofunction:: save_object_to_path
+
 """
+
+# TODO: init some backend from the  `database` string
+# and then use it for further operations
+
 __all__ = ['get_object_from_path']
+
 import os
 import sys
+import time
 from bottle import json_dumps as dumps
 from bottle import json_loads as loads
+import shutil
 import itertools
 from .utils import guess_type
 from .configuration import config
@@ -40,10 +48,37 @@ if sys.version_info[:2] < (3,3):
     PermissionError = IOError
     FileExistsError = IOError
 
-def save_object_to_path(path, read_func):
-    if os.path.exists(path):
-        yield 'File exists!'
+def delete_object(path):
+    if os.path.isdir(path):
+        shutil.rmtree(path)
     else:
+        os.unlink(path)
+    os.unlink( os.path.join(config.database, path) + config.special_extension )
+
+def save_object_to_path(path, read_func):
+    """ Saves an object, providing a read function
+
+    :arg path str: the file path
+    :arg read_func callable: a function that takes an integer (number of bytes to read)
+    """
+    print('SAVE %s'%(path))
+    can_write = True
+
+    path = path.rstrip('/').lstrip('/')
+
+    if os.path.exists(path):
+        if config.no_overwrite:
+            can_write = False
+            yield ('err', 'File "%s" exists!'%os.path.basename(path))
+        else:
+            base, ext = os.path.splitext(path)
+            bkp = '%s-old-%s.%s'%(base, time.asctime(), ext)
+            yield ('new', bkp)
+            os.rename(path, bkp)
+            os.unlink( os.path.join(config.database, path) + config.special_extension )
+    else:
+        yield ('new', os.path.basename(path))
+    if can_write:
         cs = 2**20
         o = open(path, 'wb')
         out = o.write
@@ -51,10 +86,10 @@ def save_object_to_path(path, read_func):
             d = read_func(cs)
             if not d:
                 o.close()
-                yield True
+                yield (True, True)
                 break
             out( d )
-            yield
+            yield (True, True)
 
 def update_object(path, meta):
     path = path.rstrip('/').lstrip('/')
@@ -81,7 +116,9 @@ def get_object_from_path(path):
 
 
     """
-    path = path.rstrip('/')
+    print('GET %s'%(path))
+    # TODO: pure metadata reading // a metadata injector will act asychronously
+    path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
     meta_fpath = os.path.join(config.shared_db, path).rstrip('/') + config.special_extension
     infos = None
@@ -142,6 +179,8 @@ def list_children(path):
 
         {children: {'c': ['descr', 'mime', 'link', 'title'], 'r': values}}
     """
+    print('LIST %s'%(path))
+    # TODO: do not test files physically but return a database call
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
 

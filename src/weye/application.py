@@ -63,7 +63,6 @@ def root_cb():
     return bottle.static_file('weye.html', config.static_root)
 
 
-
 # TODO: search
 @bottle.post('/search')
 def cb():
@@ -110,6 +109,18 @@ def cb(path='/'):
     return {}
 #    return root_objects.get_object_from_path(path)
 
+# UNLINK AN OBJECT
+@bottle.route('/o/<path:path>', method='DELETE')
+def cb(path='/'):
+    path = _fix_path(path)
+    fpath = os.path.join(config.shared_root, path)
+    if config.no_overwrite and os.path.exists(fpath):
+        return {'error': "You are not allowed to overwrite this file"}
+    log.debug('~ Deleting %r', path)
+    # TODO: session + permission mgmt
+    root_objects.delete_object(fpath)
+    return {}
+
 # CHILDREN / CONTENT
 @bottle.route('/c/')
 @bottle.route('/c/<path:path>')
@@ -145,8 +156,7 @@ def cb(path):
         ret = {'ok': True}
     return ret
 
-# UPLOAD FILE / alias / ADD ONLY
-# TODO: add versionning support (+ allow overwriting)
+# UPLOAD FILE / UPDATES AS WELL
 @bottle.route('/upload', method='POST')
 def cb():
     log.debug('~ Uploading!')
@@ -159,14 +169,14 @@ def cb():
     for f in bottle.request.files.values():
         fname = prefix+f.filename
         ok = False
-        for x in root_objects.save_object_to_path(fname, f.file.read):
-            if x and x is not True:
-                errors.append(x)
+        for t, d in root_objects.save_object_to_path(fname, f.file.read):
+            if t == 'err':
+                errors.append(d)
+            elif t == 'new':
+                items.append( [d, guess_type(d)] )
             else:
                 ok = True
             yield
-        if ok:
-            items.append( [f.filename, guess_type(fname)] )
 
     yield bottle.json_dumps( {'error':errors or False, 'children': {'c':['link', 'mime'], 'r':items} } )
 
