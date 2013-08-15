@@ -16,7 +16,7 @@
     <!-- ------------------ base template: headers ---------------------------------- -->
     <script id="header" type="text/html">
         {{#mime}}
-            <header>
+        <header data-link="{{link}}" data-mime="{{mime}}">
             <hgroup>
                 <h1 class="item_title"><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h1>
             </hgroup>
@@ -169,7 +169,7 @@
 
 
     <form class="form-inline pull-left">
-        <button id="backlink" class="btn" onclick="go_back(); return false;"><i class="glyphicon glyphicon-arrow-left" ></i>&nbsp;Back</button>
+        <button id="backlink" class="btn" onclick="n_w.level_up(); return false;"><i class="glyphicon glyphicon-arrow-left" ></i>&nbsp;Back</button>
 
         <input type="file" class="btn btn-default folder-item" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;<span id='file_caption'>Add file...</span>" onchange="ItemTool._uploader.send()" />
     </form>

@@ -40,6 +40,70 @@ Markdown Text Editor
      
      Saves the EpicEditor_ content
 
+High-level API
+##############
+
+The nanowork context
+
+.. class:: n_w
+
+
+   .. function:: n_w.level_up
+
+      Back to upper level.
+
+      :arg opts: Available options:
+
+         :disable_history: passed to :func:`n_w.view_path`
+
+      Leaves the current navigation level and reach the parent calling :func:`n_w.view_path`
+
+.. function:: n_w.view_path(path, opts)
+
+     Updates current context to display the object pointed by *path*
+
+     :arg path: URL/path of the ressource to display
+     :arg opts: Modifications of the standard behavior,
+         currently supported:
+
+         :disable_history: (bool) Do not store change into history
+
+
+.. function:: n_w.load_view
+
+     Display an |jsitem| (or a :class:`Resource`) "fullscreen" (not in a list) from its data (``mime`` property).
+     It will try to find a matching key in the :data:`mimes` dictionary.
+
+     Example:
+
+     If mime is "text-html"
+         The tested values will be (in this order): **text-html**, **text**, **default**
+
+     :arg item: the |jsitem|
+
+   .. function:: n_w.get_item
+
+      Returns current page's :class:`Resource`
+
+
+
+   .. function:: n_w.get_child
+
+      Returns currently edited or selected children's :class:`Resource`
+
+
+
+
+.. class:: Resource
+
+   .. data:: Resource.link
+   .. data:: Resource.mime
+   .. function:: Resource.edit
+   .. function:: Resource.view
+   .. function:: Resource.del
+   .. function:: Resource.get_dom
+
+
 Filtering
 #########
 
@@ -147,18 +211,6 @@ User Interface
 
      Selected item's index
 
-.. function:: ui.load_view
-
-     Display an |jsitem| "fullscreen" (not in a list) from its data (``mime`` property).
-     It will try to find a matching key in the :data:`mimes` dictionary.
-
-     Example:
-
-     If mime is "text-html"
-         The tested values will be (in this order): **text-html**, **text**, **default**
-
-     :arg item: the |jsitem|
-
 .. function ui.flush_caches
 
      Flush internal caches (useful on context change)
@@ -225,18 +277,7 @@ Navigation
 
 .. function:: go_back
 
-    Leaves the current navigation level and reach the parent calling :func:`view_path`
-
-.. function:: view_path(path, opts)
-
-     Updates current context to display the object pointed by *path*
-
-     :arg path: URL/path of the ressource to display
-     :arg opts: Modifications of the standard behavior,
-         currently supported:
-
-         :disable_history: (bool) Do not store change into history
-
+    Leaves the current navigation level and reach the parent calling :func:`n_w.view_path`
 
 Item related
 ############
@@ -250,16 +291,23 @@ Item related
      "Fixes" an :ref:`object metadata <object_model>`, currently:
 
      - missing **title** is set to *link*
-     - missing **searchable** is set to *title*
+     - missing **searchable** is set to "title"
      - missing **editables** is set to "title mime descr"
      - fills **is_data** keyword (should come from *family* instead)
+
+
+.. function:: ItemTool.from_link(link)
+
+     Returns the |domitem| of a link in current :data:`ui.doc_ref`
+
+     :arg String link: the object name ( |jsitem|\ 's `link` property)
 
 .. function:: ItemTool.execute_evt_handler(e)
 
      Takes event's parent target ``data('link')`` and execute it:
 
          - eval code if starts with "js"
-         - else, calls :func:`view_path` for the link
+         - else, calls :func:`n_w.view_path` for the link
 
      :arg e: event
 
