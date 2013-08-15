@@ -615,19 +615,18 @@ var ui = new function() {
  *
  */
 
-var close_form = function() {
-    $('#question_popup').modal('hide');
-    ui.get_items().each(function(x, item) {
-        var d=$(item);
-        if (d.data('link') === link_name) {
-            item = d.data();
-            $.extend(item, metadata);
-            d.html( ich[ui.current_item_template](item).children().children() );
-            ItemTool.prepare(d);
-        }
-    });
+var close_form = function(more_data) {
+    var metadata = more_data || {};
+    var qp = $('#question_popup');
+    var link = qp.find('.editable').data('link');
+    var item = ItemTool.from_link(link);
+    var d = item.data();
+    $.extend(d, metadata);
+    item.html( ich[ui.current_item_template](d).children().children() );
+    ItemTool.prepare(d);
+    qp.modal('hide');
     setTimeout( function() {
-        o.parent().detach();
+        qp.detach();
     }, 1000);
 }
 
@@ -657,7 +656,7 @@ function save_form() {
     } else {
         $.ajax('/o'+object_path, {dataType: 'json', data: {meta: JSON.stringify(metadata) }, type: 'PUT'})
             .done( function(e) {
-                close_form();
+                close_form(metadata);
                 $.pnotify({type: "success", text: "Saved"});
             })
         .fail( function(e) {
@@ -1217,7 +1216,7 @@ $(function() {
         return false;
     });
     Mousetrap.bind('ins', function(e) {
-        $.pnotify({text: 'Could show an upload popup... ?'});
+        $('#file').trigger('click');
         return false;
     });
     Mousetrap.bind('del', function(e) {

@@ -41,7 +41,7 @@ config.check_security = True
 config.read_only = False
 
 # behavior
-config.no_overwrite = os.environ.get('ALLOW_WRITE', '').upper() not in ('1', 'YES', 'TRUE', 'ON')
+config.allow_overwrite = os.environ.get('ALLOW_WRITE', '').upper() in ('1', 'YES', 'TRUE', 'ON')
 
 
 _parser = configparser.ConfigParser()
@@ -69,7 +69,7 @@ def _import_conf(filename=None, encoding=None):
             except Exception as e:
                 print("warning %s: %s"%(filename, e))
 
-        bool_values = 'check_security no_overwrite read_only exclude_dot_files'.split()
+        bool_values = 'check_security allow_overwrite read_only exclude_dot_files'.split()
 
         for k in 'file_encoding debug shared_root'.split():
             val = rd(k)
@@ -97,7 +97,7 @@ def _import_conf(filename=None, encoding=None):
         config.shared_db = os.path.join(config.shared_root, '.weye_db') # path for shared files database
 
     try:
-        os.mkdir(config.database)
+        os.mkdir(config.shared_db)
     except (OSError, IOError):
         pass
 
