@@ -22,6 +22,9 @@
 String.prototype.endswith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
+String.prototype.startswith = function(prefix) {
+    return !! this.match(RegExp('^'+prefix));
+};
 
 /*
  *
@@ -134,6 +137,7 @@ function filter_result(filter) {
     } else {
         current_filter = $('#addsearch_form input[name=text]').val() ;
     }
+    // bind the match function
     if (current_filter.match(RegExp('^type:'))) {
         var t = new RegExp(current_filter.toLocaleLowerCase().split(':')[1].trim());
         var match_func = function(elt) {
@@ -141,9 +145,14 @@ function filter_result(filter) {
         }
     } else {
         var re = new RegExp( current_filter.toLocaleLowerCase() );
+        var i;
         var match_func = function(elt) {
-            var v = !!elt.data('searchable').toLocaleLowerCase().match(re);
-            return v;
+            var searchables = elt.data('searchable').split(/ +/);
+            for (i=0 ; i<searchables.length ; i++) {
+                if (elt.data(searchables[i]).toLocaleLowerCase().match(re))
+                    return true;
+            }
+            return false;
         };
     }
     $('.item').each(
@@ -445,11 +454,14 @@ var ui = new function() {
                     var counter = 0;
                     for (var dep in dependencies) {
 //                        console.log( dependencies[dep] );
-                        toast(dependencies[dep], function() { counter += 1 ; if (counter === dependencies.length) found.display(item) } );
+                        toast(dependencies[dep], function() {
+                            if (counter++ === dependencies.length) found.display(item)
+                        } );
                     }
                 } else { // no deps
                     found.display(item);
                 }
+                break;
             } catch(err) {
 //                console.log(' attempt failed, next...', err);
             }
@@ -615,7 +627,6 @@ function save_form() {
         $('#question_popup').modal('hide');
         ui.get_items().each(function(x, item) {
             var d=$(item);
-            console.log(d.data('link'), link_name);
             if (d.data('link') === link_name) {
                 item = d.data();
                 $.extend(item, metadata);
@@ -799,13 +810,13 @@ var ItemTool = new function() {
      *      "Fixes" an :ref:`object metadata <object_model>`, currently:
      *
      *      - missing **title** is set to *link*
-     *      - missing **searchable** is set to *title*
+     *      - missing **searchable** is set to "title"
      *      - missing **editables** is set to "title mime descr"
      *      - fills **is_data** keyword (should come from *family* instead)
      */
     this.fixit = function (data) {
         if (!!!data.title) data.title = data.link;
-        if (!!!data.searchable) data.searchable = data.title;
+        if (!!!data.searchable) data.searchable = "title";
         if (!!!data.editables) data.editables = 'title mime descr';
         data.is_data = (data.mime !== 'folder')
     };
@@ -878,66 +889,72 @@ var ItemTool = new function() {
          * .. todo:: update elt's `data` on save
          *
          */
-
-        $.get('/o' + ui.get_ref(elt.data('link')))
-           .done( function(data) {
-               if(data.error) {
-                   $.pnotify({
-                       type: 'error',
-                       title: data.name,
-                       text: data.message
-                   });
-                   return;
-               }
-//               console.log('D=',data);
-                var qp = $('#question_popup');
-                if(qp.length != 0) {
-                    if (qp.css('display') === 'none') {
-                        qp.remove();
-                    } else {
-                        return;
-                    }
-                }
-                var edited = [];
-                ItemTool.fixit(data);
-                if (data.editables === "")  {
-                    for(var k in data) {
-                        if (!!!k.match(/^isotope/)) {
-                            edited.push({name: k, type: 'text'});
-                        }
-                    };
+        var make_form = function(data) {
+            var qp = $('#question_popup');
+            if(qp.length != 0) {
+                if (qp.css('display') === 'none') {
+                    qp.remove();
                 } else {
-                    var editables = data.editables.split(/ +/);
-                    for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+                    return;
                 }
-                var pop = ich.question({
-                    'item': data,
-                    'title': data.title || data.name,
-                    'mime': data.mime,
-                    'footnote': 'Changes may be effective after a refresh',
-                    'edit': edited,
-                    'buttons': [
-                        {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
-                        {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
-                    ]
-                });
-                pop.modal();
-                var edited = $('#question_popup .editable');
-                setTimeout(function() {
-                    pop.find('.editable-property').each( function(i, o) {
-                        var o = $(o);
-                        var d = copy(o.data());
-                        d.content = data[d.name];
-                        o.append(ich['input_'+d.type](d));
-                    });
-                }, 200);
-
             }
-        )
-        .fail(function(e) {
-            $.pnotify( {text: ''+e, type: 'error'}
-                );
-        });
+            var edited = [];
+            ItemTool.fixit(data);
+            if (data.editables === "")  {
+                for(var k in data) {
+                    if (!!!k.match(/^isotope/)) {
+                        edited.push({name: k, type: 'text'});
+                    }
+                };
+            } else {
+                var editables = data.editables.split(/ +/);
+                // TODO: input type thing
+                for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+            }
+            var pop = ich.question({
+                'item': data,
+                'title': data.title || data.name,
+                'mime': data.mime,
+                'footnote': 'Changes may be effective after a refresh',
+                'edit': edited,
+                'buttons': [
+                    {'name': 'Save', 'onclick': 'save_form();false;', 'class': 'btn-success'},
+                    {'name': 'Delete', 'onclick': 'delete_item();false;', 'class': 'btn-warning'}
+                ]
+            });
+            pop.modal();
+            var edited = $('#question_popup .editable');
+            setTimeout(function() {
+                pop.find('.editable-property').each( function(i, o) {
+                    var o = $(o);
+                    var d = copy(o.data());
+                    d.content = data[d.name];
+                    o.append(ich['input_'+d.type](d));
+                });
+            }, 200);
+
+        }
+        if(elt.data('link').startswith('js:')) {
+            make_form(elt.data());
+        } else {
+            $.get('/o' + ui.get_ref(elt.data('link')))
+               .done( function(data) {
+                   if(data.error) {
+                       $.pnotify({
+                           type: 'error',
+                           title: data.name,
+                           text: data.message
+                       });
+                       return;
+                   }
+                   make_form(data);
+                }
+            )
+            .fail(function(e) {
+                $.pnotify( {text: ''+e, type: 'error'}
+                    );
+            });
+        }
     };
 
     /*
