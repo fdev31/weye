@@ -17,12 +17,12 @@
     <script id="header" type="text/html">
         <header id="main_header" data-link="{{link}}" data-mime="{{mime}}">
         <hgroup>
-            <h1 class="item_title"><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h1>
+            <h1 class="item_title"><small>{{cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h1>
 
         </hgroup>
         <hgroup>
 
-                <a id="download_link" class="btn btn-large btn-primary pure-item" title="Click to download" href="/d{{_cont}}{{link}}">
+                <a id="download_link" class="btn btn-large btn-primary pure-item" title="Click to download" href="/d{{cont}}{{link}}">
                 <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;
                 Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
                 </a>
@@ -97,7 +97,7 @@
                     <h4 class="modal-title"><img class="big_icon" src="/static/mime/{{mime}}.svg"/> {{title}}</h4>
                 </div>
 <!-- Editable fields, quite ugly, should come to another template or be more generic -->
-                <div class="editable" data-_cont="{{item._cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
+                <div class="editable" data-cont="{{item.cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
                 {{#edit}}
                     <div class="row editable-property" data-name="{{name}}" data-type="{{type}}" />
                 {{/edit}}
@@ -175,7 +175,8 @@
     <header id="main_header">
     </header>
     <hr class="header_sep" />
-    <div class="row" id="contents"></div>
+    <div class="row" id="contents">
+    </div>
 
 <!-- ------------------ S C R I P TS ---------------------------------- -->
 

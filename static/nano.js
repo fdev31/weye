@@ -51,7 +51,7 @@ Resource.prototype.edit = function() {
 Resource.prototype.del = function() {
 };
 Resource.prototype.view = function() {
-    Resource_view( this.get_ref() );
+    Nano.display( this );
 };
 Resource.prototype.get_ref = function() {
     console.log(this);
@@ -76,7 +76,24 @@ inherits(Item, Resource);
 // -- UI object
 var UI = {
     item_template: 'list_item_big',
+    find_item_from_child: function(dom) {
+        var st = $(dom);
+        while (!!! st.hasClass('item') ) {
+            if(st.hasClass('items')) {
+                st = null;
+                break;
+            } else {
+                st = st.parent();
+            }
+        }
+        return st;
+
+    },
+    execute_item_handler: function() {
+        Nano.children.by_link( UI.find_item_from_child(this).data('link') ).view();
+    },
     set_context: function(name) {
+        console.log('context');
         var buttons = $('#addsearch_form');
         buttons.find('button').removeClass('hidden');
         if(name === 'folder') {
@@ -118,11 +135,18 @@ function ItemList(data, item_template) {
     this.item_template = 'view_'+ (item_template || UI.item_template);
     this.data = { item_template: this._item_templater };
     this.data.children = data;
-    for (var i=0; i<data.length; i++)
+    var _r = {}
+    this._rev = _r;
+    for (var i=0; i<data.length; i++) {
         data[i]._parent = this;
+        _r[ data[i].link ] = data[i];
+    }
 }
 inherits(ItemList, Template);
 
+ItemList.prototype.by_link = function(link) {
+    return this._rev[link];
+};
 ItemList.prototype.select = function(index) {
     self.selected += index;
 };
@@ -152,6 +176,13 @@ ItemList.prototype.draw = function() {
             }
         }
     });
+ 
+    $('.items').find('.item_touch').hammer()
+        .bind({
+            tap: UI.execute_item_handler
+//            hold: ItemTool.popup_evt_handler,
+//            swipe: ItemTool.popup_evt_handler
+        });
 };
 
 
@@ -165,6 +196,7 @@ Nano.get_permalink = function() {
 Nano.get = function(link) {
 };
 Nano.load_link = function(link) {
+    this.display( new Resource({link: link}) );
     return Resource_view(link);
 };
 Nano.reload = function() {
