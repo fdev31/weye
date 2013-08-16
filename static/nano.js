@@ -135,7 +135,24 @@ ItemList.prototype.sort_by = function(criteria) {
 ItemList.prototype._item_templater = function(data) {
     // called in Item context
     return ich[this._parent.item_template](this).html();
-}
+};
+ItemList.prototype.draw = function() {
+    Template.prototype.draw.call(this);
+    $('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
+        getSortData : {
+            title: function ( e ) {
+                return e.data('title');
+            },
+            type: function ( e ) {
+                var m = e.data('mime');
+                if (m==='folder') {
+                    return '!!!!!!!!!!!!!!!!!!!!!'+e.data('title').toLocaleLowerCase();
+                }
+                return e.data('mime') + '!' + e.data('title').toLocaleLowerCase();
+            }
+        }
+    });
+};
 
 
 // -- NANO obj
