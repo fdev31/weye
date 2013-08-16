@@ -15,28 +15,24 @@
     <!-- dynamic headers-->
     <!-- ------------------ base template: headers ---------------------------------- -->
     <script id="header" type="text/html">
-        {{#mime}}
-        <header data-link="{{link}}" data-mime="{{mime}}">
-            <hgroup>
-                <h1 class="item_title"><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h1>
-            </hgroup>
-            <hgroup>
+        <header id="main_header" data-link="{{link}}" data-mime="{{mime}}">
+        <hgroup>
+            <h1 class="item_title"><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h1>
+
+        </hgroup>
+        <hgroup>
 
                 <a id="download_link" class="btn btn-large btn-primary pure-item" title="Click to download" href="/d{{_cont}}{{link}}">
                 <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;
                 Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
-            </a>
+                </a>
 
-          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
+              <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
 
-          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
+              <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
 
-</div>
-            </hgroup>
-
-            </header>
-<hr class="header_sep" />
-        {{/mime}}
+        </hgroup>
+        </header>
     </script>
     <!-- ------------------ item (in list) template: view list item SMALL ---------------------------------- -->
     <script id="view_list_item_small" class="partial" type= "text/html">
@@ -66,20 +62,18 @@
     </script>
     <!-- ------------------ item template: view list ---------------------------------- -->
     <script id="view_list" type="text/html">
-        {{>header}}
         <div class="items row">
-            {{#child}}
+            {{#children}}
             {{{item_template}}}
-            {{/child}}
+            {{/children}}
         </div>
     </script>
     <!-- ------------------ item template: view file ---------------------------------- -->
     <script id="view_file" type="text/html">
-        {{>header}}
         <div class="items row">
-            {{#child}}
+            {{#children}}
             {{{item_template}}}
-            {{/child}}
+            {{/children}}
         </div>
     </script>
     <!-- ------------------ form template: input text ---------------------------------- -->
@@ -178,7 +172,10 @@
         <a title="View as icons" class="disabled view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></a>
         <a title="View as list" class="view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ;ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></a>
     </div>
-<div class="row" id="contents"></div>
+    <header id="main_header">
+    </header>
+    <hr class="header_sep" />
+    <div class="row" id="contents"></div>
 
 <!-- ------------------ S C R I P TS ---------------------------------- -->
 
@@ -198,7 +195,8 @@
       <script src="/static/js/epiceditor.min.js"> </script> <!-- Markdown/text editor -->
       <script src="/static/js/toast-1.0.0.min.js"> </script> <!-- Lazy resources loading -->
       <script src="/static/js/traversty.min.js"> </script> <!-- collection management and traversal -->
-      <script src="/static/application.js"> </script>
       <script src="/static/mimetypes.js"> </script> <!-- mimetypes structure -->
+      <script src="/static/nano.js"> </script>
+      <script src="/static/nano_impl.js"> </script>
   </body>
 </html>
