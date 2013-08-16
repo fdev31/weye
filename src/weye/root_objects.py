@@ -127,6 +127,7 @@ def get_object_from_path(path):
     infos = None
 
     try:
+        print('load %s'%meta_fpath)
         infos = loads(open(meta_fpath, 'rb').read())
     except (OSError, IOError, FileNotFoundError):
         if not os.path.exists(fpath):
