@@ -221,8 +221,8 @@ Nano.get_permalink = function() {
 };
 Nano.get = function(link) {
 };
-Nano.load_link = function(link) {
-    this.display( new Resource({link: link}) );
+Nano.load_link = function(link, opts) {
+    this.display( new Resource({link: link}), opts);
     return Resource_view(link);
 };
 Nano.reload = function() {
@@ -244,24 +244,52 @@ Nano.set_children = function(children, item_template) {
     }
     this.children = new ItemList(children);
     this.children.draw();
-}
+};
+Nano._display_set_content = function(resource) {
+    UI.set_context(resource);
+    var hdr = $('#main_header');
+    hdr.replaceWith( ich.header( resource ) );
+    Nano.doc_ref = resource.get_ref();
+    console.log('DISPLAY', resource, Nano.doc_ref);
+    Nano.current = ResourceFactory(resource);
+    load_page(Nano.current);
+};
 Nano.display = function(resource, opts) {
-
-    var set_content = function(resource) {
-        UI.set_context(resource);
-        var hdr = $('#main_header');
-        hdr.replaceWith( ich.header( resource ) );
-        Nano.doc_ref = resource.get_ref();
-        console.log('DISPLAY', resource, Nano.doc_ref);
-        Nano.current = ResourceFactory(resource);
-        load_page(Nano.current);
-    }
     if (instanceOf(resource, Item)) {
-        set_content(resource);
+        Nano._display_set_content(resource);
     } else {
-        resource.getItem(set_content, opts);
+        resource.getItem(Nano._display_set_content, opts);
     }
 
+};
+
+/*
+ *    .. function:: Nano.level_up
+ *
+ *       Back to upper level.
+ *
+ *       :arg opts: Available options:
+ *
+ *          :disable_history: passed to :func:`Nano.view_path`
+ *
+ *       Leaves the current navigation level and reach the parent calling :func:`n_w.view_path`
+ */
+
+Nano.level_up = function(opts) {
+    var opts = opts || {};
+    var bref = Nano.doc_ref.match(RegExp('(.*)/[^/]+$'));
+    if(!!plugin_cleanup) {
+        try {
+            plugin_cleanup();
+        } catch (e) {
+            $.pnotify({type: 'error', title: 'plugin failed to cleanup', text: ''+e});
+        }
+    }
+    if (!!bref) {
+        bref = bref[1] || '/';
+        $('.items').addClass('slided_right');
+        Nano.load_link(bref, {'history': !!! opts.disable_history});
+    }
 };
 
 /*
@@ -346,7 +374,7 @@ $(function() {
     // key binding
     window.addEventListener("popstate", function(e) {
         console.log("POPSTATE", e);
-//        if(!!e.state) n_w.view_path(e.state.view, {disable_history: true})
+        if(!!e.state) Nano.load_link(e.state.view, {disable_history: true})
         return false;
     });
 
