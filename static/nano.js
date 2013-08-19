@@ -4,6 +4,19 @@ function inherits(new_cls, base_cls) {
     new_cls.prototype.constructor = new_cls;
 }
 
+Templates = {}
+
+function TemplateFactory(item) {
+    var choices = Nano._get_choices_from_mime(item.mime);
+    for (var i=0; i<choices.length; i++) {
+        var choice = choices[i];
+        for (var k in Templates) {
+            if(k === choice)
+                return new Templates[k](item);
+        }
+    }
+    return new PageTemplate(item)
+}
 function ResourceFactory(item) {
     if(item.link !== undefined) {
         return new Item(item);
@@ -56,7 +69,6 @@ Resource.prototype.view = function() {
     Nano.display( this );
 };
 Resource.prototype.get_ref = function() {
-    console.log(this);
     if (!!! this.cont || !!! this.link)
         return '/';
     return this.cont + this.link;
@@ -114,7 +126,7 @@ var UI = {
 
     },
     execute_item_handler: function() {
-        Nano.children.by_link( UI.find_item_from_child(this).data('link') ).view();
+        Nano.content.find_by_link( UI.find_item_from_child(this).data('link') ).view();
     },
     set_context: function(resource) {
         var name = resource.mime;
@@ -140,37 +152,42 @@ var UI = {
 
 // -- TEMPLATE obj
 
-function Template (name, data) {
-    this.name = 'view_'+name;
+function PageTemplate(data, name) {
+    if (!!! name)
+        name = 'file';
     this.data = data;
-};
-Template.prototype.from = function (resource) {
+    this.name = 'view_'+name;
+}
+PageTemplate.prototype.from = function (resource) {
     return ich[this.name](resource || this.data);
 };
-Template.prototype.draw = function(resource) {
+PageTemplate.prototype.draw = function(resource) {
     $('#contents').html(this.from(resource));
 };
-Template.prototype.clear = function() {
+PageTemplate.prototype.clear = function() {
     $('#contents').html('');
 };
+
 // item list
+
 function ItemList(data, item_template) {
-    Template.call(this, 'list');
+    PageTemplate.call(this, data);
     this.selected = -1;
     this.item_template = 'view_'+ (item_template || UI.item_template);
-    this.data = { item_template: this._item_templater };
-    this.data.children = data;
-    this._c = data; // convenient alias
+    this.data.item_template = this._item_templater;
+//    this.data.children = data;
+    this._c = data.children || []; // convenient alias
     var _r = {}
     this._index = _r;
-    for (var i=0; i<data.length; i++) {
-        data[i]._parent = this;
-        _r[ data[i].link ] = i;
+    for (var i=0; i<this._c.length; i++) {
+        this._c[i]._parent = this;
+        _r[ this._c[i].link ] = i;
     }
 }
-inherits(ItemList, Template);
+inherits(ItemList, PageTemplate);
+Templates['folder'] = ItemList;
 
-ItemList.prototype.by_link = function(link) {
+ItemList.prototype.find_by_link = function(link) {
     return this._c[this._index[link]];
 };
 ItemList.prototype.select = function(index) {
@@ -187,7 +204,7 @@ ItemList.prototype._item_templater = function(data) {
     return ich[this._parent.item_template](this).html();
 };
 ItemList.prototype.draw = function() {
-    Template.prototype.draw.call(this);
+    PageTemplate.prototype.draw.call(this);
     $('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
         getSortData : {
             title: function ( e ) {
@@ -196,12 +213,14 @@ ItemList.prototype.draw = function() {
             type: function ( e ) {
                 var m = e.data('mime');
                 if (m==='folder') {
-                    return '!!!!!!!!!!!!!!!!!!!!!'+e.data('title').toLocaleLowerCase();
+                    return '!!!!!!!'+e.data('title').toLocaleLowerCase();
                 }
                 return e.data('mime') + '!' + e.data('title').toLocaleLowerCase();
             }
         }
     });
+    if(this._c.length === 0)
+        $.pnotify({type: 'info', title: 'Attention', text: 'No item in this folder.', delay: 1000});
  
     $('.items').find('.item_touch').hammer()
         .bind({
@@ -221,6 +240,15 @@ Nano.get_permalink = function() {
 };
 Nano.get = function(link) {
 };
+Nano._get_choices_from_mime = function(mime) {
+    var choices = [mime];
+    var subchoices = mime.split('-');
+    for(var n=subchoices.length-1; n>=1 ; n--) {
+        choices.push( subchoices.slice(0, n).join('-') );
+    }
+    choices.push('default');
+    return choices;
+}
 Nano.load_link = function(link, opts) {
     this.display( new Resource({link: link}), opts);
     return Resource_view(link);
@@ -238,12 +266,9 @@ Nano._unload_plugins = function() {
 if (!!mimes) {
     Nano.mimes = mimes;
 };
-Nano.set_children = function(children, item_template) {
-    if( 0 === children.length) {
-        $.pnotify({type: 'info', title: 'Attention', text: 'No item in this folder.', delay: 1000});
-    }
-    this.children = new ItemList(children);
-    this.children.draw();
+Nano.set_content = function(item, opts) {
+    this.content = TemplateFactory(item);
+    this.content.draw();
 };
 Nano._display_set_content = function(resource) {
     UI.set_context(resource);

@@ -1,7 +1,8 @@
-load_page = function(item) {
+"use strict";
+var load_page = function(item) {
     var found = false;
 
-    var choices = [item.mime];
+    var choices = Nano._get_choices_from_mime(item.mime);
 
     if (Nano.doc_ref.endswith(item.link)) {
         item.cont = Nano.doc_ref.substr(0, Nano.doc_ref.length - item.link.length);
@@ -9,16 +10,13 @@ load_page = function(item) {
         item.cont = Nano.doc_ref;
     }
 
-    var subchoices = item.mime.split('-');
-    for(var n=subchoices.length-1; n>=1 ; n--) {
-        choices.push( subchoices.slice(0, n).join('-') );
-    }
-    choices.push('default');
+    console.log('CHOICES', choices);
 
     for (var n=0; (!!! found) && n < choices.length ; n++) {
         try {
 //                conole.log('try '+choices[n]);
             found = Nano.mimes[ choices[n] ];
+            if (!!! found) continue;
             var dependencies = [];
             var prefix = '/static/mime/js/' + found.name + '/';
             if( !! found.stylesheet )
@@ -32,15 +30,18 @@ load_page = function(item) {
                     }
                 })
             }
+            console.log("FOUND:", found);
             if (dependencies.length !== 0) {
                 var counter = 0;
                 for (var dep in dependencies) {
-//                        console.log( dependencies[dep] );
+                    console.log( dependencies[dep] );
                     toast(dependencies[dep], function() {
-                        if (counter++ === dependencies.length) found.display(item)
+                        console.log('disp', counter, dependencies.length);
+                        if (++counter === dependencies.length) found.display(item)
                     } );
                 }
             } else { // no deps
+                console.log('disp');
                 found.display(item);
             }
             break;

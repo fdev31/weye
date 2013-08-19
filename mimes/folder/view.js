@@ -12,7 +12,6 @@ function display(item) {
                 is_an_app = true;
             })
             if(is_an_app) {
-                Nano.children = base_data;
                 $.ajax({url: '/d'+item.cont+item.link+'/infos.js', dataType: 'json'})
                     .done( function(d) {
                         ui.plugin = d;
@@ -31,7 +30,8 @@ function display(item) {
                         console.log("ERR", e);
                     });
             } else {
-                Nano.set_children(base_data);
+                item.children = base_data;
+                Nano.set_content(item);
             }
         });
 };

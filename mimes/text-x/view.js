@@ -1,4 +1,7 @@
 function display(item) {
+    console.log('DISP');
+    console.log(item);
+    console.log(item.get_ref());
 
     // Do not forget to EDIT dependencies.js accordingly
     var _map = {
@@ -11,8 +14,10 @@ function display(item) {
 //        'text-x-lua': 'lua',
         'text-x-sh': 'shell'
     }
-    $.ajax('/d'+item.path, {dataType: 'text'})
+    // download the content to display it
+    $.ajax('/d'+item.get_ref(), {dataType: 'text'})
         .done( function(d) {
+            console.log('done');
             var lang = _map[item.mime];
             if( !!! lang )
                 lang = item.mime.split('-')[2];
@@ -25,12 +30,12 @@ function display(item) {
             } else {
                 Rainbow.color();
             }
-            ui.set_context('item');
         })
         .fail( function(e) {
             $.pnotify({type: 'error', title: 'Loading item', text: e});
         });
 
-    var cont = $('#contents').html( get_view('file', item) )
+    console.log('set_content', item);
+    Nano.set_content(item);
 };
 
