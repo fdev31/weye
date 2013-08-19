@@ -1092,7 +1092,8 @@ var ItemTool = new function() {
      *      :arg o: Item (jQuery element) to prepare
      */
     this.prepare = function (o) {
-        $(o).find('.item_touch').hammer()
+        $(o).find('.item_touch')
+            .hammer()
             .bind({
                 tap: ItemTool.execute_evt_handler,
                 hold: ItemTool.popup_evt_handler,
