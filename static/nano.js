@@ -18,6 +18,8 @@ function Resource (dict) {
         console.log('No link for ',dict);
     if (!!! this.cont)
         this.cont = Nano.doc_ref;
+    if (this.cont.substr(-1) !== '/')
+        this.cont += '/';
     this.type = 'resource';
 };
 Resource.prototype.getItem = function(callback, opts) {
@@ -57,7 +59,7 @@ Resource.prototype.get_ref = function() {
     console.log(this);
     if (!!! this.cont || !!! this.link)
         return '/';
-    return this.cont + '/' + this.link;
+    return this.cont + this.link;
 };
 
 // -- ITEM class
@@ -75,6 +77,28 @@ inherits(Item, Resource);
 
 // -- UI object
 var UI = {
+/*
+ * .. function:: UI.hr_size(size)
+ *
+ *      :arg size: a number of bytes (file/data weight)
+ *      :type size: Integer
+ *      :returns: Human readable size
+ *      :rtype: string
+ *
+ */
+    hr_size: function (size) {
+        if (size === undefined) return 'N/A';
+        var units = ['', 'k', 'M', 'G'];
+        var i = 0;
+
+        while(size >= 1024) {
+            size /= 1024.0;
+            ++i;
+        }
+
+        return size.toFixed(1) + ' ' + units[i]+'B';
+    },
+
     item_template: 'list_item_big',
     find_item_from_child: function(dom) {
         var st = $(dom);
@@ -92,7 +116,8 @@ var UI = {
     execute_item_handler: function() {
         Nano.children.by_link( UI.find_item_from_child(this).data('link') ).view();
     },
-    set_context: function(name) {
+    set_context: function(resource) {
+        var name = resource.mime;
         console.log('context');
         var buttons = $('#addsearch_form');
         buttons.find('button').removeClass('hidden');
@@ -105,7 +130,7 @@ var UI = {
             $('.filesize').each( function(i, x) {
                 var o=$(x);
                 if (!!! o.data('_fs_converted')) {
-                    o.text(hr_size(eval(o.text())));
+                    o.text(UI.hr_size(resource.size));
                 }
                 o.data('_fs_converted', 1);
             });
@@ -135,17 +160,18 @@ function ItemList(data, item_template) {
     this.item_template = 'view_'+ (item_template || UI.item_template);
     this.data = { item_template: this._item_templater };
     this.data.children = data;
+    this._c = data; // convenient alias
     var _r = {}
-    this._rev = _r;
+    this._index = _r;
     for (var i=0; i<data.length; i++) {
         data[i]._parent = this;
-        _r[ data[i].link ] = data[i];
+        _r[ data[i].link ] = i;
     }
 }
 inherits(ItemList, Template);
 
 ItemList.prototype.by_link = function(link) {
-    return this._rev[link];
+    return this._c[this._index[link]];
 };
 ItemList.prototype.select = function(index) {
     self.selected += index;
@@ -220,12 +246,13 @@ Nano.set_children = function(children, item_template) {
     this.children.draw();
 }
 Nano.display = function(resource, opts) {
-    UI.set_context(resource.mime);
 
     var set_content = function(resource) {
+        UI.set_context(resource);
         var hdr = $('#main_header');
         hdr.replaceWith( ich.header( resource ) );
-        Nano.doc_ref = resource.cont + '/' + resource.link;
+        Nano.doc_ref = resource.get_ref();
+        console.log('DISPLAY', resource, Nano.doc_ref);
         Nano.current = ResourceFactory(resource);
         load_page(Nano.current);
     }
