@@ -12,7 +12,6 @@
     <link href="/static/css/theme.css" type="text/css" rel="stylesheet">
     <link href="/static/css/jquery.pnotify.default.css" rel="stylesheet">
     <!-- ------------------ T E M P L A T E S ---------------------------------------------------------------------- -->
-    <!-- dynamic headers-->
     <!-- ------------------ base template: headers ---------------------------------- -->
     <script id="header" type="text/html">
         <header id="main_header" data-link="{{link}}" data-mime="{{mime}}">
@@ -22,14 +21,14 @@
         </hgroup>
         <hgroup>
 
-                <a id="download_link" class="btn btn-large btn-primary pure-item" title="Click to download" href="/d{{cont}}{{link}}">
-                <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;
-                Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
-                </a>
+            <a id="download_link" class="btn btn-large btn-primary pure-item" title="Click to download" href="/d{{cont}}{{link}}">
+            <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;
+            Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
+            </a>
 
-              <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
+          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
 
-              <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
+          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
 
         </hgroup>
         </header>
