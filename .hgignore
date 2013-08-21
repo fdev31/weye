@@ -3,7 +3,7 @@ static/mime/*.svg
 static/mime/js/**
 **/__pycache__/**
 doc/build/**
-#**.swp
+**.sw[pon]
 examples/phonebook/infos.js
 
 syntax: regexp

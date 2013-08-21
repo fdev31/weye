@@ -1,5 +1,5 @@
 function display(item) {
-    console.log('DISP');
+    console.log('DISP text-x');
     console.log(item);
     console.log(item.get_ref());
 
@@ -23,7 +23,7 @@ function display(item) {
                 lang = item.mime.split('-')[2];
             var pre = $('<pre><code data-language="'+lang+'"></code></pre>');
             pre.find('code').text(d);
-            pre.appendTo(cont);
+            pre.appendTo($('#contents'));
 
             if( item.size > 15000) {
                 $.pnotify({type: 'warning', title: 'File is too big', text: 'Syntax coloring disabled.'});

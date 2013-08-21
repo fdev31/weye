@@ -1,4 +1,5 @@
 function display(item) {
+    console.log('display text', item);
     Nano.set_content(item);
     $('<div class="row-fluid"><small>Fullscreen: <i>Alt+F</i>, Toggle preview: <i>Alt+P</i></small></div><div class="row-fluid" id="epiceditor"></div> <div class="pull-right btn-group"></div>').appendTo($('#contents'));
 

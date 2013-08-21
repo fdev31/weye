@@ -1,3 +1,8 @@
+// TODO: 
+//  - Allow setting new mime objects in JavaScript, with some more magical lookup in ResourceFactory
+//    - use _get_choices_from_mime in the ResourceFactory, matching mimes dict
+//  - Re-Enable edit mode
+//
 // -- RESOURCE class
 function inherits(new_cls, base_cls) {
     new_cls.prototype = Object.create( base_cls.prototype );
@@ -18,7 +23,7 @@ function TemplateFactory(item) {
     return new PageTemplate(item)
 }
 function ResourceFactory(item) {
-    if(item.link !== undefined) {
+    if(item.size !== undefined) {
         return new Item(item);
     } else {
         return new Resource(item);
@@ -27,12 +32,23 @@ function ResourceFactory(item) {
 
 function Resource (dict) {
     $.extend(this, dict);
-    if (!!! dict.link)
+    if (!!! dict.link) {
         console.log('No link for ',dict);
-    if (!!! this.cont)
-        this.cont = Nano.doc_ref;
-    if (this.cont.substr(-1) !== '/')
+    } else {
+        if (!!! this.cont) {
+            if( !! this.link.match(RegExp('/'))) {
+                var c = this.link.split(RegExp('(.*)/(.*)'));
+                this.cont = c[1];
+                this.link = c[2];
+            } else {
+                this.cont = Nano.doc_ref;
+            }
+        }
+    }
+    if (!! this.cont && this.cont.substr(-1) !== '/')
         this.cont += '/';
+    if (this.mime !== 'folder')
+        this.is_data = true;
     this.type = 'resource';
 };
 Resource.prototype.getItem = function(callback, opts) {
@@ -46,11 +62,8 @@ Resource.prototype.getItem = function(callback, opts) {
                 });
 //                Nano._go_ready();
             } else {
-                if (!!!opts.disable_history)
-                    history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
 
-                callback(ResourceFactory(d));
-
+                callback(ResourceFactory(d), opts);
 //                n_w.load_view(d);
 //                go_ready();
             }
@@ -129,10 +142,12 @@ var UI = {
         Nano.content.find_by_link( UI.find_item_from_child(this).data('link') ).view();
     },
     set_context: function(resource) {
+        console.log('---------------------->CTX', resource);
         var name = resource.mime;
         console.log('context');
         var buttons = $('#addsearch_form');
         buttons.find('button').removeClass('hidden');
+        console.log(name);
         if(name === 'folder') {
             $('.folder-item').show();
             $('.pure-item').hide();
@@ -250,8 +265,9 @@ Nano._get_choices_from_mime = function(mime) {
     return choices;
 }
 Nano.load_link = function(link, opts) {
-    this.display( new Resource({link: link}), opts);
-    return Resource_view(link);
+    var r = new Resource({link: link});
+    Nano.doc_ref = r.cont; // sets current as it's parent
+    this.display( r, opts);
 };
 Nano.reload = function() {
     return this.display(this.current);
@@ -270,22 +286,24 @@ Nano.set_content = function(item, opts) {
     this.content = TemplateFactory(item);
     this.content.draw();
 };
-Nano._display_set_content = function(resource) {
-    UI.set_context(resource);
+Nano._display_set_content = function(resource, opts) {
+    var opts = opts || {};
     var hdr = $('#main_header');
     hdr.replaceWith( ich.header( resource ) );
     Nano.doc_ref = resource.get_ref();
     console.log('DISPLAY', resource, Nano.doc_ref);
     Nano.current = ResourceFactory(resource);
     load_page(Nano.current);
+    UI.set_context(resource);
+    if (!!!opts.disable_history)
+        history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
 };
 Nano.display = function(resource, opts) {
     if (instanceOf(resource, Item)) {
-        Nano._display_set_content(resource);
+        Nano._display_set_content(resource, opts);
     } else {
         resource.getItem(Nano._display_set_content, opts);
     }
-
 };
 
 /*
@@ -303,6 +321,7 @@ Nano.display = function(resource, opts) {
 Nano.level_up = function(opts) {
     var opts = opts || {};
     var bref = Nano.doc_ref.match(RegExp('(.*)/[^/]+$'));
+    /*
     if(!!plugin_cleanup) {
         try {
             plugin_cleanup();
@@ -310,6 +329,7 @@ Nano.level_up = function(opts) {
             $.pnotify({type: 'error', title: 'plugin failed to cleanup', text: ''+e});
         }
     }
+    */
     if (!!bref) {
         bref = bref[1] || '/';
         $('.items').addClass('slided_right');
@@ -453,7 +473,8 @@ $(function() {
     Mousetrap.bind('end', function(e) {
         return ui.select_idx(ui.selected_item, -1);
     });
-    Nano.reload(); // load page
+
+    Nano.load_link(document.location.href.split(/\?view=/)[1] || '/', {disable_history: true} ); // loads view
 });
 
 
