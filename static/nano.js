@@ -1,6 +1,6 @@
 // TODO: 
 //  - Allow setting new mime objects in JavaScript, with some more magical lookup in ResourceFactory
-//    - use _get_choices_from_mime in the ResourceFactory, matching mimes dict
+//    - use _get_choices_from_mime in the ResourceFactory, matching mimes dict -- as for templates
 //  - Re-Enable edit mode
 //
 // -- RESOURCE class
@@ -64,8 +64,7 @@ Resource.prototype.getItem = function(callback, opts) {
             } else {
 
                 callback(ResourceFactory(d), opts);
-//                n_w.load_view(d);
-//                go_ready();
+//                Nano._go_ready();
             }
         })
     .error(function() {
@@ -135,11 +134,11 @@ var UI = {
                 st = st.parent();
             }
         }
-        return st;
+        return Nano.content.find_by_link(st.data('link'));
 
     },
     execute_item_handler: function() {
-        Nano.content.find_by_link( UI.find_item_from_child(this).data('link') ).view();
+        UI.find_item_from_child(this).view();
     },
     set_context: function(resource) {
         console.log('---------------------->CTX', resource);
