@@ -102,6 +102,27 @@ inherits(Item, Resource);
 
 // -- UI object
 var UI = {
+
+    item_template: 'list_item_big',
+
+/*
+ * Navigation
+ * ##########
+ *
+ * .. function:: UI.fix_nav(link)
+ *
+ *      Handles the "click" on the given *link* in the ``.navbar``  (sort criteria)
+ *
+ *      Example usage:
+ *
+ *      .. code-block:: html
+ *
+ *          <a href="#" onclick="fix_nav(this); do_some_action();">link</a>
+ */
+    fix_nav: function (link) {
+        $('div.navbar ul.nav li').removeClass('active');
+        $(link).parent().addClass('active');
+    },
 /*
  * .. function:: UI.hr_size(size)
  *
@@ -124,7 +145,50 @@ var UI = {
         return size.toFixed(1) + ' ' + units[i]+'B';
     },
 
-    item_template: 'list_item_big',
+    render_dom: function(resource, opts) {
+        var resource = copy(resource);
+        var opts = opts || {};
+        // update headers
+        var hdr = $('#main_header');
+        resource.permalink = window.location.href;
+        hdr.replaceWith( ich.header( resource ) );
+        if( Nano.current.get_ref() === '/' ) {
+            $('#backlink').addClass('disabled');
+        } else {
+            $('#backlink').removeClass('disabled');
+        }
+        // slide content
+        $('#contents')
+            .hide()
+            .removeClass('slided_right slided_left');
+        // display content
+        load_page(Nano.current);
+        // update content's items according to context
+        var name = resource.mime;
+        var buttons = $('#addsearch_form');
+        buttons.find('button').removeClass('hidden');
+        if(name === 'folder') {
+            $('.folder-item').show();
+            $('.pure-item').hide();
+        } else {
+            $('.folder-item').hide();
+            $('.pure-item').show();
+            $('.filesize').each( function(i, x) {
+                var o=$(x);
+                if (!!! o.data('_fs_converted')) {
+                    o.text(UI.hr_size(resource.size));
+                }
+                o.data('_fs_converted', 1);
+            });
+        }
+        // handle history/ backbutton
+        if (!!!opts.disable_history)
+            history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
+        // show !
+        var c = $('#contents');
+            c.fadeIn();
+    },
+
     find_item_from_child: function(dom) {
         var st = $(dom);
         while (!!! st.hasClass('item') ) {
@@ -140,28 +204,6 @@ var UI = {
     },
     execute_item_handler: function() {
         UI.find_item_from_child(this).view();
-    },
-    set_context: function(resource) {
-        console.log('---------------------->CTX', resource);
-        var name = resource.mime;
-        console.log('context');
-        var buttons = $('#addsearch_form');
-        buttons.find('button').removeClass('hidden');
-        console.log(name);
-        if(name === 'folder') {
-            $('.folder-item').show();
-            $('.pure-item').hide();
-        } else {
-            $('.folder-item').hide();
-            $('.pure-item').show();
-            $('.filesize').each( function(i, x) {
-                var o=$(x);
-                if (!!! o.data('_fs_converted')) {
-                    o.text(UI.hr_size(resource.size));
-                }
-                o.data('_fs_converted', 1);
-            });
-        }
     }
 };
 
@@ -212,15 +254,19 @@ ItemList.prototype.insert = function(resource) {
 };
 ItemList.prototype.remove = function(resource) {
 };
-ItemList.prototype.sort_by = function(criteria) {
+ItemList.prototype.sort_by = function(dom_elt, criteria) {
+    UI.fix_nav(dom_elt);
+    $('.items').isotope({ sortBy : criteria });
 };
 ItemList.prototype._item_templater = function(data) {
     // called in Item context
     return ich[this._parent.item_template](this).html();
 };
 ItemList.prototype.draw = function() {
+    console.log('isotope');
     PageTemplate.prototype.draw.call(this);
     $('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
+        animationEngine: 'css', transformsEnabled: 'false',
         getSortData : {
             title: function ( e ) {
                 return e.data('title');
@@ -250,9 +296,12 @@ ItemList.prototype.draw = function() {
 
 Nano = { doc_ref : '/' };
 Nano.current = new Resource({link:'', mime:'folder', cont:''});
+/*
 Nano.get_permalink = function() {
+    window.location.href ?
     return '/#?view=' + Nano.doc_ref;
 };
+*/
 Nano.get = function(link) {
 };
 Nano._get_choices_from_mime = function(mime) {
@@ -287,18 +336,11 @@ Nano.set_content = function(item, opts) {
     this.content.draw();
 };
 Nano._display_set_content = function(resource, opts) {
+    // updates the Page
     var opts = opts || {};
-    var hdr = $('#main_header');
-    $('#contents').hide().removeClass('slided_right slided_left');
-    hdr.replaceWith( ich.header( resource ) );
     Nano.doc_ref = resource.get_ref();
-    console.log('DISPLAY', resource, Nano.doc_ref);
     Nano.current = ResourceFactory(resource);
-    load_page(Nano.current);
-    UI.set_context(resource);
-    $('#contents').fadeIn();
-    if (!!!opts.disable_history)
-        history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
+    UI.render_dom(resource, opts);
 };
 Nano.display = function(resource, opts) {
     if (instanceOf(resource, Item)) {

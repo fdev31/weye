@@ -1,14 +1,10 @@
 "use strict";
+// TODO: a MimeManager
+//
 var load_page = function(item) {
     var found = false;
 
     var choices = Nano._get_choices_from_mime(item.mime);
-
-    if (Nano.doc_ref.endswith(item.link)) {
-        item.cont = Nano.doc_ref.substr(0, Nano.doc_ref.length - item.link.length);
-    } else {
-        item.cont = Nano.doc_ref;
-    }
 
     console.log('CHOICES', choices);
 

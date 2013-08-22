@@ -130,9 +130,8 @@
         <a class="navbar-brand" onclick="view_path('/')" href="#"><img style="height: 1em; vertical-align: -0.16em;" src="/static/img/logo.svg"/>&nbsp;Nanowork</a>
         <div class="nav-collapse collapse">
           <ul class="nav navbar-nav">
-              <li class="folder-item"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'title' });">By name</a></li>
-              <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'type' });">or type</a></li>
-<!--              <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'original-order' });">or natural</a></li>-->
+              <li class="folder-item"><a href="#" onclick="Nano.content.sort_by(this, 'title');">By name</a></li>
+              <li class="folder-item active"><a href="#" onclick="Nano.content.sort_by(this, 'type');">or type</a></li>
           </ul>
             <!-- -- form -- -->
           <form id="addsearch_form" class="col-6 form-inline pull-right">
