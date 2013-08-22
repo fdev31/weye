@@ -45,7 +45,7 @@ function Resource (dict) {
             }
         }
     }
-    if (!! this.cont && this.cont.substr(-1) !== '/')
+    if (this.cont != undefined && this.cont.substr(-1) !== '/')
         this.cont += '/';
     if (this.mime !== 'folder')
         this.is_data = true;
