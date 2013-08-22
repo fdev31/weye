@@ -78,6 +78,7 @@ Resource.prototype.edit = function() {
 Resource.prototype.del = function() {
 };
 Resource.prototype.view = function() {
+    $('#contents').addClass('slided_left');
     Nano.display( this );
 };
 Resource.prototype.get_ref = function() {
@@ -288,12 +289,14 @@ Nano.set_content = function(item, opts) {
 Nano._display_set_content = function(resource, opts) {
     var opts = opts || {};
     var hdr = $('#main_header');
+    $('#contents').hide().removeClass('slided_right slided_left');
     hdr.replaceWith( ich.header( resource ) );
     Nano.doc_ref = resource.get_ref();
     console.log('DISPLAY', resource, Nano.doc_ref);
     Nano.current = ResourceFactory(resource);
     load_page(Nano.current);
     UI.set_context(resource);
+    $('#contents').fadeIn();
     if (!!!opts.disable_history)
         history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
 };
@@ -331,7 +334,7 @@ Nano.level_up = function(opts) {
     */
     if (!!bref) {
         bref = bref[1] || '/';
-        $('.items').addClass('slided_right');
+        $('#contents').addClass('slided_right');
         Nano.load_link(bref, {'history': !!! opts.disable_history});
     }
 };
