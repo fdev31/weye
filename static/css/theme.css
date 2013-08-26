@@ -5028,10 +5028,34 @@ hr.header_sep {
   #addsearch_form input.my-form-control {
     width: auto;
   }
+  .item {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    float: left;
+    width: 100%;
+  }
 }
 @media (max-width: 992px) and (min-width: 768px) {
   #contents {
     margin-left: 1ex !important;
+  }
+  .navbar .container {
+    max-width: 100% !important;
+  }
+  .navbar #addsearch_form {
+    padding: 0;
+  }
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+  .item {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    float: left;
+    width: 25%;
   }
 }
 @media (min-width: 1200px) {
@@ -5044,6 +5068,14 @@ hr.header_sep {
   #contents {
     margin-top: 6ex;
   }
+  .item {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    float: left;
+    width: 16.666666666666664%;
+  }
 }
 @media (max-width: 1200px) {
   .ui-pnotify-history-container {
@@ -5052,14 +5084,6 @@ hr.header_sep {
   }
   #contents {
     margin-top: 1ex;
-  }
-}
-@media (max-width: 992px) and (min-width: 768px) {
-  .navbar .container {
-    max-width: 100% !important;
-  }
-  .navbar #addsearch_form {
-    padding: 0;
   }
 }
 /* ISOTOPE */

@@ -166,6 +166,8 @@ hr.header_sep {
 
 /* media queries */
 
+// small only
+
 @media (max-width: @screen-small) {
     #contents {
         margin-left: 3px !important;
@@ -176,12 +178,31 @@ hr.header_sep {
             width: auto;
         }
     }
+    .item {
+        .col-12 !important;
+    }
 }
+
+// medium
 @media (max-width: @screen-medium) and (min-width: @screen-small) {
     #contents {
         margin-left: 1ex !important;
     }
+    .navbar {
+        .container {
+            max-width: 100% !important;
+        }
+        #addsearch_form {
+            padding: 0;
+        }
+    }
 }
+@media (min-width: @screen-small) and (max-width: @screen-large) {
+    .item {
+        .col-3 !important;
+    }
+}
+// large
 @media (min-width: @screen-large) {
     #addsearch_form {
         width: 55%;
@@ -192,7 +213,12 @@ hr.header_sep {
     #contents {
         margin-top: 6ex;
     }
+    .item {
+        .col-2 !important;
+    }
 }
+
+// all but large
 @media (max-width: @screen-large) {
     .ui-pnotify-history-container {
         right: auto !important;
@@ -203,16 +229,6 @@ hr.header_sep {
     }
 }
 
-@media (max-width: @screen-medium) and (min-width: @screen-small) {
-    .navbar {
-        .container {
-            max-width: 100% !important;
-        }
-        #addsearch_form {
-            padding: 0;
-        }
-    }
-}
 /* ISOTOPE */
 
 .animClass {

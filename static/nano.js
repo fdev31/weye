@@ -31,7 +31,6 @@ function ResourceFactory(item) {
         return new Resource(item);
     }
 }
-
 function Resource (dict) {
     $.extend(this, dict);
     if (!!! dict.link) {
