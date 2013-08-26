@@ -64,6 +64,7 @@ def main():
             copytree(p1, jsdir)
         if os.path.exists( os.path.join(name, 'style.css') ):
             print("\t- style.css")
+            OUT('        ,\n        stylesheet: true\n')
             duplicate( os.path.join(name, 'style.css') , os.path.join(jsdir, 'style.css'))
         # declare dependencies
         if os.path.isfile( os.path.join(name, 'dependencies.js') ):
