@@ -12,6 +12,7 @@ function inherits(new_cls, base_cls) {
 Templates = {}
 
 function TemplateFactory(item) {
+    console.log('Template factory for:', item);
     var choices = Nano._get_choices_from_mime(item.mime);
     for (var i=0; i<choices.length; i++) {
         var choice = choices[i];
@@ -23,6 +24,7 @@ function TemplateFactory(item) {
     return new PageTemplate(item)
 }
 function ResourceFactory(item) {
+    console.log('Resource factory for:', item);
     if(item.size !== undefined) {
         return new Item(item);
     } else {
@@ -78,8 +80,9 @@ Resource.prototype.edit = function() {
 Resource.prototype.del = function() {
 };
 Resource.prototype.view = function() {
+    console.log('Resource view > nano load_resource');
     $('#contents').addClass('slided_left');
-    Nano.display( this );
+    Nano.load_resource( this );
 };
 Resource.prototype.get_ref = function() {
     if (!!! this.cont || !!! this.link)
@@ -216,10 +219,12 @@ function PageTemplate(data, name) {
     this.name = 'view_'+name;
 }
 PageTemplate.prototype.from = function (resource) {
+    console.log('creating template...');
     return ich[this.name](resource || this.data);
 };
 PageTemplate.prototype.draw = function(resource) {
     $('#contents').html(this.from(resource));
+    console.log('html content set');
 };
 PageTemplate.prototype.clear = function() {
     $('#contents').html('');
@@ -263,7 +268,7 @@ ItemList.prototype._item_templater = function(data) {
     return ich[this._parent.item_template](this).html();
 };
 ItemList.prototype.draw = function() {
-    console.log('isotope');
+    console.log('ItemList.draw');
     PageTemplate.prototype.draw.call(this);
     $('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
         animationEngine: 'css', transformsEnabled: 'false',
@@ -313,14 +318,6 @@ Nano._get_choices_from_mime = function(mime) {
     choices.push('default');
     return choices;
 }
-Nano.load_link = function(link, opts) {
-    var r = new Resource({link: link});
-    Nano.doc_ref = r.cont; // sets current as it's parent
-    this.display( r, opts);
-};
-Nano.reload = function() {
-    return this.display(this.current);
-};
 Nano._go_busy = function() {
 };
 Nano._go_ready = function() {
@@ -335,18 +332,28 @@ Nano.set_content = function(item, opts) {
     this.content = TemplateFactory(item);
     this.content.draw();
 };
-Nano._display_set_content = function(resource, opts) {
+Nano.reload = function() {
+    return this.load_resource(this.current);
+};
+Nano.load_link = function(link, opts) {
+    var r = new Resource({link: link}); // create a simple Resource from the link
+    Nano.doc_ref = r.cont; // sets current as it's parent to simulate a normal link
+    this.load_resource( r, opts); // load it
+};
+Nano._load_resource_cb = function(resource, opts) {
     // updates the Page
     var opts = opts || {};
     Nano.doc_ref = resource.get_ref();
+    console.log('load RESOURCE Factory call');
     Nano.current = ResourceFactory(resource);
+    console.log('load RESOURCE render dom');
     UI.render_dom(resource, opts);
 };
-Nano.display = function(resource, opts) {
+Nano.load_resource = function(resource, opts) {
     if (instanceOf(resource, Item)) {
-        Nano._display_set_content(resource, opts);
+        Nano._load_resource_cb(resource, opts);
     } else {
-        resource.getItem(Nano._display_set_content, opts);
+        resource.getItem(Nano._load_resource_cb, opts);
     }
 };
 
@@ -518,7 +525,7 @@ $(function() {
         return ui.select_idx(ui.selected_item, -1);
     });
 
-    Nano.load_link(document.location.href.split(/\?view=/)[1] || '/', {disable_history: true} ); // loads view
+    Nano.load_link(document.location.href.split(/\?view=/)[1] || '/', {disable_history: true} ); // loads root view
 });
 
 

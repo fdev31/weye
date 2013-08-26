@@ -6,7 +6,7 @@ var load_page = function(item) {
 
     var choices = Nano._get_choices_from_mime(item.mime);
 
-    console.log('CHOICES', choices);
+    console.log('load_page: CHOICES', choices);
 
     for (var n=0; (!!! found) && n < choices.length ; n++) {
         try {
@@ -26,18 +26,20 @@ var load_page = function(item) {
                     }
                 })
             }
-            console.log("FOUND:", found);
+            console.log("  => found:", found);
             if (dependencies.length !== 0) {
                 var counter = 0;
                 for (var dep in dependencies) {
                     console.log( dependencies[dep] );
                     toast(dependencies[dep], function() {
-                        console.log('disp', counter, dependencies.length);
-                        if (++counter === dependencies.length) found.display(item)
+                        if (++counter === dependencies.length) {
+                            console.log('mime.display()');
+                            found.display(item);
+                        }
                     } );
                 }
             } else { // no deps
-                console.log('disp');
+                console.log('mime.display()');
                 found.display(item);
             }
             break;
