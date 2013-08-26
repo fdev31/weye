@@ -6,14 +6,17 @@ function display(item) {
     $('<button class="btn btn-success btn-large" onclick="editor_save()">Save changes</button>')
         .appendTo( $('#download_link').parent() );
 
-    var ajax_call = new $.ajax({url: '/d'+item.get_ref(), dataType: 'text'});
+    var ajax_call = new $.ajax({url: '/d'+item.get_ref(), dataType: 'text'})
+    .fail(function(e) {
+        $.pnotify({type: 'error', text: ''+e});
+    })
 
-    Nano._editor = new EpicEditor(epic_opts).load( function() {
-        ajax_call.done(function(d) {
-            Nano._editor.importFile(item.get_ref(), d);
+    setTimeout( function() {
+        Nano._editor = new EpicEditor(epic_opts);
+        Nano._editor.load( function() {
+            ajax_call.done(function(d) {
+                Nano._editor.importFile(item.get_ref(), d);
+            })
         })
-        .fail(function(e) {
-            $.pnotify({type: 'error', text: ''+e});
-        })
-    });
+    }, 100);
 };

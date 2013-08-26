@@ -1,3 +1,4 @@
+"use strict";
 // TODO: 
 //  - Allow setting new mime objects in JavaScript, with some more magical lookup in ResourceFactory
 //    - use _get_choices_from_mime in the ResourceFactory, matching mimes dict -- as for templates
@@ -9,19 +10,12 @@ function inherits(new_cls, base_cls) {
     new_cls.prototype.constructor = new_cls;
 }
 
-Templates = {}
+var Templates = {};
 
 function TemplateFactory(item) {
-    console.log('Template factory for:', item);
-    var choices = Nano._get_choices_from_mime(item.mime);
-    for (var i=0; i<choices.length; i++) {
-        var choice = choices[i];
-        for (var k in Templates) {
-            if(k === choice)
-                return new Templates[k](item);
-        }
-    }
-    return new PageTemplate(item)
+    var t = MimeManager.get_template(item.mime);
+    var i = new t(item);
+    return i;
 }
 function ResourceFactory(item) {
     console.log('Resource factory for:', item);
@@ -165,17 +159,20 @@ var UI = {
             .hide()
             .removeClass('slided_right slided_left');
             // display content
-            load_page(Nano.current);
+            MimeManager.load_dependencies(resource.mime, {callback: function(found) {
+                console.log('cb !', found, resource);
+                found.display(resource);
+            }})
             // update content's items according to context
             var name = resource.mime;
             var buttons = $('#addsearch_form');
             buttons.find('button').removeClass('hidden');
             if(name === 'folder') {
-                $('.folder-item').show();
-                $('.pure-item').hide();
+                $('.folder-item').removeClass('hidden');
+                $('.pure-item').addClass('hidden');
             } else {
-                $('.folder-item').hide();
-                $('.pure-item').show();
+                $('.folder-item').addClass('hidden');
+                $('.pure-item').removeClass('hidden');
                 $('.filesize').each( function(i, x) {
                     var o=$(x);
                     if (!!! o.data('_fs_converted')) {
@@ -300,7 +297,7 @@ ItemList.prototype.draw = function() {
 
 // -- NANO obj
 
-Nano = { doc_ref : '/' };
+var Nano = { doc_ref : '/' };
 Nano.current = new Resource({link:'', mime:'folder', cont:''});
 /*
 Nano.get_permalink = function() {
@@ -310,15 +307,6 @@ Nano.get_permalink = function() {
 */
 Nano.get = function(link) {
 };
-Nano._get_choices_from_mime = function(mime) {
-    var choices = [mime];
-    var subchoices = mime.split('-');
-    for(var n=subchoices.length-1; n>=1 ; n--) {
-        choices.push( subchoices.slice(0, n).join('-') );
-    }
-    choices.push('default');
-    return choices;
-}
 Nano._go_busy = function() {
 };
 Nano._go_ready = function() {
@@ -388,6 +376,101 @@ Nano.level_up = function(opts) {
         Nano.load_link(bref, {'history': !!! opts.disable_history});
     }
 };
+
+/* MimeManager
+ */
+
+var MimeManager = {
+    loaded : {}
+};
+
+MimeManager.mimes = {};
+MimeManager.find_choices = function(mime) {
+    var choices = [mime];
+    var subchoices = mime.split('-');
+    for(var n=subchoices.length-1; n>=1 ; n--) {
+        choices.push( subchoices.slice(0, n).join('-') );
+    }
+    choices.push('default');
+    return choices;
+}
+MimeManager.get_template = function(mime) {
+    console.log('Template factory for:', mime);
+    var choices = MimeManager.find_choices(mime);
+    for (var i=0; i<choices.length; i++) {
+        var choice = choices[i];
+        for (var k in Templates) {
+            if(k === choice)
+                return Templates[k];
+        }
+    }
+    return PageTemplate
+};
+MimeManager.load_dependencies = function(mime, opts) {
+    var opts = opts || {};
+    var skip_loading = false;
+    // valid opts:
+    // - callback
+    if(MimeManager.loaded[mime])
+        skip_loading = true;
+    MimeManager.loaded[mime] = true;
+
+    var found = false;
+    var choices = MimeManager.find_choices(mime);
+
+    console.log('load deps for', choices);
+
+    for (var n=0; (!!! found) && n < choices.length ; n++) {
+        try {
+            found = Nano.mimes[ choices[n] ];
+        } catch(err) {
+            found = false;
+        }
+        if (found) {
+            if (!!!skip_loading) {
+                var dependencies = [];
+                var prefix = '/static/mime/js/' + found.name + '/';
+                if( !! found.stylesheet )
+                    dependencies.push( prefix + 'style.css' );
+                if (found.dependencies) {
+                    found.dependencies.forEach( function(x) {
+                        if ( x.match(/^[/]/) ) {
+                            dependencies.push( x ) 
+                        } else {
+                            dependencies.push( prefix + x );
+                        }
+                    })
+                }
+                console.log("  => found:", found);
+                if (dependencies.length !== 0) {
+                    var counter = 0;
+                    for (var dep in dependencies) {
+                        console.log( dependencies[dep] );
+                        toast(dependencies[dep], function() {
+                            if (++counter === dependencies.length) {
+                                console.log('load deps callback');
+                                if (opts.callback) {
+                                    setTimeout( function() {
+                                        opts.callback(found);
+                                    }, 100); // force DOM refresh
+                                }
+                            }
+                        } );
+                    }
+                } else { // no deps
+                    console.log('load deps callback');
+                    if (opts.callback) opts.callback(found); // MOTT: just Nano.set_content(item)
+                }
+            } else {
+                if (opts.callback) opts.callback(found); // MOTT: just Nano.set_content(item)
+            }
+            break;
+        }
+    }
+    if(!!!found) {
+        $.pnotify({'type': 'error', 'title': 'Type association', 'text': 'failed loading one of: '+choices});
+    }
+}
 
 /*
  *
