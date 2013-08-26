@@ -160,35 +160,37 @@ var UI = {
             $('#backlink').removeClass('disabled');
         }
         // slide content
-        $('#contents')
+        setTimeout(function() {
+            $('#contents')
             .hide()
             .removeClass('slided_right slided_left');
-        // display content
-        load_page(Nano.current);
-        // update content's items according to context
-        var name = resource.mime;
-        var buttons = $('#addsearch_form');
-        buttons.find('button').removeClass('hidden');
-        if(name === 'folder') {
-            $('.folder-item').show();
-            $('.pure-item').hide();
-        } else {
-            $('.folder-item').hide();
-            $('.pure-item').show();
-            $('.filesize').each( function(i, x) {
-                var o=$(x);
-                if (!!! o.data('_fs_converted')) {
-                    o.text(UI.hr_size(resource.size));
-                }
-                o.data('_fs_converted', 1);
-            });
-        }
-        // handle history/ backbutton
-        if (!!!opts.disable_history)
-            history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
-        // show !
-        var c = $('#contents');
-            c.fadeIn();
+            // display content
+            load_page(Nano.current);
+            // update content's items according to context
+            var name = resource.mime;
+            var buttons = $('#addsearch_form');
+            buttons.find('button').removeClass('hidden');
+            if(name === 'folder') {
+                $('.folder-item').show();
+                $('.pure-item').hide();
+            } else {
+                $('.folder-item').hide();
+                $('.pure-item').show();
+                $('.filesize').each( function(i, x) {
+                    var o=$(x);
+                    if (!!! o.data('_fs_converted')) {
+                        o.text(UI.hr_size(resource.size));
+                    }
+                    o.data('_fs_converted', 1);
+                });
+            }
+            // handle history/ backbutton
+            if (!!!opts.disable_history)
+                history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
+            // show !
+            var c = $('#contents');
+                c.fadeIn();
+        }, 100);
     },
 
     find_item_from_child: function(dom) {
@@ -339,6 +341,13 @@ Nano.load_link = function(link, opts) {
     Nano.doc_ref = r.cont; // sets current as it's parent to simulate a normal link
     this.load_resource( r, opts); // load it
 };
+Nano.load_resource = function(resource, opts) {
+    if (instanceOf(resource, Item)) {
+        Nano._load_resource_cb(resource, opts);
+    } else {
+        resource.getItem(Nano._load_resource_cb, opts);
+    }
+};
 Nano._load_resource_cb = function(resource, opts) {
     // updates the Page
     var opts = opts || {};
@@ -347,13 +356,6 @@ Nano._load_resource_cb = function(resource, opts) {
     Nano.current = ResourceFactory(resource);
     console.log('load RESOURCE render dom');
     UI.render_dom(resource, opts);
-};
-Nano.load_resource = function(resource, opts) {
-    if (instanceOf(resource, Item)) {
-        Nano._load_resource_cb(resource, opts);
-    } else {
-        resource.getItem(Nano._load_resource_cb, opts);
-    }
 };
 
 /*
