@@ -144,7 +144,7 @@ def get_object_from_path(path):
             name = path
         infos = {'size': st.st_size,
                 'link': name,
-                'title': name,
+                 'title': (name.rsplit('.', 1)[0] if '.' else name).replace('-', ' ').replace('_', ' ').strip().title(),
                 'descr': '',
                 'mime': file_type}
 
