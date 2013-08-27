@@ -70,6 +70,22 @@ Resource.prototype.getItem = function(callback, opts) {
     });
 
 };
+Resource.prototype.post_view_callback = function() {
+    if (this.mime === 'folder') {
+        $('.folder-item').fadeIn(function() {$('.folder-item').removeClass('hidden');});
+        $('.pure-item').fadeOut(function() {$('.pure-item').addClass('hidden');});
+    } else {
+        $('.folder-item').fadeOut(function(){$('.folder-item').addClass('hidden');});
+        $('.pure-item').fadeIn(function() {$('.pure-item').removeClass('hidden');});
+    }
+    $('.filesize').each( function(i, x) {
+        var o=$(x);
+        if (!!! o.data('_fs_converted')) {
+            o.text(UI.hr_size(this.size));
+        }
+        o.data('_fs_converted', 1);
+    });
+};
 Resource.prototype.edit = function() {
     if(this.link.startswith('js:')) {
         UI.edit_item(this);
@@ -198,20 +214,7 @@ var UI = {
             var name = resource.mime;
             var buttons = $('#addsearch_form');
             buttons.find('button').removeClass('hidden');
-            if(name === 'folder') {
-//                $('.folder-item').removeClass('hidden');
-//                $('.pure-item').addClass('hidden');
-//            } else {
-//                $('.folder-item').addClass('hidden');
-//                $('.pure-item').removeClass('hidden');
-                $('.filesize').each( function(i, x) {
-                    var o=$(x);
-                    if (!!! o.data('_fs_converted')) {
-                        o.text(UI.hr_size(resource.size));
-                    }
-                    o.data('_fs_converted', 1);
-                });
-            }
+            resource.post_view_callback();
             // handle history/ backbutton
             if (!!!opts.disable_history)
                 history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
