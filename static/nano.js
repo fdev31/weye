@@ -82,6 +82,9 @@ Resource.prototype.get_ref = function() {
         return '/';
     return this.cont + this.link;
 };
+Resource.prototype.get_raw_ref = function() {
+    return '/d' + this.get_ref();
+};
 
 // -- ITEM class
 
