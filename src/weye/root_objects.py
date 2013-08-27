@@ -157,10 +157,11 @@ def get_object_from_path(path):
                 pass
 
         # save it
-        try:
-            open(meta_fpath, 'wb').write(dumps(infos).encode())
-        except (OSError, IOError, PermissionError) as e:
-            log.error('Unable to save metadata as %r: %r', meta_fpath, e)
+        if path: # do not save root
+            try:
+                open(meta_fpath, 'wb').write(dumps(infos).encode())
+            except (OSError, IOError, PermissionError) as e:
+                log.error('Unable to save metadata as %r: %r', meta_fpath, e)
 
     return infos
 
