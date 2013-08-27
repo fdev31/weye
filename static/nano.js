@@ -44,6 +44,8 @@ function Resource (dict) {
         this.cont += '/';
     if (this.mime !== 'folder')
         this.is_data = true;
+    if (!!!this.editables)
+        this.editables = 'title mime descr';
     this.type = 'resource';
 };
 Resource.prototype.getItem = function(callback, opts) {
@@ -69,13 +71,32 @@ Resource.prototype.getItem = function(callback, opts) {
 
 };
 Resource.prototype.edit = function() {
+    if(this.link.startswith('js:')) {
+        UI.edit_item(this);
+    } else {
+        this.getItem( function(item) {
+            UI.edit_item(item);
+        });
+    }
 };
 Resource.prototype.del = function() {
+    var src_link = this.link;
+    $.ajax(this.get_obj_ref(), {type: 'DELETE'})
+        .done(function(d) {
+            if (d.error) {
+                $.pnotify({type: 'error', title: "Can't remove "+src_link, text: d.error});
+            } else {
+                Nano.content.remove({link:src_link});
+            }
+        });
+
 };
 Resource.prototype.view = function() {
     console.log('Resource view > nano load_resource');
     $('#contents').addClass('slided_left');
     Nano.load_resource( this );
+};
+Resource.prototype.save = function() {
 };
 Resource.prototype.get_ref = function() {
     if (!!! this.cont || !!! this.link)
@@ -84,6 +105,12 @@ Resource.prototype.get_ref = function() {
 };
 Resource.prototype.get_raw_ref = function() {
     return '/d' + this.get_ref();
+};
+Resource.prototype.get_obj_ref = function() {
+    return '/o' + this.get_ref();
+};
+Resource.prototype.get_child_ref = function() {
+    return '/c' + this.get_ref();
 };
 
 // -- ITEM class
@@ -103,6 +130,7 @@ inherits(Item, Resource);
 var UI = {
 
     item_template: 'list_item_big',
+
 
 /*
  * Navigation
@@ -193,6 +221,94 @@ var UI = {
         }, 100);
     },
 
+    edit_item : function(data) {
+        UI._edited = data;
+        var qp = $('#question_popup');
+        if(qp.length != 0) {
+            if (qp.css('display') === 'none') {
+                qp.remove();
+            } else {
+                return;
+            }
+        }
+        var edited = [];
+        if (data.editables === "")  {
+            for(var k in data)
+                edited.push({name: k, type: 'text'});
+        } else {
+            var editables = data.editables.split(/ +/);
+            // TODO: input type thing
+            for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+        }
+        var pop = ich.question({
+            'item': data,
+            'title': data.title || data.link,
+            'mime': data.mime,
+            'footnote': 'Changes may be effective after a refresh',
+            'edit': edited,
+            'buttons': [
+                {'name': 'Save', 'onclick': 'UI.save_item($("#question_popup .editable").data("link"));false;', 'class': 'btn-success'},
+                {'name': 'Delete', 'onclick': 'UI.remove_item($("#question_popup .editable").data("link"));false;', 'class': 'btn-warning'}
+            ]
+        });
+        pop.modal();
+        var edited = $('#question_popup .editable');
+        setTimeout(function() {
+            pop.find('.editable-property').each( function(i, o) {
+                var o = $(o);
+                var d = copy(o.data());
+                d.content = data[d.name];
+                o.append(ich['input_'+d.type](d));
+            });
+        }, 200);
+
+    },
+    remove_item: function() {
+        this._edited.del();
+        this.close_modal();
+    },
+    save_item: function() {
+        var o = $('#question_popup .editable');
+        var item = UI._edited;
+
+        var metadata = {};
+        var metadata_list = [];
+        var full_item = {};
+
+        o.find('.editable-property').each( function(x, property) {
+            var property = $(property);
+            var inp = property.find('input');
+            var orig = inp.data('orig-value');
+            var val = inp.val();
+            var name = property.data('name');
+            if (val !== orig) {
+                metadata[name] = inp.val();
+                metadata_list.push(name);
+            }
+        } );
+
+        if (metadata_list.length == 0) {
+            $.pnotify({text: 'No change'});
+        } else {
+            $.ajax(item.get_obj_ref(), {dataType: 'json', data: {meta: JSON.stringify(metadata) }, type: 'PUT'})
+                .done( function(e) {
+                    Nano.content.refresh_by_link(UI._edited.link, metadata);
+                    $.pnotify({type: "success", text: "Saved"});
+                    this.close_modal();
+                })
+            .fail( function(e) {
+                $.pnotify({type: "error", text: ''+e});
+            });
+        }
+
+    },
+
+    close_modal: function() {
+        $('#question_popup').modal('hide', function() {
+            console.log('hidden !!');
+        });
+    },
+
     find_item_from_child: function(dom) {
         var st = $(dom);
         while (!!! st.hasClass('item') ) {
@@ -206,6 +322,7 @@ var UI = {
         return Nano.content.find_by_link(st.data('link'));
 
     },
+
     execute_item_handler: function() {
         UI.find_item_from_child(this).view();
     }
@@ -253,12 +370,26 @@ Templates['folder'] = ItemList;
 ItemList.prototype.find_by_link = function(link) {
     return this._c[this._index[link]];
 };
+ItemList.prototype.refresh_by_link = function(link, metadata) {
+    var item = this._c[this._index[link]];
+    $.extend(item, metadata);
+    var e = $('.items .item[data-link="'+item.link+'"]').html(
+            ich[this.item_template](item).children().html()
+        );
+    this.setup_links(e);
+};
 ItemList.prototype.select = function(index) {
     self.selected += index;
 };
 ItemList.prototype.insert = function(resource) {
+    // new element: $('.items').isotope('insert', DOM_ELT);
 };
 ItemList.prototype.remove = function(resource) {
+    var e = $('.items .item[data-link="'+resource.link+'"]');
+    e.fadeOut( function() {
+        e.remove();
+        $('.items').isotope('reLayout');
+    });
 };
 ItemList.prototype.sort_by = function(dom_elt, criteria) {
     UI.fix_nav(dom_elt);
@@ -289,11 +420,15 @@ ItemList.prototype.draw = function() {
     if(this._c.length === 0)
         $.pnotify({type: 'info', title: 'Attention', text: 'No item in this folder.', delay: 1000});
  
-    $('.items').find('.item_touch').hammer()
+    this.setup_links( $('.items') );
+};
+ItemList.prototype.setup_links = function(jqelt) {
+
+    jqelt.find('.item_touch').hammer()
         .bind({
             tap: UI.execute_item_handler
-//            hold: ItemTool.popup_evt_handler,
-//            swipe: ItemTool.popup_evt_handler
+            //            hold: ItemTool.popup_evt_handler,
+            //            swipe: ItemTool.popup_evt_handler
         });
 };
 

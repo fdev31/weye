@@ -115,7 +115,7 @@ def cb(path='/'):
     path = _fix_path(path)
     fpath = os.path.join(config.shared_root, path)
     if not config.allow_overwrite and os.path.exists(fpath):
-        return {'error': "You are not allowed to overwrite this file"}
+        return {'error': "You are not allowed to delete this file"}
     log.debug('~ Deleting %r', path)
     # TODO: session + permission mgmt
     root_objects.delete_object(fpath)
