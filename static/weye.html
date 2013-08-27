@@ -51,14 +51,19 @@
     <script id="view_list_item_big" class="partial" type= "text/html">
 <div>
     <div class="item item_big {{classes}}" title="{{link}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
+<div class="pull-left item_buttons">
+<!-- separate sets of 2 icons by a br/ -->
 
-            <i class="show_on_hover btn small_icon glyphicon glyphicon-edit" onclick="UI.find_item_from_child(this).edit();false;" ></i>&nbsp;
-            <i class="show_on_hover btn small_icon glyphicon glyphicon-eye-open {{^is_data}}disabled{{/is_data}}" onclick="window.location =  UI.find_item_from_child(this).get_raw_ref();" ></i>
+<br/>
 
+            <i title="Edit" class="show_on_hover btn small_icon glyphicon glyphicon-edit" onclick="UI.find_item_from_child(this).edit();false;" ></i>&nbsp;
+            <i title="View" class="show_on_hover btn small_icon glyphicon glyphicon-eye-open {{^is_data}}disabled{{/is_data}}" onclick="window.location =  UI.find_item_from_child(this).get_raw_ref();" ></i>
+
+
+</div>
             <span class="item_touch">
                 <img src="/static/mime/{{mime}}.svg" class="huge_icon item_caption item_stuff"/><span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
             </span>
-<br/>
     </div>
 </div>
     </script>
