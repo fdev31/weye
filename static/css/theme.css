@@ -5037,6 +5037,10 @@ hr.header_sep {
   text-align: center;
   box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
 }
+#contents {
+  min-height: 50em;
+  padding-bottom: 3ex;
+}
 /* media queries */
 @media (max-width: 768px) {
   #contents {
