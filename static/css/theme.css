@@ -4924,6 +4924,12 @@ iframe {
 .item .item_touch {
   cursor: pointer;
 }
+.item .item_touch .item_caption {
+  hyphens: auto;
+  word-wrap: break-word;
+  white-space: pre-line;
+  overflow: scroll;
+}
 .item_small {
   max-height: 2em;
 }
