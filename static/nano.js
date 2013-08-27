@@ -555,11 +555,13 @@ $(function() {
     $('#file').attr('title', 'Upload some file');
 
     // key binding
-    window.addEventListener("popstate", function(e) {
-        console.log("POPSTATE", e);
-        if(!!e.state) Nano.load_link(e.state.view, {disable_history: true})
-        return false;
-    });
+    setTimeout( function() {
+        window.addEventListener("popstate", function(e) {
+            console.log("POPSTATE", e, Nano.current.get_ref());
+            if(!!e.state) Nano.load_link(e.state.view, {disable_history: true})
+            return false;
+        });
+    }, 1000); // handle POP after 1s of page loading (avoid strange corner cases when coming back from a RAW item)
 
     // start navigation
     Mousetrap.bind('tab', function(e) {
