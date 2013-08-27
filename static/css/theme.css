@@ -4144,6 +4144,9 @@ a.list-group-item.active > .badge,
 .hidden {
   display: none !important;
   visibility: hidden !important;
+  -moz-transition-duration: 0.5;
+  -webkit-transition-duration: 0.5;
+  transition-duration: 0.5;
 }
 .visible-sm {
   display: block !important;
