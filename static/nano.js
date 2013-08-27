@@ -50,7 +50,7 @@ function Resource (dict) {
 };
 Resource.prototype.getItem = function(callback, opts) {
     var opts = opts || {};
-    $.get('/o'+this.get_ref())
+    $.get(this.get_obj_ref())
     .success(function(d) {
             if (d.error) {
                 $.pnotify({
