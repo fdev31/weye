@@ -264,8 +264,8 @@ var UI = {
 
     },
     remove_item: function() {
-        this._edited.del();
-        this.close_modal();
+        UI._edited.del();
+        UI.close_modal();
     },
     save_item: function() {
         var o = $('#question_popup .editable');
@@ -294,7 +294,7 @@ var UI = {
                 .done( function(e) {
                     Nano.content.refresh_by_link(UI._edited.link, metadata);
                     $.pnotify({type: "success", text: "Saved"});
-                    this.close_modal();
+                    UI.close_modal();
                 })
             .fail( function(e) {
                 $.pnotify({type: "error", text: ''+e});
