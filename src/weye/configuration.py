@@ -93,8 +93,8 @@ def _import_conf(filename=None, encoding=None):
         config.port = int(port)
 
     if root_changed or not filename:
-        config.shared_root = config.shared_root.rstrip(os.path.sep) # path for shared files
-        config.shared_db = os.path.join(config.shared_root, '.weye_db') # path for shared files database
+        config.shared_root = os.path.abspath(config.shared_root.rstrip(os.path.sep)) # path for shared files
+        config.shared_db = os.path.abspath(os.path.join(config.shared_root, '.weye_db')) # path for shared files database
 
     try:
         os.mkdir(config.shared_db)
