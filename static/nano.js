@@ -382,6 +382,11 @@ ItemList.prototype.select = function(index) {
     self.selected += index;
 };
 ItemList.prototype.insert = function(resource) {
+    console.log('insert', resource, 'into', this);
+    var d = ich[this.item_template](resource).children();
+    this._index[resource.link] = d;
+    this._c.push(d);
+    $('.items').isotope('insert', d);
     // new element: $('.items').isotope('insert', DOM_ELT);
 };
 ItemList.prototype.remove = function(resource) {
@@ -656,20 +661,24 @@ $(function() {
     $('#file').bootstrapFileInput();
     var up = new uploader($('#file').get(0), {
         url:'/upload',
-        extra_data_func: function(data) { return {'prefix': ui.doc_ref} },
+        extra_data_func: function(data) { return {'prefix': Nano.doc_ref} },
         progress:function(ev){ $('#file_caption').text('Uploaded ' + Math.ceil((ev.loaded/ev.total)*100)+'%'); },
         error:function(ev){ $.pnotify({title: "Can't upload", text: ''+ ev, type: 'error'}) },
-        success:function(data){
+        success:function(data) {
             // Reset file caption
             $('#file_caption').text('Add file...');
             var data = JSON.parse(data);
             if (data.error) {
                 $.pnotify({title: 'Unable to upload some files', text: data.error, type: 'error'});
-            }
-            var items = $('.items');
-            var child = uncompress_itemlist(data.children);
-            for (var i=0 ; i<child.length ; i++) {
-                items.isotope('insert', ItemTool.make_item(child[i]));
+                var child = [];
+            } else {
+                var child = uncompress_resources(data.children);
+                for (var i=0 ; i<child.length ; i++) {
+                    var c = child[i];
+                    if ( !!! c.title ) c.title = c.link;
+                    if ( !!! c.cont ) c.cont = Nano.doc_ref;
+                    Nano.content.insert( ResourceFactory(c) );
+                }
             }
             setTimeout( function() {
                 if (child.length === 0) {
@@ -683,9 +692,7 @@ $(function() {
             }, 5);
         }
     });
-    /*
-    ItemTool._uploader = up;
-    */
+    Nano._uploader = up;
     // #file changed ! need to re-parse the DOM:
     $('#file').attr('title', 'Upload some file');
 
