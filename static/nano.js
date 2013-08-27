@@ -78,10 +78,10 @@ Resource.prototype.post_view_callback = function() {
         $('.folder-item').fadeOut(function(){$('.folder-item').addClass('hidden');});
         $('.pure-item').fadeIn(function() {$('.pure-item').removeClass('hidden');});
     }
-    $('.filesize').each( function(i, x) {
+    $('#main_header .filesize').each( function(i, x) {
         var o=$(x);
         if (!!! o.data('_fs_converted')) {
-            o.text(UI.hr_size(this.size));
+            o.text(UI.hr_size(eval(o.text())));
         }
         o.data('_fs_converted', 1);
     });
@@ -180,10 +180,7 @@ var UI = {
         var units = ['', 'k', 'M', 'G'];
         var i = 0;
 
-        while(size >= 1024) {
-            size /= 1024.0;
-            ++i;
-        }
+        while(size >= 1024) { size /= 1024.0; ++i; }
 
         return size.toFixed(1) + ' ' + units[i]+'B';
     },
@@ -214,7 +211,7 @@ var UI = {
             var name = resource.mime;
             var buttons = $('#addsearch_form');
             buttons.find('button').removeClass('hidden');
-            resource.post_view_callback();
+            resource.post_view_callback.call(resource);
             // handle history/ backbutton
             if (!!!opts.disable_history)
                 history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
