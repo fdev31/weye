@@ -13,7 +13,7 @@ function display(item) {
             })
             // TODO: remove this:
             if(is_an_app) 
-                $.pnotify( { type: 'error', text: 'Applications are not supported anymore'} );
+                $.pnotify( { type: 'error', title: item.link, text: 'Applications are not supported anymore'} );
 
             item.children = base_data;
             Nano.set_content(item);

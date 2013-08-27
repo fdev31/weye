@@ -21,14 +21,14 @@
         </hgroup>
         <hgroup>
 
-            <a id="download_link" class="btn btn-large btn-primary hidden pure-item" title="Click to download" href="/d{{cont}}{{link}}">
+            <a id="download_link" class="btn btn-large btn-primary pure-item {{^is_data}}hidden{{/is_data}}" title="Click to download" href="/d{{cont}}{{link}}">
             <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;
             Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
             </a>
 
-          <button name="add" onclick= "add_new_item()" class="hidden btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
+          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item {{#is_data}}hidden{{/is_data}}" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
 
-          <button name="add" onclick= "add_new_item()" class="hidden btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
+          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item {{#is_data}}hidden{{/is_data}}" title="Download a Zip archive of this content"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
 
         </hgroup>
         </header>
@@ -36,25 +36,30 @@
     <!-- ------------------ item (in list) template: view list item SMALL ---------------------------------- -->
     <script id="view_list_item_small" class="partial" type= "text/html">
 <div>
-    <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
+    <div class="item item_small {{classes}}" title="{{title}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
+
+            <i class="show_on_hover btn small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" ></i>&nbsp;
+            <i class="show_on_hover btn small_icon glyphicon glyphicon-eye-open {{^is_data}}disabled{{/is_data}}" onclick="window.location =  '/d' + UI.find_item_from_child(this).get_ref(); false;" ></i>
+
             <span class="item_touch">
-                <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/><span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
+                <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/><span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
             </span>
-            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;"></i>&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" ></i>{{/is_data}}
         </div>
 </div>
     </script>
     <!-- ------------------ item (in list) template: view list item BIG ---------------------------------- -->
     <script id="view_list_item_big" class="partial" type= "text/html">
 <div>
-    <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
+    <div class="item item_big {{classes}}" title="{{title}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
+
+            <i class="show_on_hover btn small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" ></i>&nbsp;
+            <i class="show_on_hover btn small_icon glyphicon glyphicon-eye-open {{^is_data}}disabled{{/is_data}}" onclick="window.location =  '/d' + UI.find_item_from_child(this).get_ref(); false;" ></i>
+
             <span class="item_touch">
-                <img src="/static/mime/{{mime}}.svg" class="huge_icon item_caption item_stuff"/><span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
+                <img src="/static/mime/{{mime}}.svg" class="huge_icon item_caption item_stuff"/><span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>
             </span>
-            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" ></i>&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + UI.find_item_from_child(this).get_ref(); false;" ></i>{{/is_data}}
-        </div>
+<br/>
+    </div>
 </div>
     </script>
     <!-- ------------------ item template: view file ---------------------------------- -->

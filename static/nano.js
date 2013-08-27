@@ -168,11 +168,11 @@ var UI = {
             var buttons = $('#addsearch_form');
             buttons.find('button').removeClass('hidden');
             if(name === 'folder') {
-                $('.folder-item').removeClass('hidden');
-                $('.pure-item').addClass('hidden');
-            } else {
-                $('.folder-item').addClass('hidden');
-                $('.pure-item').removeClass('hidden');
+//                $('.folder-item').removeClass('hidden');
+//                $('.pure-item').addClass('hidden');
+//            } else {
+//                $('.folder-item').addClass('hidden');
+//                $('.pure-item').removeClass('hidden');
                 $('.filesize').each( function(i, x) {
                     var o=$(x);
                     if (!!! o.data('_fs_converted')) {
