@@ -77,6 +77,7 @@ Resource.prototype.post_view_callback = function() {
     } else {
         $('.folder-item').fadeOut(function(){$('.folder-item').addClass('hidden');});
         $('.pure-item').fadeIn(function() {$('.pure-item').removeClass('hidden');});
+        $('#main_header .big_icon').addClass('faded_in');
     }
     $('#main_header .filesize').each( function(i, x) {
         var o=$(x);

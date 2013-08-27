@@ -5041,6 +5041,15 @@ hr.header_sep {
   min-height: 50em;
   padding-bottom: 3ex;
 }
+.big_icon {
+  opacity: 0.5;
+}
+.faded_in {
+  -moz-transition-duration: 1s;
+  -webkit-transition-duration: 1s;
+  transition-duration: 1s;
+  opacity: 1.0 !important;
+}
 /* media queries */
 @media (max-width: 768px) {
   #contents {
