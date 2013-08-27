@@ -18,7 +18,7 @@ function TemplateFactory(item) {
     return i;
 }
 function ResourceFactory(item) {
-    console.log('Resource factory for:', item);
+//    console.log('Resource factory for:', item);
     if(item.size !== undefined) {
         return new Item(item);
     } else {
@@ -28,7 +28,7 @@ function ResourceFactory(item) {
 function Resource (dict) {
     $.extend(this, dict);
     if (!!! dict.link) {
-        console.log('No link for ',dict);
+//        console.log('No link for ',dict);
     } else {
         if (!!! this.cont) {
             if( !! this.link.match(RegExp('/'))) {
@@ -108,7 +108,7 @@ Resource.prototype.del = function() {
 
 };
 Resource.prototype.view = function() {
-    console.log('Resource view > nano load_resource');
+//    console.log('Resource view > nano load_resource');
     $('#contents').addClass('slided_left');
     Nano.load_resource( this );
 };
@@ -207,7 +207,7 @@ var UI = {
             .removeClass('slided_right slided_left');
             // display content
             MimeManager.load_dependencies(resource.mime, {callback: function(found) {
-                console.log('cb !', found, resource);
+//                console.log('cb !', found, resource);
                 found.display(resource);
             }})
             // update content's items according to context
@@ -340,12 +340,12 @@ function PageTemplate(data, name) {
     this.name = 'view_'+name;
 }
 PageTemplate.prototype.from = function (resource) {
-    console.log('creating template...');
+//    console.log('creating template...');
     return ich[this.name](resource || this.data);
 };
 PageTemplate.prototype.draw = function(resource) {
     $('#contents').html(this.from(resource));
-    console.log('html content set');
+//    console.log('html content set');
 };
 PageTemplate.prototype.clear = function() {
     $('#contents').html('');
@@ -385,7 +385,7 @@ ItemList.prototype.select = function(index) {
     self.selected += index;
 };
 ItemList.prototype.insert = function(resource) {
-    console.log('insert', resource, 'into', this);
+//    console.log('insert', resource, 'into', this);
     var d = ich[this.item_template](resource).children();
     this._index[resource.link] = d;
     this._c.push(d);
@@ -408,7 +408,7 @@ ItemList.prototype._item_templater = function(data) {
     return ich[this._parent.item_template](this).html();
 };
 ItemList.prototype.draw = function() {
-    console.log('ItemList.draw');
+//    console.log('ItemList.draw');
     PageTemplate.prototype.draw.call(this);
     $('.items').isotope({itemSelector: '.item',  layoutMode : 'fitRows', sortBy: 'type',
         animationEngine: 'css', transformsEnabled: 'false',
@@ -486,9 +486,9 @@ Nano._load_resource_cb = function(resource, opts) {
     // updates the Page
     var opts = opts || {};
     Nano.doc_ref = resource.get_ref();
-    console.log('load RESOURCE Factory call');
+//    console.log('load RESOURCE Factory call');
     Nano.current = ResourceFactory(resource);
-    console.log('load RESOURCE render dom');
+//    console.log('load RESOURCE render dom');
     UI.render_dom(resource, opts);
 };
 
@@ -541,7 +541,7 @@ MimeManager.find_choices = function(mime) {
     return choices;
 }
 MimeManager.get_template = function(mime) {
-    console.log('Template factory for:', mime);
+//    console.log('Template factory for:', mime);
     var choices = MimeManager.find_choices(mime);
     for (var i=0; i<choices.length; i++) {
         var choice = choices[i];
@@ -564,7 +564,7 @@ MimeManager.load_dependencies = function(mime, opts) {
     var found = false;
     var choices = MimeManager.find_choices(mime);
 
-    console.log('load deps for', choices);
+//    console.log('load deps for', choices);
 
     for (var n=0; (!!! found) && n < choices.length ; n++) {
         try {
@@ -587,14 +587,14 @@ MimeManager.load_dependencies = function(mime, opts) {
                         }
                     })
                 }
-                console.log("  => found:", found);
+//                console.log("  => found:", found);
                 if (dependencies.length !== 0) {
                     var counter = 0;
                     for (var dep in dependencies) {
-                        console.log( dependencies[dep] );
+//                        console.log( dependencies[dep] );
                         toast(dependencies[dep], function() {
                             if (++counter === dependencies.length) {
-                                console.log('load deps callback');
+//                                console.log('load deps callback');
                                 if (opts.callback) {
                                     setTimeout( function() {
                                         opts.callback(found);
@@ -604,7 +604,7 @@ MimeManager.load_dependencies = function(mime, opts) {
                         } );
                     }
                 } else { // no deps
-                    console.log('load deps callback');
+//                    console.log('load deps callback');
                     if (opts.callback) opts.callback(found); // MOTT: just Nano.set_content(item)
                 }
             } else {
@@ -702,7 +702,7 @@ $(function() {
     // key binding
     setTimeout( function() {
         window.addEventListener("popstate", function(e) {
-            console.log("POPSTATE", e, Nano.current.get_ref());
+//            console.log("POPSTATE", e, Nano.current.get_ref());
             if(!!e.state) Nano.load_link(e.state.view, {disable_history: true})
             return false;
         });
