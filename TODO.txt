@@ -1,6 +1,13 @@
+- filter
+- buttons come from:
+  - plugins (TBD)
+  - mime's action (todo after refactor of Resource & Template factories)
 - make "editables" per mime type instead of per item
 - allow some to override the save form mechanism (per mime type)
 - real installer / setup packaging
 - introduce plugins
     - unify/re-use code for applications/mimes/plugins
     - make "notes" a plugin (that comes with the markdown stuff)
+
+later:
+- search
