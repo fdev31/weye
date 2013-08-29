@@ -5052,9 +5052,6 @@ hr.header_sep {
 }
 /* media queries */
 @media (max-width: 768px) {
-  #contents {
-    margin-left: 3px !important;
-  }
   #addsearch_form {
     width: 100%;
   }
@@ -5071,9 +5068,6 @@ hr.header_sep {
   }
 }
 @media (max-width: 992px) and (min-width: 768px) {
-  #contents {
-    margin-left: 1ex !important;
-  }
   .navbar .container {
     max-width: 100% !important;
   }
