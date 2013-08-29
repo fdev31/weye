@@ -1,4 +1,5 @@
 - filter
+- re-introduce keyboard navigation ?
 - buttons come from:
   - plugins (TBD)
   - mime's action (todo after refactor of Resource & Template factories)
