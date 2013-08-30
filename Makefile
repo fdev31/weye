@@ -6,12 +6,13 @@ help:
 	@echo ""
 	@echo " themes: build 'static/css/theme.css' from 'themes/' (requires lessc -- see default.less file)"
 	@echo "    doc: Build Sphinx doc"
-	@echo "     js: jsapi + jscode"
+	@echo "     js: **jsapi + jscode"
 	@echo "  jsapi: extract reST text from 'static/application.js' and save it to 'doc/source/dev/'"
-	@echo " jscode: Generate static/nano.js code from src/jscode folder, including mimes/ information"
+	@echo " jscode: *Generate static/nano.js code from src/jscode folder, including mimes/ information"
 	@echo "    all: all at once"
 	@echo ""
-	@echo " *note : you have to type 'make' in the 'mimes' folder if you make change inside this folder"
+	@echo "   * you have to type 'make' in the 'mimes' folder if you make change inside this folder"
+	@echo "  ** In order to debug, run 'JSMIN=cat make js' instead of 'make js'"
 
 
 PFX='#################### '
@@ -19,6 +20,7 @@ SFX=' ####################'
 SFX=' '
 JSAPI=doc/source/dev/jsapi.rst
 JSFILES=src/jscode/jsbase.js src/jscode/startup.js src/jscode/templates.js src/jscode/resources.js src/jscode/ui.js src/jscode/core.js
+JSMIN?=jsmin
 
 theme:
 themes:
@@ -32,7 +34,7 @@ jsapi: ${JSAPI}
 jscode: static/nano.js
 
 static/nano.js: mimes/mimes.js ${JSFILES}
-	cat $^ | jsmin > $@
+	cat $^ | ${JSMIN} > $@
 
 mimes/mimes.js:
 	(cd mimes && make)

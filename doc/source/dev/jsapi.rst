@@ -46,6 +46,9 @@ Navigation
      :rtype: string
 
 
+##############
+CORE FUNCTIONS
+##############
 
 .. _compact_form:
 
@@ -66,7 +69,6 @@ Navigation
         .. code-block:: js
 
            [ {'link': 'toto', 'age': 1}, {'name': 'tata', 'age': 4}, {'name': 'titi', 'age': 42} ]
-
 
    .. function:: Nano.level_up
 

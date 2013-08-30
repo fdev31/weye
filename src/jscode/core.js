@@ -43,7 +43,7 @@ function uncompress_resources(keys_values_array) {
 };
 
 var Nano = { doc_ref : '/' };
-Nano.current = new Resource({link:'', mime:'folder', cont:''});
+Nano.current = null ; //new Resource({link:'', mime:'folder', cont:''});
 Nano._unload_plugins = function() {
     $('audio').each( function() {this.pause(); this.src = "";} );
 };
@@ -74,7 +74,7 @@ Nano._load_resource_cb = function(resource, opts) {
     var opts = opts || {};
     Nano.doc_ref = resource.get_ref();
 //    console.log('load RESOURCE Factory call');
-    Nano.current = ResourceFactory(resource);
+    Nano.current = resource;
 //    console.log('load RESOURCE render dom');
     UI.render_dom(resource, opts);
 };

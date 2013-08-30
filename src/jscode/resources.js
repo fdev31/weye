@@ -33,7 +33,6 @@ function Resource (dict) {
 };
 Resource.prototype.searchable = 'title';
 Resource.prototype.hr_size = function() {
-    console.log('hr_size', this);
     return UI.hr_size(this.size);
 };
 Resource.prototype.getItem = function(callback, opts) {
@@ -47,7 +46,6 @@ Resource.prototype.getItem = function(callback, opts) {
                 });
 //                Nano._go_ready();
             } else {
-
                 callback(ResourceFactory(d), opts);
 //                Nano._go_ready();
             }
