@@ -61,7 +61,7 @@ def save_object_to_path(path, read_func):
     :arg path str: the file path
     :arg read_func callable: a function that takes an integer (number of bytes to read)
     """
-    print('SAVE %s'%(path))
+#    print('SAVE %s'%(path))
     can_write = True
 
     path = path.rstrip('/').lstrip('/')
@@ -119,7 +119,7 @@ def get_object_from_path(path):
 
 
     """
-    print('GET %s'%(path))
+#    print('GET %s'%(path))
     # TODO: pure metadata reading // a metadata injector will act asychronously
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
@@ -127,7 +127,7 @@ def get_object_from_path(path):
     infos = None
 
     try:
-        print('load %s'%meta_fpath)
+#        print('load %s'%meta_fpath)
         infos = loads(open(meta_fpath, 'rb').read())
     except (OSError, IOError, FileNotFoundError):
         if not os.path.exists(fpath):
@@ -184,7 +184,7 @@ def list_children(path):
 
         {children: {'c': ['descr', 'mime', 'link', 'title'], 'r': values}}
     """
-    print('LIST %s'%(path))
+#    print('LIST %s'%(path))
     # TODO: do not test files physically but return a database call
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
