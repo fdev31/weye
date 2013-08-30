@@ -1,6 +1,9 @@
 "use strict";
 
 /*
+ * ##############
+ * CORE FUNCTIONS
+ * ##############
  *
  * .. _compact_form:
  *
@@ -41,18 +44,6 @@ function uncompress_resources(keys_values_array) {
 
 var Nano = { doc_ref : '/' };
 Nano.current = new Resource({link:'', mime:'folder', cont:''});
-/*
-Nano.get_permalink = function() {
-    window.location.href ?
-    return '/#?view=' + Nano.doc_ref;
-};
-*/
-Nano.get = function(link) {
-};
-Nano._go_busy = function() {
-};
-Nano._go_ready = function() {
-};
 Nano._unload_plugins = function() {
     $('audio').each( function() {this.pause(); this.src = "";} );
 };
