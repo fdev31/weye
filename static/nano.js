@@ -48,6 +48,7 @@ function Resource (dict) {
         this.editables = 'title mime descr';
     this.type = 'resource';
 };
+Resource.prototype.searchable = 'title';
 Resource.prototype.getItem = function(callback, opts) {
     var opts = opts || {};
     $.get(this.get_obj_ref())
@@ -148,7 +149,56 @@ var UI = {
 
     item_template: 'list_item_big',
 
+    /*
+     * .. function:: UI.filter_items(filter)
+     *
+     *    :arg filter: *(optional)* pattern (regex to look for), if none given, ``#addsearch_form input`` is used
+     *    :type filter: String
+     *  
+     *    Filters the DOM content according to a pattern, if pattern is empty the display will be unfiltered.
+     *    If pattern is prefixed by a name (without spaces) and colon (ex: ``type:``), then the filtering will
+     *    be done against this metadata name.
+     * 
+     */
 
+    filter_items: function(filter) {
+        var filter = filter;
+        var forced_searchables = null;
+
+        if (typeof(filter) !== 'string') {
+            filter = $('#addsearch_form input[name=text]').val();
+        }
+        // create the match function + deps
+        var meta_re = filter.match(RegExp('^([a-z][a-z09]*): *(.*?) *$'));
+        if (!!meta_re) {
+            var meta = meta_re[1];
+            if (meta === 'type')
+                meta = 'mime';
+            forced_searchables = [meta];
+            filter = meta_re[2];
+        }
+        var re = new RegExp( filter.toLocaleLowerCase() );
+        var match_func = function(elt) {
+            var searchables = forced_searchables || elt.data('searchable').split(/ +/);
+            for (var i=0 ; i<searchables.length ; i++) {
+                if (elt.data(searchables[i]).toLocaleLowerCase().match(re))
+                    return true;
+            }
+            return false;
+        };
+
+        $('.item').each(
+                function(i, e) {
+                    var e=$(e);
+                    if (match_func(e)) {
+                        e.addClass('filtered');
+                    } else {
+                        e.removeClass('filtered');
+                    }
+                }
+            );
+        $('.items').isotope({filter:'.filtered'});
+    },
 /*
  * Navigation
  * ##########
@@ -366,7 +416,13 @@ function ItemList(data, item_template) {
     }
 }
 inherits(ItemList, PageTemplate);
+
+// TODO: replace by factory
 Templates['folder'] = ItemList;
+
+ItemList.prototype.get_dom = function(link) {
+    return $('.items .item[data-link="'+link+'"]');
+}
 
 ItemList.prototype.find_by_link = function(link) {
     return this._c[this._index[link]];
@@ -374,11 +430,12 @@ ItemList.prototype.find_by_link = function(link) {
 ItemList.prototype.refresh_by_link = function(link, metadata) {
     var item = this._c[this._index[link]];
     $.extend(item, metadata);
-    var e = $('.items .item[data-link="'+item.link+'"]').html(
+    var e = this.get_dom(item.link).html(
             ich[this.item_template](item).children().html()
         );
     this.setup_links(e);
 };
+// TODO: keyboard nav
 ItemList.prototype.select = function(index) {
     self.selected += index;
 };
@@ -388,10 +445,9 @@ ItemList.prototype.insert = function(resource) {
     this._index[resource.link] = d;
     this._c.push(d);
     $('.items').isotope('insert', d);
-    // new element: $('.items').isotope('insert', DOM_ELT);
 };
 ItemList.prototype.remove = function(resource) {
-    var e = $('.items .item[data-link="'+resource.link+'"]');
+    var e = this.get_dom(resource.link);
     e.fadeOut( function() {
         e.remove();
         $('.items').isotope('reLayout');
