@@ -1,12 +1,20 @@
 "use strict";
 
 function ResourceFactory(item) {
-//    console.log('Resource factory for:', item);
-    if(item.size !== undefined) {
-        return new Item(item);
-    } else {
-        return new Resource(item);
+    var found = false;
+    var choices = MimeManager.find_choices(item.mime);
+    for (var n=0; (!!! found) && n < choices.length ; n++) {
+        try {
+            found = Nano.mimes[ choices[n] ];
+        } catch(err) {
+            found = false;
+        }
+        if (found) break;
     }
+    if(!!!found) {
+        $.pnotify({'type': 'error', 'title': 'Type association', 'text': 'failed loading one of: '+choices});
+    }
+    return new found(item);
 }
 function Resource (dict) {
     $.extend(this, dict);
@@ -29,9 +37,11 @@ function Resource (dict) {
         this.is_data = true;
     if (!!!this.editables)
         this.editables = 'title mime descr';
-    this.type = 'resource';
 };
+Resource.prototype.type = 'resource';
 Resource.prototype.searchable = 'title';
+Resource.prototype.dependencies = [];
+Resource.prototype.stylesheet = false;
 Resource.prototype.hr_size = function() {
     return UI.hr_size(this.size);
 };
@@ -57,7 +67,7 @@ Resource.prototype.getItem = function(callback, opts) {
 
 };
 Resource.prototype.post_view_callback = function() {
-    if (this.mime === 'folder') {
+    if (!!!this.is_data) {
         $('.folder-item').fadeIn(function() {$('.folder-item').removeClass('hidden');});
         $('.pure-item').fadeOut(function() {$('.pure-item').addClass('hidden');});
     } else {
@@ -88,7 +98,7 @@ Resource.prototype.del = function() {
 
 };
 Resource.prototype.view = function() {
-//    console.log('Resource view > nano load_resource');
+//    console.log('Resource view > nano load_resource', this);
     $('#contents').addClass('slided_left');
     Nano.load_resource( this );
 };
@@ -117,7 +127,7 @@ function Item (dict) {
         this.title = this.link;
     if (!!! this.descr)
         this.descr = 'No description';
-    this.type = 'item';
 };
 // Inherits `Resource`
 inherits(Item, Resource);
+Item.prototype.type = 'item';

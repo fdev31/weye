@@ -109,21 +109,19 @@ var UI = {
             .hide()
             .removeClass('slided_right slided_left');
             // display content
-            MimeManager.load_dependencies(resource.mime, {callback: function(found) {
+            MimeManager.load_dependencies(resource, {callback: function(found) {
 //                console.log('cb !', found, resource);
-                found.display(resource);
+                // update content's items according to context
+                var buttons = $('#addsearch_form');
+                buttons.find('button').removeClass('hidden');
+                resource.post_view_callback.call(resource);
+                // handle history/ backbutton
+                if (!!!opts.disable_history)
+                    history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
+                // show !
+                var c = $('#contents');
+                    c.fadeIn();
             }})
-            // update content's items according to context
-            var name = resource.mime;
-            var buttons = $('#addsearch_form');
-            buttons.find('button').removeClass('hidden');
-            resource.post_view_callback.call(resource);
-            // handle history/ backbutton
-            if (!!!opts.disable_history)
-                history.pushState({'view': ''+Nano.doc_ref}, "Staring at "+Nano.doc_ref, '/#?view='+Nano.doc_ref);
-            // show !
-            var c = $('#contents');
-                c.fadeIn();
         }, 100);
     },
 

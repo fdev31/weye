@@ -33,11 +33,11 @@ jsapi: ${JSAPI}
 
 jscode: static/nano.js
 
-static/nano.js: mimes/mimes.js ${JSFILES}
+static/nano.js: ${JSFILES} objects/mimes.js
 	cat $^ | ${JSMIN} > $@
 
-mimes/mimes.js:
-	(cd mimes && make)
+objects/mimes.js:
+	(cd objects && ./compiler.py)
 
 doc: jsapi
 	(cd doc && make html)

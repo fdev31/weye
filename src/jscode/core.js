@@ -47,9 +47,7 @@ Nano.current = null ; //new Resource({link:'', mime:'folder', cont:''});
 Nano._unload_plugins = function() {
     $('audio').each( function() {this.pause(); this.src = "";} );
 };
-if (!!mimes) {
-    Nano.mimes = mimes;
-};
+Nano.mimes = {};
 Nano.set_content = function(item, opts) {
     this.content = TemplateFactory(item);
     this.content.draw();
@@ -63,10 +61,10 @@ Nano.load_link = function(link, opts) {
     this.load_resource( r, opts); // load it
 };
 Nano.load_resource = function(resource, opts) {
-    if (instanceOf(resource, Item)) {
-        Nano._load_resource_cb(resource, opts);
-    } else {
+    if (resource.size === undefined) {
         resource.getItem(Nano._load_resource_cb, opts);
+    } else {
+        Nano._load_resource_cb(resource, opts);
     }
 };
 Nano._load_resource_cb = function(resource, opts) {
@@ -110,7 +108,14 @@ Nano.level_up = function(opts) {
     }
 };
 
-/* MimeManager
+Nano.register_mime = function(mimetype, classtype) {
+    Nano.mimes[mimetype] = classtype;
+};
+
+/*
+ * MimeManager
+ * ===========
+ *
  */
 
 var MimeManager = {
@@ -139,69 +144,50 @@ MimeManager.get_template = function(mime) {
     }
     return PageTemplate
 };
-MimeManager.load_dependencies = function(mime, opts) {
+MimeManager.load_dependencies = function(item, opts) {
     var opts = opts || {};
     var skip_loading = false;
     // valid opts:
     // - callback
-    if(MimeManager.loaded[mime])
+    if(MimeManager.loaded[item.mime])
         skip_loading = true;
-    MimeManager.loaded[mime] = true;
+    MimeManager.loaded[item.mime] = true;
 
-    var found = false;
-    var choices = MimeManager.find_choices(mime);
-
-//    console.log('load deps for', choices);
-
-    for (var n=0; (!!! found) && n < choices.length ; n++) {
-        try {
-            found = Nano.mimes[ choices[n] ];
-        } catch(err) {
-            found = false;
+    if (!!!skip_loading) {
+        var dependencies = [];
+        var prefix = '/static/mime/js/' + item.type + '/';
+        if( !! item.stylesheet )
+            dependencies.push( prefix + 'style.css' );
+        if (item.dependencies) {
+            item.dependencies.forEach( function(x) {
+                if ( x.match(/^[/]/) ) {
+                    dependencies.push( x ) 
+                } else {
+                    dependencies.push( prefix + x );
+                }
+            })
         }
-        if (found) {
-            if (!!!skip_loading) {
-                var dependencies = [];
-                var prefix = '/static/mime/js/' + found.name + '/';
-                if( !! found.stylesheet )
-                    dependencies.push( prefix + 'style.css' );
-                if (found.dependencies) {
-                    found.dependencies.forEach( function(x) {
-                        if ( x.match(/^[/]/) ) {
-                            dependencies.push( x ) 
-                        } else {
-                            dependencies.push( prefix + x );
+        if (dependencies.length !== 0) {
+            var counter = 0;
+            for (var dep in dependencies) {
+    //                        console.log( dependencies[dep] );
+                toast(dependencies[dep], function() {
+                    if (++counter === dependencies.length) {
+    //                                console.log('load deps callback');
+                        if (!!opts.callback) {
+                            setTimeout( function() {
+                                opts.callback(item);
+                            }, 100); // force DOM refresh
                         }
-                    })
-                }
-//                console.log("  => found:", found);
-                if (dependencies.length !== 0) {
-                    var counter = 0;
-                    for (var dep in dependencies) {
-//                        console.log( dependencies[dep] );
-                        toast(dependencies[dep], function() {
-                            if (++counter === dependencies.length) {
-//                                console.log('load deps callback');
-                                if (opts.callback) {
-                                    setTimeout( function() {
-                                        opts.callback(found);
-                                    }, 100); // force DOM refresh
-                                }
-                            }
-                        } );
                     }
-                } else { // no deps
-//                    console.log('load deps callback');
-                    if (opts.callback) opts.callback(found); // MOTT: just Nano.set_content(item)
-                }
-            } else {
-                if (opts.callback) opts.callback(found); // MOTT: just Nano.set_content(item)
+                } );
             }
-            break;
+        } else { // no deps
+    //                    console.log('load deps callback');
+            if (!!opts.callback) opts.callback(item); // MOTT: just Nano.set_content(item)
         }
-    }
-    if(!!!found) {
-        $.pnotify({'type': 'error', 'title': 'Type association', 'text': 'failed loading one of: '+choices});
+    } else {
+        if (!!opts.callback) opts.callback(item); // MOTT: just Nano.set_content(item)
     }
 }
 

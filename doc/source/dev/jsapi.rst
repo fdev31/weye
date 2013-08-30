@@ -80,7 +80,10 @@ CORE FUNCTIONS
 
       Leaves the current navigation level and reach the parent calling :func:`n_w.view_path`
 
+
 MimeManager
+===========
+
 
 ----
 
