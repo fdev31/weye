@@ -1,0 +1,22 @@
+<script id="header" type="text/html">
+<header id="main_header" data-link="{{link}}" data-mime="{{mime}}">
+    <hgroup>
+        <h1 class="item_title"><small>{{cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h1>
+
+    </hgroup>
+    <hgroup>
+        <a id="download_link" class="btn btn-large btn-primary pure-item {{^is_data}}hidden{{/is_data}}" title="Click to download" href="/d{{cont}}{{link}}">
+        <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a>
+        <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item {{#is_data}}hidden{{/is_data}}" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
+        <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item {{#is_data}}hidden{{/is_data}}" title="Download a Zip archive of this content"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
+    </hgroup>
+</header>
+</script>
+<!-- main page -->
+<script id="view_file" type="text/html">
+    <div class="items row">
+        {{#children}}
+        {{{item_template}}}
+        {{/children}}
+    </div>
+</script>

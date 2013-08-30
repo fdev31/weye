@@ -47,6 +47,10 @@ try:
 except Exception as e:
     print("Failed to generate mimes: %r"%e)
 
+VIEW_CODE = ''.join( open( os.path.join( 'views', p) ).read() for p in os.listdir('views') if p.endswith('.html') )
+INDEX_TEMPLATE = bottle.template( open( os.path.join(config.static_root, 'weye.html') ), VIEWS=VIEW_CODE )
+del VIEW_CODE
+
 __all__ = ['root_cb']
 
 try:
@@ -60,8 +64,8 @@ _fix_path = unquote
 @bottle.get('/')
 def root_cb():
     """ Default route (aka ``/`` or *root* ), displays :file:`static/weye.html` """
-    return bottle.static_file('weye.html', config.static_root)
-
+    bottle.response.set_header('Content-Type', 'text/html')
+    return INDEX_TEMPLATE
 
 # TODO: search
 @bottle.post('/search')
