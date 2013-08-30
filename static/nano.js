@@ -422,8 +422,7 @@ Templates['folder'] = ItemList;
 
 ItemList.prototype.get_dom = function(link) {
     return $('.items .item[data-link="'+link+'"]');
-}
-
+};
 ItemList.prototype.find_by_link = function(link) {
     return this._c[this._index[link]];
 };
