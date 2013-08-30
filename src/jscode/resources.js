@@ -32,6 +32,10 @@ function Resource (dict) {
     this.type = 'resource';
 };
 Resource.prototype.searchable = 'title';
+Resource.prototype.hr_size = function() {
+    console.log('hr_size', this);
+    return UI.hr_size(this.size);
+};
 Resource.prototype.getItem = function(callback, opts) {
     var opts = opts || {};
     $.get(this.get_obj_ref())
@@ -63,13 +67,6 @@ Resource.prototype.post_view_callback = function() {
         $('.pure-item').fadeIn(function() {$('.pure-item').removeClass('hidden');});
         $('#main_header .big_icon').addClass('faded_in');
     }
-    $('#main_header .filesize').each( function(i, x) {
-        var o=$(x);
-        if (!!! o.data('_fs_converted')) {
-            o.text(UI.hr_size(eval(o.text())));
-        }
-        o.data('_fs_converted', 1);
-    });
 };
 Resource.prototype.edit = function() {
     if(this.link.startswith('js:')) {

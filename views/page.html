@@ -6,7 +6,7 @@
     </hgroup>
     <hgroup>
         <a id="download_link" class="btn btn-large btn-primary pure-item {{^is_data}}hidden{{/is_data}}" title="Click to download" href="/d{{cont}}{{link}}">
-        <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)</a>
+        <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get <em>{{mime}}</em> (<span class="filesize">{{hr_size}}</span>)</a>
         <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item {{#is_data}}hidden{{/is_data}}" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
         <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item {{#is_data}}hidden{{/is_data}}" title="Download a Zip archive of this content"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
     </hgroup>
