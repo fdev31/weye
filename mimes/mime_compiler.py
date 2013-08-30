@@ -79,7 +79,7 @@ def main():
     for line in open('aliases.txt'):
         if line.strip():
             p = tuple(x.strip() for x in line.split(':'))
-            OUT('mimes["%s"]=mimes["%s"]\n'%p)
+            OUT('mimes["%s"]=mimes["%s"];\n'%p)
             print(' * %s (=%s)'%p)
 
 if __name__ == '__main__':
