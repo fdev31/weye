@@ -9,6 +9,16 @@ function TemplateFactory(item) {
 }
 
 // -- TEMPLATE obj
+//
+/*
+ * Templates
+ * #########
+ *
+ * .. class:: PageTemplate(data, name)
+ *
+ *      :arg data: Object to pass to the template
+ *      :arg name: name of the template (without the "view_" prefix)
+ */
 
 function PageTemplate(data, name) {
     if (!!! name)
@@ -16,19 +26,47 @@ function PageTemplate(data, name) {
     this.data = data;
     this.name = 'view_'+name;
 }
+/*
+ *     .. function:: PageTemplate.from([resource])
+ *
+ *          :arg resource: optional resource to use instead of the *data* passed to constructor
+ *
+ *          Returns the HTML content
+ */
 PageTemplate.prototype.from = function (resource) {
 //    console.log('creating template...');
     return ich[this.name](resource || this.data);
 };
+/*
+ *     .. function:: PageTemplate.draw([resource])
+ *
+ *          :arg resource: optional resource to use instead of the *data* passed to constructor
+ *
+ *          Draws this template on screen, replacing ``#contents`` with :func:`PageTemplate.draw`
+ */
 PageTemplate.prototype.draw = function(resource) {
     $('#contents').html(this.from(resource));
 //    console.log('html content set');
 };
+/*
+ *     .. function:: PageTemplate.clear()
+ *
+ *          Clears display
+ */
 PageTemplate.prototype.clear = function() {
     $('#contents').html('');
 };
 
 // item list
+//
+/*
+ * .. class:: ItemList(data, item_template)
+ *
+ *      *Inherits* :class:`PageTemplate`
+ *
+ *      Aims at handling a list of :class:`Resource`
+ *
+ */
 
 function ItemList(data, item_template) {
     PageTemplate.call(this, data);
@@ -49,12 +87,41 @@ inherits(ItemList, PageTemplate);
 // TODO: replace by factory
 Templates['folder'] = ItemList;
 
+/*
+ *     .. function:: ItemList.get_dom(link)
+ *
+ *          Get the DOM element used to display some child, by giving its link
+ *
+ *          :arg link: Child's link
+ *          :type link: String
+ *
+ *          :returns: The DOM element within that page
+ */
 ItemList.prototype.get_dom = function(link) {
     return $('.items .item[data-link="'+link+'"]');
 };
+/*
+ *     .. function:: ItemList.find_by_link(link)
+ *
+ *          Get the :class:`Resource` used for this *link*
+ *
+ *          :arg link: Child's link
+ *          :type link: String
+ *
+ *          :rtype: :class:`Resource`
+ */
 ItemList.prototype.find_by_link = function(link) {
     return this._c[this._index[link]];
 };
+/*
+ *     .. function:: ItemList.refresh_by_link(link, metadata)
+ *
+ *          Refresh DOM informations of the item matching *link*
+ *
+ *          :arg link: Child's link
+ *          :type link: String
+ *          :arg metadata: an Object containing some properties to copy on this :class:`Resource`
+ */
 ItemList.prototype.refresh_by_link = function(link, metadata) {
     var item = this._c[this._index[link]];
     $.extend(item, metadata);
@@ -64,9 +131,18 @@ ItemList.prototype.refresh_by_link = function(link, metadata) {
     this.setup_links(e);
 };
 // TODO: keyboard nav
+/*
+ *     .. function:: ItemList.refresh_by_link(link, metadata)
+ *
+ */
 ItemList.prototype.select = function(index) {
     self.selected += index;
 };
+/*
+ *     .. function:: ItemList.insert(resource)
+ *
+ *          Add a :class:`Resource` to current Page
+ */
 ItemList.prototype.insert = function(resource) {
 //    console.log('insert', resource, 'into', this);
     var d = ich[this.item_template](resource).children();
@@ -74,6 +150,11 @@ ItemList.prototype.insert = function(resource) {
     this._c.push(d);
     $('.items').isotope('insert', d);
 };
+/*
+ *     .. function:: ItemList.remove(resource)
+ *
+ *          Remove the given :class:`Resource` 
+ */
 ItemList.prototype.remove = function(resource) {
     var e = this.get_dom(resource.link);
     e.fadeOut( function() {
@@ -81,6 +162,11 @@ ItemList.prototype.remove = function(resource) {
         $('.items').isotope('reLayout');
     });
 };
+/*
+ *     .. function:: ItemList.sort_by(dom_elt, criteria)
+ *
+ *          Call :func:`UI.fix_nav` and change the current sort criteria
+ */
 ItemList.prototype.sort_by = function(dom_elt, criteria) {
     UI.fix_nav(dom_elt);
     $('.items').isotope({ sortBy : criteria });

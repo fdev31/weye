@@ -1,18 +1,32 @@
 "use strict";
 
+/*
+ *
+ * GUI interactions
+ * ################
+ *
+ * .. data:: UI
+ *
+ *      The UI object ;)
+ */
+
 var UI = {
+
+    /*
+     *     .. data:: UI.item_template = 'list_item_big'
+     */
 
     item_template: 'list_item_big',
 
     /*
-     * .. function:: UI.filter_items(filter)
-     *
-     *    :arg filter: *(optional)* pattern (regex to look for), if none given, ``#addsearch_form input`` is used
-     *    :type filter: String
-     *  
-     *    Filters the DOM content according to a pattern, if pattern is empty the display will be unfiltered.
-     *    If pattern is prefixed by a name (without spaces) and colon (ex: ``type:``), then the filtering will
-     *    be done against this metadata name.
+     *     .. function:: UI.filter_items(filter)
+     *    
+     *        :arg filter: *(optional)* pattern (regex to look for), if none given, ``#addsearch_form input`` is used
+     *        :type filter: String
+     *      
+     *        Filters the DOM content according to a pattern, if pattern is empty the display will be unfiltered.
+     *        If pattern is prefixed by a name (without spaces) and colon (ex: ``type:``), then the filtering will
+     *        be done against this metadata name.
      * 
      */
 
@@ -55,30 +69,27 @@ var UI = {
         $('.items').isotope({filter:'.filtered'});
     },
 /*
- * Navigation
- * ##########
+ *     .. function:: UI.fix_nav(link)
  *
- * .. function:: UI.fix_nav(link)
+ *          Handles the "click" on the given *link* in the ``.navbar``  (sort criteria)
  *
- *      Handles the "click" on the given *link* in the ``.navbar``  (sort criteria)
+ *          Example usage:
  *
- *      Example usage:
+ *          .. code-block:: html
  *
- *      .. code-block:: html
- *
- *          <a href="#" onclick="fix_nav(this); do_some_action();">link</a>
+ *              <a href="#" onclick="UI.fix_nav(this); do_some_action();">link</a>
  */
     fix_nav: function (link) {
         $('div.navbar ul.nav li').removeClass('active');
         $(link).parent().addClass('active');
     },
 /*
- * .. function:: UI.hr_size(size)
+ *     .. function:: UI.hr_size(size)
  *
- *      :arg size: a number of bytes (file/data weight)
- *      :type size: Integer
- *      :returns: Human readable size
- *      :rtype: string
+ *          :arg size: a number of bytes (file/data weight)
+ *          :type size: Integer
+ *          :returns: Human readable size
+ *          :rtype: string
  *
  */
     hr_size: function (size) {
@@ -90,6 +101,12 @@ var UI = {
 
         return size.toFixed(1) + ' ' + units[i]+'B';
     },
+/*
+ *     .. function:: UI.render_dom(resource, opts)
+ *
+ *          Renders an :class:`Item` by calling it's :func:`Resource.post_view_callback` after calling :func:`MimeManager.load_dependencies`
+ *
+ */
 
     render_dom: function(resource, opts) {
         var resource = copy(resource);
@@ -124,6 +141,12 @@ var UI = {
             }})
         }, 100);
     },
+/*
+ *     .. function:: UI.edit_item(data)
+ *
+ *          :arg data: The item to edit
+ *          :type data: :class:`Resource`
+ */
 
     edit_item : function(data) {
         UI._edited = data;
@@ -167,10 +190,21 @@ var UI = {
         }, 200);
 
     },
+/*
+ *     .. function:: UI.remove_item()
+ *
+ *          Removes the edited item and close the modal
+ *
+ */
     remove_item: function() {
         UI._edited.del();
         UI.close_modal();
     },
+/*
+ *     .. function:: UI.save_item
+ *
+ *          Saves current item metadata
+ */
     save_item: function() {
         var o = $('#question_popup .editable');
         var item = UI._edited;
@@ -212,7 +246,11 @@ var UI = {
             console.log('hidden !!');
         });
     },
-
+    /*     .. function:: UI.find_item_from_child(dom)
+     *
+     *          Returns the DOM element owning the `link` from one of its child elements
+     *          Useful to handle actions / clicks.
+     */
     find_item_from_child: function(dom) {
         var st = $(dom);
         while (!!! st.hasClass('item') ) {
