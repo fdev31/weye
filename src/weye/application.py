@@ -44,12 +44,13 @@ try:
         # cleanup
         del(sys.path[0], sys.path[1], expand, _mimes_path1, _mimes_path2)
     del(mimesjs)
+
+    VIEW_CODE = ''.join( open( os.path.join( 'views', p) ).read() for p in os.listdir('views') if p.endswith('.html') )
+    INDEX_TEMPLATE = bottle.template( open( os.path.join(config.static_root, 'weye.html') ), VIEWS=VIEW_CODE )
+    del VIEW_CODE
 except Exception as e:
     print("Failed to generate mimes: %r"%e)
 
-VIEW_CODE = ''.join( open( os.path.join( 'views', p) ).read() for p in os.listdir('views') if p.endswith('.html') )
-INDEX_TEMPLATE = bottle.template( open( os.path.join(config.static_root, 'weye.html') ), VIEWS=VIEW_CODE )
-del VIEW_CODE
 
 __all__ = ['root_cb']
 

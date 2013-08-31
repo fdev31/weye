@@ -265,7 +265,7 @@ CORE FUNCTIONS
 
      .. data:: Nano.mimes
 
-         Dictionary of "mime" : :class:`Item` with all registered mimes, see :func:`Nano.register_mime`
+         Dictionary of "mime" : :class:`Item` with all registered mimes, see :ref:`Defining a new mime type`
 
 
      .. function:: Nano.set_content(item, [opts])

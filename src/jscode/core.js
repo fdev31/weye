@@ -71,7 +71,7 @@ Nano._unload_plugins = function() {
 /*
  *      .. data:: Nano.mimes
  *
- *          Dictionary of "mime" : :class:`Item` with all registered mimes, see :func:`Nano.register_mime`
+ *          Dictionary of "mime" : :class:`Item` with all registered mimes, see :ref:`Defining a new mime type`
  *
  */
 Nano.mimes = {};
