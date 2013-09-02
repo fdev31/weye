@@ -3,8 +3,7 @@
 
 .. rst-class:: html-toggle
 
-JavaScript reference
-====================
+.. rubric:: JavaScript reference
 
 `From MDN <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects>`_.
 
