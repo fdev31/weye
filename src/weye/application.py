@@ -46,10 +46,10 @@ try:
     del(mimesjs)
 
     VIEW_CODE = ''.join( open( os.path.join( 'views', p) ).read() for p in os.listdir('views') if p.endswith('.html') )
-    INDEX_TEMPLATE = bottle.template( open( os.path.join(config.static_root, 'weye.html') ), VIEWS=VIEW_CODE )
+    INDEX_TEMPLATE = bottle.template( open( os.path.join(config.static_root, 'weye.html') ).read(), VIEWS=VIEW_CODE )
     del VIEW_CODE
 except Exception as e:
-    print("Failed to generate mimes: %r"%e)
+    print("*ERROR* Failed to generate mimes: %r"%e)
 
 
 __all__ = ['root_cb']

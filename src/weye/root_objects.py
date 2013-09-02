@@ -204,6 +204,7 @@ def list_children(path):
     for f in os.listdir(fpath):
         cfp = is_listable(f)
         if cfp:
+            cfp = os.path.join(path, f)
             o = get_object_from_path(cfp)
             values.append( [ o[k] for k in fields ] )
     return {'children': {'c': fields, 'r': values} }
