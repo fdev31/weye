@@ -22,7 +22,7 @@ log = logging.getLogger('application')
 # ensure mimes icons are expanded (optimization to avoid huge archives)
 _mimes_path1 = os.path.abspath( os.path.join( config.static_root, 'mime') )
 sys.path.insert(0, _mimes_path1)
-_mimes_path2 = os.path.abspath( os.path.join( config.static_root, os.path.pardir, 'mimes') )
+_mimes_path2 = os.path.abspath( os.path.join( config.static_root, os.path.pardir, 'objects') )
 sys.path.insert(0, _mimes_path2)
 try:
     mimesjs = os.path.join( config.static_root, 'mimetypes.js')
@@ -34,9 +34,9 @@ try:
         expand()
         os.chdir(cwd)
         # mime data (.js + css)
-        import mime_compiler
+        import compiler
         os.chdir( _mimes_path2 )
-        mime_compiler.main()
+        compiler.main()
         os.chdir(cwd)
         open(mimesjs, 'w').write(
             open( os.path.join(config.static_root, os.path.pardir, 'mimes', 'mimes.js') ).read()
