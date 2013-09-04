@@ -479,6 +479,7 @@ latex application-x-latex
 lbd application-vnd.llamagraphics.life-balance.desktop
 lbe application-vnd.llamagraphics.life-balance.exchange+xml
 les application-vnd.hhe.lesson-player
+less text-css
 lha application-x-lha
 lhs text-x-literate-haskell
 lin application-bbolin
@@ -672,6 +673,7 @@ oprc application-vnd.palm
 opus audio-ogg
 orc audio-csound
 orf image-x-olympus-orf
+orig text-x-diff
 org application-vnd.lotus-organizer
 osf application-vnd.yamaha.openscoreformat
 osfpvg application-vnd.yamaha.openscoreformat.osfpvg+xml

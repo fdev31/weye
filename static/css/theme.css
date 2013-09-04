@@ -1600,11 +1600,11 @@ textarea.input-sm {
 fieldset[disabled] .btn {
   cursor: default;
   pointer-events: none;
-  -moz-opacity: 0.65;
-  -khtml-opacity: 0.65;
-  -webkit-opacity: 0.65;
-  opacity: 0.65;
-  filter: alpha(opacity=65);
+  -moz-opacity: 0.35;
+  -khtml-opacity: 0.35;
+  -webkit-opacity: 0.35;
+  opacity: 0.35;
+  filter: alpha(opacity=35);
   -moz-box-shadow: none;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -4144,6 +4144,9 @@ a.list-group-item.active > .badge,
 .hidden {
   display: none !important;
   visibility: hidden !important;
+  -moz-transition-duration: 0.5;
+  -webkit-transition-duration: 0.5;
+  transition-duration: 0.5;
 }
 .visible-sm {
   display: block !important;
@@ -4853,6 +4856,93 @@ td.visible-print {
 .glyphicon-collapse-top:before {
   content: "\e160";
 }
+/*
+Document   : jquery.pnotify.default.css
+Created on : Nov 23, 2009, 3:14:10 PM
+Author     : Hunter Perrin
+Version    : 1.2.0
+Link       : http://pinesframework.org/pnotify/
+Description:
+	Default styling for Pines Notify jQuery plugin.
+*/
+/* -- Notice */
+.ui-pnotify {
+  top: 25px;
+  right: 25px;
+  position: absolute;
+  height: auto;
+  /* Ensures notices are above everything */
+
+  z-index: 9999;
+}
+/* Hides position: fixed from IE6 */
+html > body .ui-pnotify {
+  position: fixed;
+}
+.ui-pnotify .ui-pnotify-shadow {
+  -webkit-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+  -moz-box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+  box-shadow: 0px 2px 10px rgba(50, 50, 50, 0.5);
+}
+.ui-pnotify-container {
+  background-position: 0 0;
+  padding: .8em;
+  height: 100%;
+  margin: 0;
+}
+.ui-pnotify-sharp {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+}
+.ui-pnotify-closer,
+.ui-pnotify-sticker {
+  float: right;
+  margin-left: .2em;
+}
+.ui-pnotify-title {
+  display: block;
+  margin-bottom: .4em;
+}
+.ui-pnotify-text {
+  display: block;
+}
+.ui-pnotify-icon,
+.ui-pnotify-icon span {
+  display: block;
+  float: left;
+  margin-right: .2em;
+}
+/* -- History Pulldown */
+.ui-pnotify-history-container {
+  position: absolute;
+  top: 0;
+  right: 18px;
+  width: 70px;
+  border-top: none;
+  padding: 0;
+  -webkit-border-top-left-radius: 0;
+  -moz-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  -webkit-border-top-right-radius: 0;
+  -moz-border-top-right-radius: 0;
+  border-top-right-radius: 0;
+  /* Ensures history container is above notices. */
+
+  z-index: 10000;
+}
+.ui-pnotify-history-container .ui-pnotify-history-header {
+  padding: 2px;
+}
+.ui-pnotify-history-container button {
+  cursor: pointer;
+  display: block;
+  width: 100%;
+}
+.ui-pnotify-history-container .ui-pnotify-history-pulldown {
+  display: block;
+  margin: 0 auto;
+}
 body {
   background-color: #ffffff;
 }
@@ -4876,7 +4966,7 @@ iframe {
   background: #ffffcc !important;
 }
 .show_on_hover {
-  opacity: 0;
+  visibility: hidden;
 }
 .item {
   list-style-type: none;
@@ -4897,15 +4987,14 @@ iframe {
   background-clip: padding-box;
   margin: .3ex;
   padding-left: 1ex;
-  cursor: pointer;
   -webkit-transition: all 0.5s linear ease-out;
   -moz-transition: all 0.5s linear ease-out;
   transition: all 0.5s linear ease-out;
   -webkit-transition: 0.5s linear;
   transition: 0.5s linear;
-  word-wrap: break-word;
   overflow: hidden;
   text-overflow: ellipsis;
+  vertical-align: top;
 }
 .item:hover {
   background: #ffffcc;
@@ -4917,7 +5006,25 @@ iframe {
   transition: 0.5s linear !important;
 }
 .item:hover .show_on_hover {
-  opacity: 1;
+  visibility: visible;
+}
+.item i.btn {
+  padding: 0;
+}
+.item .item_touch {
+  cursor: pointer;
+}
+.item .item_touch .item_caption {
+  hyphens: auto;
+  word-wrap: break-word;
+  white-space: pre-line;
+  overflow: scroll;
+}
+.item_small {
+  max-height: 2em;
+}
+.item_big {
+  max-height: 5em;
 }
 /* icons */
 img.huge_icon {
@@ -5017,21 +5124,47 @@ hr.header_sep {
   text-align: center;
   box-shadow: 0 1px 10px 1px rgba(0, 0, 0, 0.3);
 }
+#contents {
+  min-height: 50em;
+  padding-bottom: 3ex;
+}
+.big_icon {
+  opacity: 0.5;
+}
+.faded_in {
+  -moz-transition-duration: 1s;
+  -webkit-transition-duration: 1s;
+  transition-duration: 1s;
+  opacity: 1.0 !important;
+}
 /* media queries */
 @media (max-width: 768px) {
-  #contents {
-    margin-left: 3px !important;
-  }
   #addsearch_form {
     width: 100%;
   }
   #addsearch_form input.my-form-control {
     width: auto;
   }
+  .item {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    float: left;
+    width: 100%;
+  }
 }
 @media (max-width: 992px) and (min-width: 768px) {
-  #contents {
-    margin-left: 1ex !important;
+  .navbar .container {
+    max-width: 100% !important;
+  }
+  .navbar #addsearch_form {
+    padding: 0;
+  }
+}
+@media (min-width: 768px) and (max-width: 1200px) {
+  .item {
+    width: 32%;
   }
 }
 @media (min-width: 1200px) {
@@ -5044,6 +5177,9 @@ hr.header_sep {
   #contents {
     margin-top: 6ex;
   }
+  .item {
+    width: 24%;
+  }
 }
 @media (max-width: 1200px) {
   .ui-pnotify-history-container {
@@ -5052,14 +5188,6 @@ hr.header_sep {
   }
   #contents {
     margin-top: 1ex;
-  }
-}
-@media (max-width: 992px) and (min-width: 768px) {
-  .navbar .container {
-    max-width: 100% !important;
-  }
-  .navbar #addsearch_form {
-    padding: 0;
   }
 }
 /* ISOTOPE */
@@ -5075,37 +5203,4 @@ hr.header_sep {
 .isotope-hidden.isotope-item {
   pointer-events: none;
   z-index: 1;
-}
-/**** Isotope CSS3 transitions ****/
-.isotope,
-.isotope .isotope-item {
-  -webkit-transition-duration: 0.8s;
-  -moz-transition-duration: 0.8s;
-  -ms-transition-duration: 0.8s;
-  -o-transition-duration: 0.8s;
-  transition-duration: 0.8s;
-}
-.isotope {
-  -webkit-transition-property: height, width;
-  -moz-transition-property: height, width;
-  -ms-transition-property: height, width;
-  -o-transition-property: height, width;
-  transition-property: height, width;
-}
-.isotope .isotope-item {
-  -webkit-transition-property: -webkit-transform, opacity;
-  -moz-transition-property: -moz-transform, opacity;
-  -ms-transition-property: -ms-transform, opacity;
-  -o-transition-property: -o-transform, opacity;
-  transition-property: transform, opacity;
-}
-/**** disabling Isotope CSS3 transitions ****/
-.isotope.no-transition,
-.isotope.no-transition .isotope-item,
-.isotope .isotope-item.no-transition {
-  -webkit-transition-duration: 0s;
-  -moz-transition-duration: 0s;
-  -ms-transition-duration: 0s;
-  -o-transition-duration: 0s;
-  transition-duration: 0s;
 }

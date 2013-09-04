@@ -10,125 +10,9 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/static/css/theme.css" type="text/css" rel="stylesheet">
-    <link href="/static/css/jquery.pnotify.default.css" rel="stylesheet">
-    <!-- ------------------ T E M P L A T E S ---------------------------------------------------------------------- -->
-    <!-- dynamic headers-->
-    <!-- ------------------ base template: headers ---------------------------------- -->
-    <script id="header" type="text/html">
-        {{#mime}}
-        <header data-link="{{link}}" data-mime="{{mime}}">
-            <hgroup>
-                <h1 class="item_title"><small>{{_cont}}</small>{{title}}&nbsp;<a title="permalink: Share item with right click>'Copy link location', then paste it using ^V" href="{{permalink}}" ><span class="glyphicon glyphicon-bookmark" style="font-size: 50%"/> </a><img src="/static/mime/{{mime}}.svg" class="pull-right big_icon"/></h1>
-            </hgroup>
-            <hgroup>
 
-                <a id="download_link" class="btn btn-large btn-primary pure-item" title="Click to download" href="/d{{_cont}}{{link}}">
-                <i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;
-                Get <em>{{mime}}</em> (<span class="filesize">{{size}}</span>)
-            </a>
-
-          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-white glyphicon-list-alt"></i>&nbsp;New note</button>
-
-          <button name="add" onclick= "add_new_item()" class="btn btn-default folder-item" title="Create a new note"><i class="glyphicon glyphicon-download-alt glyphicon-white"></i>&nbsp;Get as .zip</button>
-
-</div>
-            </hgroup>
-
-            </header>
-<hr class="header_sep" />
-        {{/mime}}
-    </script>
-    <!-- ------------------ item (in list) template: view list item SMALL ---------------------------------- -->
-    <script id="view_list_item_small" class="partial" type= "text/html">
-<div>
-    <div class="item col-12 {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
-            <span class="item_touch">
-                <img src="/static/mime/{{mime}}.svg" class="small_icon item_caption item_stuff"/>
-                <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
-            </span>
-            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;"></i>&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" ></i>{{/is_data}}
-        </div>
-</div>
-    </script>
-    <!-- ------------------ item (in list) template: view list item BIG ---------------------------------- -->
-    <script id="view_list_item_big" class="partial" type= "text/html">
-<div>
-    <div class="item {{classes}}" data-searchable="{{searchable}}" data-link="{{link}}" data-mime="{{mime}}"  data-title="{{title}}" data-editable="{{editable}}" {{#data}} data-{{k}}="{{v}}" {{/data}} >
-            <span class="item_touch">
-                <img src="/static/mime/{{mime}}.svg" class="huge_icon item_caption item_stuff"/>
-                <span title="{{descr}}" class="item_stuff item_caption">{{title}}</span>&nbsp;
-            </span>
-            <i class="show_on_hover small_icon glyphicon glyphicon-edit" onclick="ItemTool.popup($(this).parent());false;" ></i>&nbsp;
-            {{#is_data}}<i class="show_on_hover small_icon glyphicon glyphicon-eye-open" onclick="window.location =  '/d' + ui.get_ref( $(this).parent().data('link') ); false;" ></i>{{/is_data}}
-        </div>
-</div>
-    </script>
-    <!-- ------------------ item template: view list ---------------------------------- -->
-    <script id="view_list" type="text/html">
-        {{>header}}
-        <div class="items row">
-            {{#child}}
-            {{{item_template}}}
-            {{/child}}
-        </div>
-    </script>
-    <!-- ------------------ item template: view file ---------------------------------- -->
-    <script id="view_file" type="text/html">
-        {{>header}}
-        <div class="items row">
-            {{#child}}
-            {{{item_template}}}
-            {{/child}}
-        </div>
-    </script>
-    <!-- ------------------ form template: input text ---------------------------------- -->
-    <script id="input_text" type="text/html">
-        <div class="row"><span class="label label-default">{{name}}</span></div>
-        <input
-        data-orig-value='{{content}}'
-        type="text"
-        class="form-control {{^class}}input-xxlarge{{/class}}{{#class}}{{class}}{{/class}}"
-        placeholder="{{name}}"
-        value="{{content}}"
-        ></input>
-    </script>
-    <!-- ------------------ modal template: question ---------------------------------- -->
-    <script id="question" type="text/html">
-        <div class="modal fade" id="question_popup">
-          <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title"><img class="big_icon" src="/static/mime/{{mime}}.svg"/> {{title}}</h4>
-                </div>
-<!-- Editable fields, quite ugly, should come to another template or be more generic -->
-                <div class="editable" data-_cont="{{item._cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
-                {{#edit}}
-                    <div class="row editable-property" data-name="{{name}}" data-type="{{type}}" />
-                {{/edit}}
-                </div>
-<!-- /Editable -->
-                <div class="modal-body">
-                    <p>{{{body}}}</p>
-                    <p class="text-right pull-right text-muted">{{footnote}}</p>
-                </div>
-                <div class="modal-footer">
-                    {{#buttons}}
-                        {{#onclick}}
-                        <button onclick="{{onclick}}" class="btn {{class}}"> {{name}}</button>
-                        {{/onclick}}
-                        {{^onclick}}
-                        <a href="{{href}}" class="btn btn-primary"> {{name}}</a>
-                        {{/onclick}}
-                    {{/buttons}}
-                    <a href="#" data-dismiss="modal" class="btn btn-primary"> Close</a>
-                </div>
-              </div>
-            </div>
-        </div>
-    </script>
-    <!-- END templates -->
+    <!-- VIEWS ARE INSERTED HERE - DO NOT EDIT THE FOLLOWING LINE: -->
+    {{!VIEWS}}
   </head>
   <body>
 
@@ -142,18 +26,17 @@
           <span class="icon-bar"></span>
         </button>
         <!-- -- logo -- -->
-        <a class="navbar-brand" onclick="view_path('/')" href="#"><img style="height: 1em; vertical-align: -0.16em;" src="/static/img/logo.svg"/>&nbsp;Nanowork</a>
+        <a class="navbar-brand" onclick="Nano.load_link('/')" href="#"><img style="height: 1em; vertical-align: -0.16em;" src="/static/img/logo.svg"/>&nbsp;Nanowork</a>
         <div class="nav-collapse collapse">
           <ul class="nav navbar-nav">
-              <li class="folder-item"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'title' });">By name</a></li>
-              <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'type' });">or type</a></li>
-<!--              <li class="folder-item active"><a href="#" onclick="fix_nav(this); $('.items').isotope({ sortBy : 'original-order' });">or natural</a></li>-->
+              <li class="folder-item"><a href="#" onclick="Nano.content.sort_by(this, 'title');">By name</a></li>
+              <li class="folder-item active"><a href="#" onclick="Nano.content.sort_by(this, 'type');">or type</a></li>
           </ul>
             <!-- -- form -- -->
           <form id="addsearch_form" class="col-6 form-inline pull-right">
               <div class="btn-group folder-item">
                   <input name="text" type="text" class="my-form-control col-6" placeholder="looking for..." ></input>
-                  <button name="filter" type="submit" onclick= "filter_result();return false;" title="Look for something in current folder" class= "btn btn-default">Filter</button>
+                  <button name="filter" type="submit" onclick= "UI.filter_items();return false;" title="Look for something in current folder" class= "btn btn-default">Filter</button>
                   <button name="search" type="submit" onclick="search_for();return false;" title="Search items in whole database" class="btn">Search</button>
               </div>
               <!-- -- help -- -->
@@ -169,16 +52,20 @@
 
 
     <form class="form-inline pull-left">
-        <button id="backlink" class="btn" onclick="n_w.level_up(); return false;"><i class="glyphicon glyphicon-arrow-left" ></i>&nbsp;Back</button>
+        <button id="backlink" class="btn" onclick="Nano.level_up(); return false;"><i class="glyphicon glyphicon-arrow-left" ></i>&nbsp;Back</button>
 
-        <input type="file" class="btn btn-default folder-item" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;<span id='file_caption'>Add file...</span>" onchange="ItemTool._uploader.send()" />
+        <input type="file" class="btn btn-default folder-item" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;<span id='file_caption'>Add file...</span>" onchange="Nano._uploader.send()" />
     </form>
 
     <div class="btn-group folder-item pull-right">
-        <a title="View as icons" class="disabled view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; ui.current_item_template = 'view_list_item_big'; ui.reload()"><i class="glyphicon glyphicon-th" /></i></a>
-        <a title="View as list" class="view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ;ui.current_item_template = 'view_list_item_small'; ui.reload()"><i class="glyphicon glyphicon-list" ></i></a>
+        <a title="View as icons" class="disabled view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; UI.item_template = 'list_item_big'; Nano.reload()"><i class="glyphicon glyphicon-th" /></i></a>
+        <a title="View as list" class="view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; UI.item_template = 'list_item_small'; Nano.reload()"><i class="glyphicon glyphicon-list" ></i></a>
     </div>
-<div class="row" id="contents"></div>
+    <header id="main_header">
+    </header>
+    <hr class="header_sep" />
+    <div class="row" id="contents">
+    </div>
 
 <!-- ------------------ S C R I P TS ---------------------------------- -->
 
@@ -198,7 +85,6 @@
       <script src="/static/js/epiceditor.min.js"> </script> <!-- Markdown/text editor -->
       <script src="/static/js/toast-1.0.0.min.js"> </script> <!-- Lazy resources loading -->
       <script src="/static/js/traversty.min.js"> </script> <!-- collection management and traversal -->
-      <script src="/static/application.js"> </script>
-      <script src="/static/mimetypes.js"> </script> <!-- mimetypes structure -->
+      <script src="/static/nano.js"> </script>
   </body>
 </html>

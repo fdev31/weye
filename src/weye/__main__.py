@@ -6,7 +6,8 @@ import logging
 log = logging.getLogger('main')
 weye.configuration.config.debug = True
 log.info('starting application in debug mode, run using "uwsgi --ini uwsgi_conf.ini" to avoid those traces.')
-weye.configuration.log.setLevel(logging.NOTSET)
+logging.getLogger().setLevel(logging.ERROR)
+weye.configuration.log.setLevel(logging.ERROR)
 
 def helpanddie():
     print("Syntax: %s [configuration file]"%sys.argv[0])

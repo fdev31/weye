@@ -5,6 +5,7 @@
 @import "elements.less";
 @import "bootstrap.less";
 @import "bootstrap-glyphicons.less";
+@import "jquery.pnotify.default.less";
 
 @primary: #F8B744;
 @primary_light: @primary * #020303;
@@ -52,7 +53,8 @@ iframe {
     }
 }
 .show_on_hover {
-    opacity: 0;
+    visibility: hidden;
+//     opacity: 0;
 //     .transition(0.2s linear);
 }
 .item {
@@ -61,19 +63,37 @@ iframe {
     .border-radius(3px, 3px, 3px, 3px);
     margin: .3ex;
     padding-left: 1ex;
-    cursor: pointer;
     .transition(.5s linear);
     &:hover {
         background: @primary_light;
         color: black;
         .transition(.5s linear) !important;
         .show_on_hover {
-            opacity: 1;
+            visibility: visible;
         }
     }
-    word-wrap: break-word;
+//     word-wrap: break-word;
     overflow: hidden;
     text-overflow: ellipsis;
+    vertical-align: top;
+    i.btn {
+        padding: 0;
+    }
+    .item_touch {
+        cursor: pointer;
+        .item_caption {
+            hyphens: auto;
+            word-wrap: break-word;
+            white-space: pre-line;
+            overflow: scroll;
+        }
+    }
+}
+.item_small {
+    max-height: 2em;
+}
+.item_big {
+    max-height: 5em;
 }
 /* icons */
 img.huge_icon {
@@ -163,46 +183,34 @@ hr.header_sep {
     text-align: center;
     .basicshadow(10px, 0.3);
 }
-
+#contents {
+    min-height: 50em;
+    padding-bottom: 3ex;
+}
+.big_icon {
+    opacity: 0.5;
+}
+.faded_in {
+    .transition-duration(1s);
+    opacity: 1.0 !important;
+}
 /* media queries */
 
+// small only
+
 @media (max-width: @screen-small) {
-    #contents {
-        margin-left: 3px !important;
-    }
     #addsearch_form {
         width: 100%;
         input.my-form-control {
             width: auto;
         }
     }
-}
-@media (max-width: @screen-medium) and (min-width: @screen-small) {
-    #contents {
-        margin-left: 1ex !important;
-    }
-}
-@media (min-width: @screen-large) {
-    #addsearch_form {
-        width: 55%;
-    }
-    input.my-form-control {
-        width: 50ex;
-    }
-    #contents {
-        margin-top: 6ex;
-    }
-}
-@media (max-width: @screen-large) {
-    .ui-pnotify-history-container {
-        right: auto !important;
-        left: 1ex !important;
-    }
-    #contents {
-        margin-top: 1ex;
+    .item {
+        .col-12 !important;
     }
 }
 
+// medium
 @media (max-width: @screen-medium) and (min-width: @screen-small) {
     .navbar {
         .container {
@@ -213,6 +221,38 @@ hr.header_sep {
         }
     }
 }
+@media (min-width: @screen-small) and (max-width: @screen-large) {
+    .item {
+        width: 32%;
+    }
+}
+// large
+@media (min-width: @screen-large) {
+    #addsearch_form {
+        width: 55%;
+    }
+    input.my-form-control {
+        width: 50ex;
+    }
+    #contents {
+        margin-top: 6ex;
+    }
+    .item {
+        width: 24%;
+    }
+}
+
+// all but large
+@media (max-width: @screen-large) {
+    .ui-pnotify-history-container {
+        right: auto !important;
+        left: 1ex !important;
+    }
+    #contents {
+        margin-top: 1ex;
+    }
+}
+
 /* ISOTOPE */
 
 .animClass {
@@ -231,41 +271,5 @@ hr.header_sep {
 .isotope-hidden.isotope-item {
   pointer-events: none;
   z-index: 1;
-}
-/**** Isotope CSS3 transitions ****/
-.isotope,
-.isotope .isotope-item {
-  -webkit-transition-duration: 0.8s;
-     -moz-transition-duration: 0.8s;
-      -ms-transition-duration: 0.8s;
-       -o-transition-duration: 0.8s;
-          transition-duration: 0.8s;
-}
-
-.isotope {
-  -webkit-transition-property: height, width;
-     -moz-transition-property: height, width;
-      -ms-transition-property: height, width;
-       -o-transition-property: height, width;
-          transition-property: height, width;
-}
-
-.isotope .isotope-item {
-  -webkit-transition-property: -webkit-transform, opacity;
-     -moz-transition-property:    -moz-transform, opacity;
-      -ms-transition-property:     -ms-transform, opacity;
-       -o-transition-property:      -o-transform, opacity;
-          transition-property:         transform, opacity;
-}
-
-/**** disabling Isotope CSS3 transitions ****/
-.isotope.no-transition,
-.isotope.no-transition .isotope-item,
-.isotope .isotope-item.no-transition {
-  -webkit-transition-duration: 0s;
-     -moz-transition-duration: 0s;
-      -ms-transition-duration: 0s;
-       -o-transition-duration: 0s;
-          transition-duration: 0s;
 }
 

@@ -1,36 +1,53 @@
-.PHONY: themes jsapi doc mimes theme
+.PHONY: themes jsapi doc mimes theme jscode all js
 
 help:
 	@echo ""
 	@echo "Targets:"
 	@echo ""
-	@echo " themes: build 'static/css/theme.css from 'themes/default.less' (requires lessc)"
-	@echo "  mimes: compiles an minimize (jsmin) mime folder and install it to static/mimetypes.js"
+	@echo " themes: build 'static/css/theme.css' from 'themes/' (requires lessc -- see default.less file)"
 	@echo "    doc: Build Sphinx doc"
+	@echo "     js: **jsapi + jscode"
 	@echo "  jsapi: extract reST text from 'static/application.js' and save it to 'doc/source/dev/'"
+	@echo " jscode: *Generate static/nano.js code from src/jscode folder, including mimes/ information"
 	@echo "    all: all at once"
+	@echo ""
+	@echo "   * you have to type 'make' in the 'mimes' folder if you make change inside this folder"
+	@echo "  ** In order to debug, run 'JSMIN=cat make js' instead of 'make js'"
 
 
 PFX='#################### '
 SFX=' ####################'
 SFX=' '
-JS=doc/source/dev/jsapi.rst
+JSAPI=doc/source/dev/jsapi.rst
+JSFILES=src/jscode/jsbase.js src/jscode/startup.js src/jscode/templates.js src/jscode/resources.js src/jscode/ui.js src/jscode/core.js
+JSMIN?=jsmin
 
 theme:
 themes:
 	@ echo "${PFX} BUILDING THEMES ${SFX}"
 	cd themes && make
 
-jsapi: ${JS}
+js: jsapi jscode
 
-mimes:
-	(cd mimes && make install)
+jsapi: ${JSAPI}
+
+jscode: static/nano.js
+
+static/nano.js: ${JSFILES} objects/mimes.js
+	cat $^ | ${JSMIN} > $@
+
+objects/mimes.js:
+	(cd objects && ./compiler.py)
 
 doc: jsapi
 	(cd doc && make html)
 
-${JS}: static/application.js
-	./_makejsdoc.sh "$^" "$@"
+src/jscode/body.rst: ${JSFILES}
+	./_makejsdoc.sh $^ > $@
 
-all: mimes themes jsapi doc
+${JSAPI}: src/jscode/head.rst src/jscode/body.rst src/jscode/tail.rst
+	cat $^ > $@
+
+
+all: mimes themes jsapi jscode doc
 

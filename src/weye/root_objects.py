@@ -61,7 +61,7 @@ def save_object_to_path(path, read_func):
     :arg path str: the file path
     :arg read_func callable: a function that takes an integer (number of bytes to read)
     """
-    print('SAVE %s'%(path))
+#    print('SAVE %s'%(path))
     can_write = True
 
     path = path.rstrip('/').lstrip('/')
@@ -119,7 +119,7 @@ def get_object_from_path(path):
 
 
     """
-    print('GET %s'%(path))
+#    print('GET %s'%(path))
     # TODO: pure metadata reading // a metadata injector will act asychronously
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
@@ -127,6 +127,7 @@ def get_object_from_path(path):
     infos = None
 
     try:
+#        print('load %s'%meta_fpath)
         infos = loads(open(meta_fpath, 'rb').read())
     except (OSError, IOError, FileNotFoundError):
         if not os.path.exists(fpath):
@@ -143,7 +144,7 @@ def get_object_from_path(path):
             name = path
         infos = {'size': st.st_size,
                 'link': name,
-                'title': name,
+                 'title': (name.rsplit('.', 1)[0] if '.' else name).replace('-', ' ').replace('_', ' ').strip().title(),
                 'descr': '',
                 'mime': file_type}
 
@@ -156,10 +157,11 @@ def get_object_from_path(path):
                 pass
 
         # save it
-        try:
-            open(meta_fpath, 'wb').write(dumps(infos).encode())
-        except (OSError, IOError, PermissionError) as e:
-            log.error('Unable to save metadata as %r: %r', meta_fpath, e)
+        if path: # do not save root
+            try:
+                open(meta_fpath, 'wb').write(dumps(infos).encode())
+            except (OSError, IOError, PermissionError) as e:
+                log.error('Unable to save metadata as %r: %r', meta_fpath, e)
 
     return infos
 
@@ -182,7 +184,7 @@ def list_children(path):
 
         {children: {'c': ['descr', 'mime', 'link', 'title'], 'r': values}}
     """
-    print('LIST %s'%(path))
+#    print('LIST %s'%(path))
     # TODO: do not test files physically but return a database call
     path = path.rstrip('/').lstrip('/')
     fpath = os.path.join(config.shared_root, path).rstrip('/')
@@ -202,6 +204,7 @@ def list_children(path):
     for f in os.listdir(fpath):
         cfp = is_listable(f)
         if cfp:
+            cfp = os.path.join(path, f)
             o = get_object_from_path(cfp)
             values.append( [ o[k] for k in fields ] )
     return {'children': {'c': fields, 'r': values} }
