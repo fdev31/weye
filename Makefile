@@ -49,5 +49,5 @@ ${JSAPI}: src/jscode/head.rst src/jscode/body.rst src/jscode/tail.rst
 	cat $^ > $@
 
 
-all: mimes themes jsapi jscode doc
+all: mimes themes js doc
 
