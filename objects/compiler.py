@@ -6,6 +6,11 @@ import re
 from glob import glob
 from shutil import copytree, rmtree
 
+try:
+    FileExistsError
+except NameError:
+    FileExistsError = OSError
+
 def duplicate(p1, p2):
     p1 = os.path.abspath(p1)
     p2 = os.path.abspath(p2)
