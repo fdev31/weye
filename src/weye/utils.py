@@ -21,8 +21,9 @@ def guess_type(fname):
     if os.path.isdir(fname):
         t = 'folder'
     else:
-        ext = fname.rsplit('.', 1)[1]
-        if '.' in fname and ext in MIMES:
+        have_dot = '.' in fname
+        ext = fname.rsplit('.', 1)[1] if have_dot else ''
+        if have_dot and ext in MIMES:
             t = MIMES[ext]
         else:
             if magic:
