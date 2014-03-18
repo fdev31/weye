@@ -8,8 +8,10 @@
 
 Currently, quite broken: properties edition, many actions...
 
-TODO: make containers concept and build folders/ItemList code from it (see templates.js)
-
+TODO:
+-  make containers concept and build folders/ItemList code from it (see templates.js)
+- implement edit using http://vitalets.github.io/x-editable/ ?
+ 
 # Structure
 
 type **make all** to generate all files.
