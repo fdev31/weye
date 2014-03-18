@@ -49,3 +49,6 @@ Folder containing additional js files that must be loaded.
 
 Special file for custom definitions. The file format is a little tricky: indented lines are untouched, but others are prefixed with some magic code, so only use lvalues here !
 
+## Views
+
+You can find page templates in *views* folder.
