@@ -4,7 +4,7 @@ var me = this;
 // download the content to display it
 $.ajax(me.get_raw_ref(), {dataType: 'text'})
 .done( function(d) {
-    var lang = me._map[me.mime];
+    var lang = me._map[me.mime]; // see definitions.js
     if( !!! lang )
     lang = me.mime.split('-')[2];
     var pre = $('<pre><code data-language="'+lang+'"></code></pre>');

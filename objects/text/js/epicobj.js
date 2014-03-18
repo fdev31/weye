@@ -51,8 +51,8 @@ var epic_opts = {
  */
 
 function editor_save() {
-    var text = Nano._editor.exportFile(ui.doc_ref);
-    $.post('/d'+ui.doc_ref, {text: text, path: ui.doc_ref})
+    var text = Nano._editor.exportFile(Nano.doc_ref);
+    $.post('/d'+Nano.doc_ref, {text: text, path: Nano.doc_ref})
         .done(function(d) {
             if(d.error) {
                 $.pnotify({type:'error', text: ''+d.error, title: "Unable to save"});

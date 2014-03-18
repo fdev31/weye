@@ -1,3 +1,15 @@
+<script id="search_popup" type="text/html">
+<div class="row">
+    <!-- -- form -- -->
+  <form id="addsearch_form" class="col-6 form-inline pull-right">
+      <div class="btn-group folder-item">
+          <input name="text" type="text" class="form-control" placeholder="looking for..." ></input>
+      </div>
+      <!-- -- help -- -->
+  </form>
+<br/>
+</div>
+</script>
 <!-- ------------------ modal template: question ---------------------------------- -->
 <script id="question" type="text/html">
 <div class="modal fade" id="question_popup">
@@ -7,21 +19,23 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title"><img class="big_icon" src="/static/mime/{{mime}}.svg"/> {{title}}</h4>
         </div>
+        <div class="modal-body">
 <!-- Editable fields, quite ugly, should come to another template or be more generic -->
+        {{#item}}
         <div class="editable" data-cont="{{item.cont}}" data-link="{{item.link}}" data-mime="{{item.mime}}">
             {{#edit}}
             <div class="row editable-property" data-name="{{name}}" data-type="{{type}}" />
             {{/edit}}
         </div>
+        {{/item}}
 <!-- Body -->
-        <div class="modal-body">
             <p>{{{body}}}</p>
             <p class="text-right pull-right text-muted">{{footnote}}</p>
         </div>
-        <div class="modal-footer">
+        <div class="modal-footer btn-group">
             {{#buttons}}
                 {{#onclick}}
-                <button onclick="{{onclick}}" class="btn {{class}}"> {{name}}</button>
+                <button title="{{title}}" onclick="{{onclick}}" class="btn {{class}}"> {{name}}</button>
                 {{/onclick}}
                 {{^onclick}}
                 <a href="{{href}}" class="btn btn-primary"> {{name}}</a>

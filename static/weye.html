@@ -32,16 +32,6 @@
               <li class="folder-item"><a href="#" onclick="Nano.content.sort_by(this, 'title');">By name</a></li>
               <li class="folder-item active"><a href="#" onclick="Nano.content.sort_by(this, 'type');">or type</a></li>
           </ul>
-            <!-- -- form -- -->
-          <form id="addsearch_form" class="col-6 form-inline pull-right">
-              <div class="btn-group folder-item">
-                  <input name="text" type="text" class="my-form-control col-6" placeholder="looking for..." ></input>
-                  <button name="filter" type="submit" onclick= "UI.filter_items();return false;" title="Look for something in current folder" class= "btn btn-default">Filter</button>
-                  <button name="search" type="submit" onclick="search_for();return false;" title="Search items in whole database" class="btn">Search</button>
-              </div>
-              <!-- -- help -- -->
-              <button onclick= "show_help()" class="btn btn-info pull-right" title="Display help"><b>?</b></button>
-          </form>
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -58,6 +48,11 @@
     </form>
 
     <div class="btn-group folder-item pull-right">
+          <button onclick= "UI.help_popups()" class="btn view_mode_btn btn-link pull-right" title="Display help"><i class="glyphicon glyphicon-book"></i></button>&nbsp;
+    </div>
+    <div class="btn-group folder-item pull-right">
+      <button onclick= "UI.search_popup()" class="btn view_mode_btn btn-link pull-right" title="Find something"><i class="glyphicon glyphicon-search"></i></button>
+
         <a title="View as icons" class="disabled view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; UI.item_template = 'list_item_big'; Nano.reload()"><i class="glyphicon glyphicon-th" /></i></a>
         <a title="View as list" class="view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; UI.item_template = 'list_item_small'; Nano.reload()"><i class="glyphicon glyphicon-list" ></i></a>
     </div>

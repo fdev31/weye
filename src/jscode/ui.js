@@ -141,6 +141,88 @@ var UI = {
             }})
         }, 100);
     },
+
+    help_popups: function() {
+        $.pnotify({
+        type: 'info',
+        title: "Keyboard shortcuts",
+        text: "<ul><li><b>UP</b>/<b>DOWN</b></li><li><b>ENTER</b>/<b>BACKspace</b> </li><li> <b>HOME</b>/<b>END</b> to navigate...</li><li>Close popups using <b>ESCAPE</b></li><li><b>Ctrl+Space</b> & <b>Tab</b> will change focus from text filter to the list</li></ul>",
+    });
+    setTimeout(function(){
+        $.pnotify({
+            type: 'info',
+            title: "Filter Syntax (Ctrl+Space)",
+            text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
+        });
+    }, 500);
+    },
+
+    get_question: function(opts /* item, mime, title, footnote, buttons */) {
+        console.log('get Q');
+        var item = opts.item || false;
+        var mime = opts.mime || (item && item.mime) || 'text-x-readme';
+        var title = opts.title || (item && item.title) || (item && item.link) || '';
+        var editables = opts.editables || (item && item.editables && item.editables.split(/ +/)) || '*';
+        var buttons = opts.buttons || [];
+        var footnote = opts.foonote || '';
+        var body = opts.body || '';
+
+        /* if we already have a popup */
+        var qp = $('#question_popup');
+        if(qp.length != 0) {
+            if (qp.css('display') === 'none') {
+                /* and he is hidden, remove it first */
+                qp.remove();
+            } else {
+                /* something is already displayed, don't do anything */
+                return;
+            }
+        }
+
+        var edited = [];
+        if (item) {
+            if (editables === '*' || editables === '') {
+                for(var k in item)
+                    edited.push({name: k, type: 'text'});
+            } else {
+                // TODO: input type thing
+                for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
+            }
+        }
+        /* create the popup */
+        qp = ich.question({
+            'item': item,
+            'title': title,
+            'mime': mime,
+            'body': body,
+            'footnote': footnote,
+            'edit': edited,
+            'buttons': buttons
+        });
+        qp.modal();
+        if (item) setTimeout(function() {
+            qp.find('.editable-property').each( function(i, o) {
+                var o = $(o);
+                var d = copy(o.data());
+                d.content = item[d.name];
+                o.append(ich['input_'+d.type](d));
+            });
+        }, 200);
+
+        return qp;
+    },
+
+    search_popup: function() {
+        UI.get_question({
+            item: false,
+            body: ich.search_popup().html(),
+            buttons: [
+                {'name': 'Filter', onclick: 'UI.filter_items(); return false', title:'Filters current list'},
+                {'name': 'Search', onclick: 'UI.search_for(); return false', title:'Search for some item'}
+            ]
+        });
+
+    },
 /*
  *     .. function:: UI.edit_item(data)
  *
@@ -150,44 +232,14 @@ var UI = {
 
     edit_item : function(data) {
         UI._edited = data;
-        var qp = $('#question_popup');
-        if(qp.length != 0) {
-            if (qp.css('display') === 'none') {
-                qp.remove();
-            } else {
-                return;
-            }
-        }
-        var edited = [];
-        if (data.editables === "")  {
-            for(var k in data)
-                edited.push({name: k, type: 'text'});
-        } else {
-            var editables = data.editables.split(/ +/);
-            // TODO: input type thing
-            for(var k in editables) { edited.push({name: editables[k], type: 'text'}) };
-        }
-        var pop = ich.question({
-            'item': data,
-            'title': data.title || data.link,
-            'mime': data.mime,
-            'footnote': 'Changes may be effective after a refresh',
-            'edit': edited,
-            'buttons': [
+        UI.get_question({
+            item: data,
+            footnote: 'Changes may be effective after a refresh',
+            buttons: [
                 {'name': 'Save', 'onclick': 'UI.save_item($("#question_popup .editable").data("link"));false;', 'class': 'btn-success'},
                 {'name': 'Delete', 'onclick': 'UI.remove_item($("#question_popup .editable").data("link"));false;', 'class': 'btn-warning'}
             ]
         });
-        pop.modal();
-        var edited = $('#question_popup .editable');
-        setTimeout(function() {
-            pop.find('.editable-property').each( function(i, o) {
-                var o = $(o);
-                var d = copy(o.data());
-                d.content = data[d.name];
-                o.append(ich['input_'+d.type](d));
-            });
-        }, 200);
 
     },
 /*

@@ -88,19 +88,6 @@ inherits(ItemList, PageTemplate);
 Templates['folder'] = ItemList;
 
 /*
- *     .. function:: ItemList.get_dom(link)
- *
- *          Get the DOM element used to display some child, by giving its link
- *
- *          :arg link: Child's link
- *          :type link: String
- *
- *          :returns: The DOM element within that page
- */
-ItemList.prototype.get_dom = function(link) {
-    return $('.items .item[data-link="'+link+'"]');
-};
-/*
  *     .. function:: ItemList.find_by_link(link)
  *
  *          Get the :class:`Resource` used for this *link*
@@ -130,7 +117,11 @@ ItemList.prototype.refresh_by_link = function(link, metadata) {
         );
     this.setup_links(e);
 };
+
+// container operations
+
 // TODO: keyboard nav
+//
 /*
  *     .. function:: ItemList.refresh_by_link(link, metadata)
  *
@@ -138,6 +129,7 @@ ItemList.prototype.refresh_by_link = function(link, metadata) {
 ItemList.prototype.select = function(index) {
     self.selected += index;
 };
+
 /*
  *     .. function:: ItemList.insert(resource)
  *
@@ -198,6 +190,8 @@ ItemList.prototype.draw = function() {
  
     this.setup_links( $('.items') );
 };
+
+// internal definitions
 ItemList.prototype.setup_links = function(jqelt) {
 
     jqelt.find('.item_touch').hammer()
@@ -209,3 +203,16 @@ ItemList.prototype.setup_links = function(jqelt) {
 };
 
 
+/*
+ *     .. function:: ItemList.get_dom(link)
+ *
+ *          Get the DOM element used to display some child, by giving its link
+ *
+ *          :arg link: Child's link
+ *          :type link: String
+ *
+ *          :returns: The DOM element within that page
+ */
+ItemList.prototype.get_dom = function(link) {
+    return $('.items .item[data-link="'+link+'"]');
+};

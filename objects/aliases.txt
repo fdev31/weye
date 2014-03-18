@@ -1,2 +1,2 @@
-application-javascript:text-x
+application-javascript:text
 text-css:text-x
