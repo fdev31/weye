@@ -6,6 +6,19 @@ import re
 from glob import glob
 from shutil import copytree, rmtree
 
+if os.path.exists('objects'):
+    os.chdir('objects')
+
+if len(sys.argv) == 2 and sys.argv[1] == 'ls':
+    b = os.path.basename(os.getcwd())
+    for n in os.listdir(os.path.curdir):
+        if os.path.isdir(n):
+            for d in (_ for _ in os.listdir(n) if _[0] != '.'):
+                if d.endswith('.js'):
+                    sys.stdout.write(os.path.join(b, n, d))
+                    print('')
+    raise SystemExit(0)
+
 try:
     FileExistsError
 except NameError:
