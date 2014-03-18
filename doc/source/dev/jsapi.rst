@@ -47,15 +47,6 @@ Templates
      Aims at handling a list of :class:`Resource`
 
 
-    .. function:: ItemList.get_dom(link)
-
-         Get the DOM element used to display some child, by giving its link
-
-         :arg link: Child's link
-         :type link: String
-
-         :returns: The DOM element within that page
-
     .. function:: ItemList.find_by_link(link)
 
          Get the :class:`Resource` used for this *link*
@@ -87,6 +78,15 @@ Templates
     .. function:: ItemList.sort_by(dom_elt, criteria)
 
          Call :func:`UI.fix_nav` and change the current sort criteria
+
+    .. function:: ItemList.get_dom(link)
+
+         Get the DOM element used to display some child, by giving its link
+
+         :arg link: Child's link
+         :type link: String
+
+         :returns: The DOM element within that page
 
 Resources and Items
 ###################
