@@ -1,5 +1,7 @@
 .PHONY: themes jsapi doc mimes theme jscode all js
 
+MIMES_FILES=$(shell cd objects && ./compiler.py ls)
+
 help:
 	@echo ""
 	@echo "Targets:"
@@ -15,34 +17,39 @@ help:
 	@echo "  ** In order to debug, run 'JSMIN=cat make js' instead of 'make js'"
 
 
-PFX='#################### '
-SFX=' ####################'
-SFX=' '
 JSAPI=doc/source/dev/jsapi.rst
 JSFILES=src/jscode/jsbase.js src/jscode/startup.js src/jscode/templates.js src/jscode/resources.js src/jscode/ui.js src/jscode/core.js
 JSMIN?=jsmin
 
 theme:
 themes:
-	@ echo "${PFX} BUILDING THEMES ${SFX}"
 	cd themes && make
+	@ echo "################# DONE: themes #################"
 
 js: jsapi jscode
+	@ echo "################# DONE: Javascript #################"
 
 jsapi: ${JSAPI}
+	@ echo "################# DONE: Javascript API #################"
 
 jscode: static/nano.js
+	@ echo "################# DONE: Javascript Code (minify) #################"
 
 static/nano.js: ${JSFILES} objects/mimes.js
 	cat $^ | ${JSMIN} > $@
 
-objects/mimes.js:
+objects/mimes.js: ${MIMES_FILES}
 	(cd objects && ./compiler.py)
 
+mimes: objects/mimes.js 
+	@echo "################# DONE: Mime types database #################"
+
 doc: jsapi
-	(cd doc && make html)
+	@(cd doc && make html)
+	@echo "################# DONE: Documentation #################"
 
 src/jscode/body.rst: ${JSFILES}
+	@echo "################# Generating Documentation content #################"
 	./_makejsdoc.sh $^ > $@
 
 ${JSAPI}: src/jscode/head.rst src/jscode/body.rst src/jscode/tail.rst
