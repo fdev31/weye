@@ -1,3 +1,4 @@
+var TEXT_X_MAX_FILE_SIZE = 50000;
 // Do not forget to EDIT dependencies.js accordingly
 
 var me = this;
@@ -11,7 +12,7 @@ $.ajax(me.get_raw_ref(), {dataType: 'text'})
     pre.find('code').text(d);
     pre.appendTo($('#contents'));
 
-    if( me.size > 15000) {
+    if( me.size > TEXT_X_MAX_FILE_SIZE) {
         $.pnotify({type: 'warning', title: 'File is too big', text: 'Syntax coloring disabled.'});
     } else {
         Rainbow.color();
