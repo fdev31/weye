@@ -4917,7 +4917,7 @@ iframe {
   color: black;
 }
 .item.highlighted:hover {
-  background: #ffffcc !important;
+  background: #fffcb1 !important;
 }
 .show_on_hover {
   visibility: hidden;
@@ -4951,7 +4951,7 @@ iframe {
   vertical-align: top;
 }
 .item:hover {
-  background: #ffffcc;
+  background: #fffcb1;
   color: black;
   -webkit-transition: all 0.5s linear ease-out !important;
   -moz-transition: all 0.5s linear ease-out !important;
