@@ -41,10 +41,10 @@
 <!-- ------------------ C O N T E N T ---------------------------------- -->
 
 
-    <form class="form-inline pull-left">
+    <form class="form-inline pull-left input-group btn-group">
         <button id="backlink" class="btn" onclick="Nano.level_up(); return false;"><i class="glyphicon glyphicon-arrow-left" ></i>&nbsp;Back</button>
 
-        <input type="file" class="btn btn-default folder-item" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;<span id='file_caption'>Add file...</span>" onchange="Nano._uploader.send()" />
+        <input type="file" class="filestyle" name="file" id="file" data-input="false" data-buttonText="Add file..." data-iconName="glyphicon-upload" onchange="Nano._uploader.send()" />
     </form>
 
     <div class="btn-group folder-item pull-right" style="height: 1em">
@@ -68,7 +68,7 @@
   <!--  <script>window.jQuery || document.write('<script src="/static/Kickstrap/js/jquery-1.7.1.min.js"><\/script>');</script>-->
       <script src="/static/js/jquery-1.8.2.min.js"></script>
       <script src="/static/js/bootstrap.min.js"></script>
-      <script src="/static/js/bootstrap.file-input.min.js"> </script> <!-- unify file inputs in forms -->
+      <script src="/static/js/bootstrap-filestyle.min.js"> </script> <!-- unify file inputs in forms -->
       <script src="/static/js/jquery.isotope.min.js"></script> <!-- funky list display -->
       <script src="/static/js/ICanHaz.min.js"></script> <!-- templating -->
       <script src="/static/js/hammer.js"></script> <!-- gestures/ mobile integration -->

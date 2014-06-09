@@ -5,7 +5,7 @@ $(function() {
     $('#addsearch_form').submit(function() {return false});
 
     // handle upload stuff
-    $('#file').bootstrapFileInput();
+    $('#file').filestyle();
     var up = new uploader($('#file').get(0), {
         url:'/upload',
         extra_data_func: function(data) { return {'prefix': Nano.doc_ref} },
