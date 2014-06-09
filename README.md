@@ -66,6 +66,8 @@ Pages (aka fullscreen items):
     - Sound (is a File)
     - PresentationFolder (is a Folder and .app, TODO)
 
+Server-side global hooks! 
+
 Fancy:
     youtube searches into special Youtube page (topic: virtual items)
     1) allow short urls VS 2) use other param
