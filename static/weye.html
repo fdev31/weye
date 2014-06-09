@@ -47,10 +47,10 @@
         <input type="file" class="btn btn-default folder-item" name="file" id="file" title="<i class='glyphicon glyphicon-upload'></i>&nbsp;<span id='file_caption'>Add file...</span>" onchange="Nano._uploader.send()" />
     </form>
 
-    <div class="btn-group folder-item pull-right">
+    <div class="btn-group folder-item pull-right" style="height: 1em">
           <button onclick= "UI.help_popups()" class="btn view_mode_btn btn-link pull-right" title="Display help"><i class="glyphicon glyphicon-book"></i></button>&nbsp;
     </div>
-    <div class="btn-group folder-item pull-right">
+    <div class="btn-group folder-item pull-right" style="height: 1em">
       <button onclick= "UI.search_popup()" class="btn view_mode_btn btn-link pull-right" title="Find something"><i class="glyphicon glyphicon-search"></i></button>
 
         <a title="View as icons" class="disabled view_mode_btn btn" onclick="$(this).parent().children().each(function(i,x) {$(x).removeClass('disabled')}); $(this).addClass('disabled') ; UI.item_template = 'list_item_big'; Nano.reload()"><i class="glyphicon glyphicon-th" /></i></a>
