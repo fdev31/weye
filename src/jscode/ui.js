@@ -158,7 +158,6 @@ var UI = {
     },
 
     get_question: function(opts /* item, mime, title, footnote, buttons */) {
-        console.log('get Q');
         var item = opts.item || false;
         var mime = opts.mime || (item && item.mime) || 'text-x-readme';
         var title = opts.title || (item && item.title) || (item && item.link) || '';

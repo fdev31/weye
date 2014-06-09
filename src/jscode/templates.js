@@ -112,9 +112,10 @@ ItemList.prototype.find_by_link = function(link) {
 ItemList.prototype.refresh_by_link = function(link, metadata) {
     var item = this._c[this._index[link]];
     $.extend(item, metadata);
-    var e = this.get_dom(item.link).html(
-            ich[this.item_template](item).children().html()
-        );
+    var rdr = ich[this.item_template](item).children();
+
+    var e = this.get_dom(item.link).html( rdr.html() );
+    e.attr('title', rdr.attr('title')); // allow title overriding
     this.setup_links(e);
 };
 
