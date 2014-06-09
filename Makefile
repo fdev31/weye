@@ -11,9 +11,9 @@ help:
 	@echo "     js: **jsapi + jscode"
 	@echo "  jsapi: extract reST text from 'static/application.js' and save it to 'doc/source/dev/'"
 	@echo " jscode: *Generate static/nano.js code from src/jscode folder, including mimes/ information"
+	@echo "  mimes: Update changes made into objects folder"
 	@echo "    all: all at once"
 	@echo ""
-	@echo "   * you have to type 'make' in the 'mimes' folder if you make change inside this folder"
 	@echo "  ** In order to debug, run 'JSMIN=cat make js' instead of 'make js'"
 
 
