@@ -27,6 +27,7 @@ $(function() {
                     Nano.content.insert( ResourceFactory(c) );
                 }
             }
+            // start notification
             setTimeout( function() {
                 if (child.length === 0) {
                     $.pnotify({type: 'warning', title: "Upload", text: "No file were uploaded"});

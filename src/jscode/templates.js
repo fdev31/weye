@@ -75,6 +75,11 @@ function ItemList(data, item_template) {
     this.data.item_template = this._item_templater;
 //    this.data.children = data;
     this._c = data.children || []; // convenient alias
+    this._refresh();
+}
+inherits(ItemList, PageTemplate);
+
+ItemList.prototype._refresh = function() {
     var _r = {}
     this._index = _r;
     for (var i=0; i<this._c.length; i++) {
@@ -82,7 +87,6 @@ function ItemList(data, item_template) {
         _r[ this._c[i].link ] = i;
     }
 }
-inherits(ItemList, PageTemplate);
 
 // TODO: replace by factory
 Templates['folder'] = ItemList;
@@ -139,9 +143,10 @@ ItemList.prototype.select = function(index) {
 ItemList.prototype.insert = function(resource) {
 //    console.log('insert', resource, 'into', this);
     var d = ich[this.item_template](resource).children();
-    this._index[resource.link] = d;
-    this._c.push(d);
     $('.items').isotope('insert', d);
+    this._index[resource.link] = this._c.length;
+    this._c.push(resource);
+    this.setup_links(d);
 };
 /*
  *     .. function:: ItemList.remove(resource)
