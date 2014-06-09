@@ -1,2 +1,3 @@
 application-javascript:text
+audio-x-mp3-playlist:audio-mpegurl
 text-css:text-x
