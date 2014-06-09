@@ -16,21 +16,28 @@ String.prototype.startswith = function(prefix) {
 };
 
 // utils
-function copy(obj, blacklist) {
+function copy(obj, opts) {
+    opts = opts || {};
     var o = {}
-    if (blacklist) {
+    if (opts.blacklist) {
         for(var key in obj) {
             var blisted = false;
-            for (var bl in blacklist) {
-                if( blacklist[bl] === key )
+            for (var bl in opts.blacklist) {
+                if( opts.blacklist[bl] === key )
                     blisted = true;
             }
             if (! blisted)
                 o[key] = obj[key];
         }
     } else {
-        for(var key in obj) {
-            o[key] = obj[key];
+        if (opts.whitelist) {
+            for(var key in opts.whitelist) {
+                o[key] = obj[key];
+            }
+        } else {
+            for(var key in obj) {
+                o[key] = obj[key];
+            }
         }
     }
     return o;
