@@ -191,7 +191,7 @@ var UI = {
         }
         /* create the popup */
         qp = ich.question({
-            'item': item,
+            'item': copy(item, {'whitelist': ['cont', 'link', 'mime']}),
             'title': title,
             'mime': mime,
             'body': body,
