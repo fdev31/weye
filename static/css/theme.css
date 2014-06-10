@@ -5031,6 +5031,12 @@ hr.header_sep {
   transition: 300ms;
 }
 /* Fine tuning */
+#right_actions {
+  margin-top: -33px;
+}
+div.bootstrap-filestyle {
+  padding-left: .5ex;
+}
 .my-form-control {
   display: block;
   height: 34px;
