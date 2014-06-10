@@ -197,6 +197,13 @@ def list_children(path):
             return False
         if not os.access(full_path, os.R_OK):
             return False
+        try:
+            t_ext = f.rsplit('.', 1)[1]
+            if t_ext in config.blacklisted_extensions:
+                return False
+        except IndexError:
+            pass
+
         return full_path
 
     values = []

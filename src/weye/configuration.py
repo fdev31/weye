@@ -39,6 +39,7 @@ config.port = '8080'
 config.file_encoding = 'utf-8'
 config.check_security = True
 config.read_only = False
+config.blacklisted_extensions = ('pyo','pyc')
 
 # behavior
 config.allow_overwrite = os.environ.get('ALLOW_WRITE', '').upper() in ('1', 'YES', 'TRUE', 'ON')
@@ -69,7 +70,6 @@ def _import_conf(filename=None, encoding=None):
             except Exception as e:
                 print("warning %s: %s"%(filename, e))
 
-        bool_values = 'check_security allow_overwrite read_only exclude_dot_files'.split()
 
         for k in 'file_encoding debug shared_root'.split():
             val = rd(k)
@@ -84,10 +84,19 @@ def _import_conf(filename=None, encoding=None):
                 else:
                     setattr(config, k, val)
 
+        bool_values = 'check_security allow_overwrite read_only exclude_dot_files'.split()
+
         for k in bool_values:
             val = rd(k)
             if val:
                 setattr(config, k, val[0] in 'yta' if val else False)
+
+        list_values = 'blacklisted_extensions'.split()
+        for k in list_values:
+            val = rd(k).strip()
+            if val:
+                val = tuple(x.strip() for x in val.split(','))
+                setattr(config, k, val)
 
         config.host, port = (_parser.get('uwsgi', 'http-socket') or '0.0.0.0:8080').split(':')
         config.port = int(port)
