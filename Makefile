@@ -21,7 +21,8 @@ JSAPI=doc/source/dev/jsapi.rst
 JSFILES=src/jscode/jsbase.js src/jscode/startup.js src/jscode/templates.js src/jscode/resources.js src/jscode/ui.js src/jscode/core.js
 JSMIN?=jsmin
 
-theme:
+theme: themes
+
 themes:
 	cd themes && make
 	@ echo "################# DONE: themes #################"
