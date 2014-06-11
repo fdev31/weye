@@ -46,8 +46,6 @@ function Resource (dict) {
     }
     if (this.cont != undefined && this.cont.substr(-1) !== '/')
         this.cont += '/';
-    if (this.mime !== 'folder')
-        this.is_data = true;
     if (!!!this.editables)
         this.editables = 'title mime descr';
 };
@@ -57,6 +55,13 @@ function Resource (dict) {
  *          More or less the lowercased name corresponding to this class name
  */
 Resource.prototype.type = 'resource';
+
+/*
+ *     .. data:: Resource.is_data = true
+ *
+ *          set to false if this is some kind of folder
+ */
+Resource.prototype.is_data = true;
 
 /*
  *     .. data:: Resource.searchable = 'title'
