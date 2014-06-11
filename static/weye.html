@@ -15,6 +15,7 @@
     {{!VIEWS}}
   </head>
   <body>
+  <a name="top" />
 
 <!-- ------------------ N A V B A R ---------------------------------- -->
    <div class="navbar navbar-fixed-top">
@@ -26,7 +27,7 @@
           <span class="icon-bar"></span>
         </button>
         <!-- -- logo -- -->
-        <a class="navbar-brand" onclick="Nano.load_link('/')" href="#"><img style="height: 1em; vertical-align: -0.16em;" src="/static/img/logo.svg"/>&nbsp;Nanowork</a>
+        <a class="navbar-brand" href="#top"><img style="height: 1em; vertical-align: -0.16em;" src="/static/img/logo.svg"/>&nbsp;Nanowork</a>
         <div class="nav-collapse collapse">
           <ul class="nav navbar-nav">
               <li class="folder-item"><a href="#" onclick="Nano.content.sort_by(this, 'title');">By name</a></li>
@@ -40,11 +41,10 @@
 
 <!-- ------------------ C O N T E N T ---------------------------------- -->
 
-
     <form class="form-inline pull-left input-group btn-group col-12">
         <button id="backlink" class="btn" onclick="Nano.level_up(); return false;"><i class="glyphicon glyphicon-arrow-left" ></i>&nbsp;Back</button>
 
-        <input type="file" class="filestyle" name="file" id="file" data-input="false" data-buttonText="Add file..." data-iconName="glyphicon-upload" onchange="Nano._uploader.send()" />
+        <input type="file" class="filestyle folder-item" name="file" id="file" data-input="false" data-buttonText="Upload" data-iconName="glyphicon-upload" onchange="Nano._uploader.send()" />
         <span class="folder-item pull-right" id="right_actions">
             <button onclick= "UI.help_popups()" class="btn view_mode_btn btn-link pull-right" title="Display help"><i class="glyphicon glyphicon-book"></i></button>&nbsp;
             <button onclick= "UI.search_popup()" class="btn view_mode_btn btn-link pull-right" title="Find something"><i class="glyphicon glyphicon-search"></i></button>

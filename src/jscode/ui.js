@@ -155,6 +155,13 @@ var UI = {
             text: "<ul><li>You can use any RegExp</li><li>You can use <code>type:</code> prefix to match type instead of name. Ex:<pre>type:image|application</pre><pre>type:zip</pre><pre>f.*png$</pre></li></ul>",
         });
     }, 500);
+    setTimeout(function(){
+        $.pnotify({
+            type: 'info',
+            title: "Tip",
+            text: "<ul><li><b>Click the logo</b> (top-left) to <b>return to the top</b> of the page!</li></ul>",
+        });
+    }, 1000);
     },
 
     get_question: function(opts /* item, mime, title, footnote, buttons */) {
